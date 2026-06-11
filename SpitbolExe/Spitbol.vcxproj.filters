@@ -148,6 +148,74 @@
     <ClCompile Include="$(OsintDir)\*.c" />
     <ClCompile Include="$(OsintDir)\*.c" />
     <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
   </ItemGroup>
   <ItemGroup>
     <MASM Include="$(RuntimeDir)\sbl_masm.asm">
@@ -159,8 +227,5 @@
     <MASM Include="$(RuntimeDir)\int_masm.asm">
       <Filter>generated asm</Filter>
     </MASM>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="hello.sbl" />
   </ItemGroup>
 </Project>

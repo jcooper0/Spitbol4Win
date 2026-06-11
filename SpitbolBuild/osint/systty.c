@@ -21,10 +21,37 @@ Copyright 2012-2017 David Shields
 
 #include "port.h"
 
+#ifdef _WIN32
+# include <io.h>
+# include <fcntl.h>
+#endif
+
 void
 ttyinit()
 {
     ttyiobin.bfb = MP_OFF(pttybuf, struct bfblk *);
+
+#ifdef _WIN32
+    /*
+    /   On Un*x the shell leaves fd 2 opened read/write on the controlling
+    /   tty, so TERMINAL input simply reads fd 2 (STDERRFD in globals.h).
+    /   On Windows fd 2 wraps a write-only stderr handle, so reads fail
+    /   instantly and TERMINAL sees immediate EOF instead of waiting for
+    /   keyboard input.
+    /
+    /   When stderr is an attached console, route TERMINAL input to that
+    /   console's keyboard by opening CONIN$ in text mode (so line reads
+    /   see "\n", not "\r\n", and Ctrl-Z yields EOF).  When stderr is
+    /   redirected (pipe or file -- e.g. under the test harness), leave
+    /   fd 2 in place so reads fail -> EOF, matching what the Un*x build
+    /   does in the same situation.
+    */
+    if(_isatty(STDERRFD)) {
+        int fd = _open("CONIN$", _O_RDONLY | _O_TEXT);
+        if(fd >= 0)
+            ttyiobin.fdn = fd;
+    }
+#endif /* _WIN32 */
 }
 
 /*

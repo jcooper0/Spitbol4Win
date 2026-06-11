@@ -1,0 +1,13 @@
+-include 'assert.inc'
+	&anchor = 1;
+	digit = any('0213456789')
+	digitpair = digit digit
+	date_pattern =  digitpair '/' digitpair '/' digitpair ' ' digitpair ':' digitpair ':' digitpair
+	d = date()
+	d date_pattern      :F(date_fail)
+	result = 'success'  :(date_succeed)
+date_fail		result = 'failure' :(check)	
+date_succeed	result = 'success' :(check)
+check output = result
+		chk('TEST_Date result', $'result', 'success')
+end

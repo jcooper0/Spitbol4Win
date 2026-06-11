@@ -94,9 +94,6 @@
     <MASM Include="$(RuntimeDir)\err_masm.asm" />
     <MASM Include="$(RuntimeDir)\int_masm.asm" />
   </ItemGroup>
-  <ItemGroup>
-    <None Include="hello.sbl" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />

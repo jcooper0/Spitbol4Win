@@ -1,0 +1,137 @@
+* terminal.sbl -- TERMINAL special variable
+*
+* Macro SPITBOL semantics per Emmer-Quillen (tutorial ch. 5, reference
+* ch. 19): TERMINAL is pre-associated for both input and output with the
+* user's terminal. Under Un*x the implementation reads and writes file
+* descriptor 2; the Windows port routes input to the console (CONIN$)
+* only when stderr is an attached console.
+*
+* THIS FILE ASSUMES HARNESS EXECUTION WITH STDERR REDIRECTED:
+*   - Assignments to TERMINAL succeed; the text goes to the redirected
+*     stderr stream and is therefore not visible to in-program asserts.
+*     Output association converts non-string data: numerics print their
+*     value, names print the variable name, other datatypes print their
+*     datatype name. Only freedom from error is asserted here; content
+*     checks on stderr belong to the harness, not this file.
+*   - Value references to TERMINAL must FAIL immediately (EOF), because
+*     the redirected stderr descriptor is not readable. The Windows
+*     port matches the Un*x build here by design.
+* DO NOT run this file interactively from a console: the first value
+* reference would block waiting for keyboard input.
+*
+* ---------------------------------------------------------------------
+* assertion harness
+* ---------------------------------------------------------------------
+	&ERRLIMIT = 1000000
+	NTEST = 0
+	NPASS = 0
+	NFAIL = 0
+	NSKIP = 0
+
+	DEFINE('PASS(NAME)')	:(PASS.END)
+PASS	NTEST = NTEST + 1
+	NPASS = NPASS + 1
+	OUTPUT = 'PASS ' NAME	:(RETURN)
+PASS.END
+
+	DEFINE('FAILED(NAME,DETAIL)')	:(FAILED.END)
+FAILED	NTEST = NTEST + 1
+	NFAIL = NFAIL + 1
+	OUTPUT = '*FAIL ' NAME ' -- ' DETAIL	:(RETURN)
+FAILED.END
+
+	DEFINE('SKIPPED(NAME,WHY)')	:(SKIPPED.END)
+SKIPPED	NSKIP = NSKIP + 1
+	OUTPUT = 'SKIP ' NAME ' -- ' WHY	:(RETURN)
+SKIPPED.END
+
+	DEFINE('EQS(NAME,WANT,GOT)')	:(EQS.END)
+EQS	IDENT(WANT, GOT)	:F(EQS.NO)
+	PASS(NAME)	:(RETURN)
+EQS.NO	FAILED(NAME, "expected '" WANT "' got '" GOT "'")	:(RETURN)
+EQS.END
+
+* error trap: records &ERRTYPE in ERRCODE, re-arms, resumes
+	ERRCODE = 'NONE'	:(TRAP.END)
+TRAP	ERRCODE = &ERRTYPE
+	SETEXIT(.TRAP)	:(CONTINUE)
+TRAP.END
+	SETEXIT(.TRAP)
+
+* ---------------------------------------------------------------------
+* output association: assignments succeed without error
+* ---------------------------------------------------------------------
+	ERRCODE = 'NONE'
+	TERMINAL = 'TERMINAL.SBL T01 STRING'
+	EQS('T01-write-string', 'NONE', ERRCODE)
+
+	ERRCODE = 'NONE'
+	TERMINAL =
+	EQS('T02-write-null', 'NONE', ERRCODE)
+
+	ERRCODE = 'NONE'
+	TERMINAL = 42
+	EQS('T03-write-integer', 'NONE', ERRCODE)
+
+	ERRCODE = 'NONE'
+	TERMINAL = 3.5
+	EQS('T04-write-real', 'NONE', ERRCODE)
+
+	ERRCODE = 'NONE'
+	TERMINAL = ARRAY(3)
+	EQS('T05-write-array', 'NONE', ERRCODE)
+
+	ERRCODE = 'NONE'
+	TERMINAL = ('A' | 'B')
+	EQS('T06-write-pattern', 'NONE', ERRCODE)
+
+	ERRCODE = 'NONE'
+	TERMINAL = .SOMEVAR
+	EQS('T07-write-name', 'NONE', ERRCODE)
+
+* ---------------------------------------------------------------------
+* input association: value references fail (EOF) under redirection
+* ---------------------------------------------------------------------
+	X = 'UNCHANGED'
+	X = TERMINAL	:S(T08.NO)F(T08.OK)
+T08.NO	FAILED('T08-read-eof', 'value reference succeeded')	:(T08.B)
+T08.OK	PASS('T08-read-eof')
+T08.B	EQS('T08-read-noassign', 'UNCHANGED', X)
+
+	Y = TERMINAL	:S(T09.NO)F(T09.OK)
+T09.NO	FAILED('T09-read-eof-repeat', 'second reference succeeded')	:(T10)
+T09.OK	PASS('T09-read-eof-repeat')
+
+T10	IDENT(TERMINAL)	:S(T10.NO)F(T10.OK)
+T10.NO	FAILED('T10-read-in-expr', 'reference in expression succeeded')	:(T11)
+T10.OK	PASS('T10-read-in-expr')
+
+* ---------------------------------------------------------------------
+* DETACH(.TERMINAL): becomes an ordinary variable; reads no longer EOF
+* ---------------------------------------------------------------------
+T11	ERRCODE = 'NONE'
+	DETACH(.TERMINAL)
+	EQS('T11-detach', 'NONE', ERRCODE)
+
+	TERMINAL = 'GONE'
+	EQS('T12-detached-holds-value', 'GONE', TERMINAL)
+
+	Z = 'NOTREAD'
+	Z = TERMINAL	:S(T13.OK)F(T13.NO)
+T13.NO	FAILED('T13-detached-read', 'reference failed after DETACH')	:(SKIPS)
+T13.OK	EQS('T13-detached-read', 'GONE', Z)
+
+* ---------------------------------------------------------------------
+* not assertable under the harness
+* ---------------------------------------------------------------------
+SKIPS	SKIPPED('S01-interactive-block', 'blocking keyboard read needs a console')
+	SKIPPED('S02-tty-raw-mode', 'Q/T raw options are interactive; deferred on Windows')
+
+* ---------------------------------------------------------------------
+* summary
+* ---------------------------------------------------------------------
+	OUTPUT = 'SUMMARY terminal.sbl: ' NPASS ' pass, ' NFAIL ' fail, '
++		NSKIP ' skip'
+	EQ(NFAIL, 0)	:S(END)
+	OUTPUT = '*FAIL terminal.sbl -- ' NFAIL ' assertion(s) failed'
+END

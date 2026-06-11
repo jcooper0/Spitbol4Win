@@ -1,0 +1,7 @@
+-include 'assert.inc'
+	integer(time)   :s(time_succeed)f(time_fail)
+time_fail		result = 'failure' :(check)	
+time_succeed	result = 'success' :(check)
+check output = result
+	chk('TEST_Date result', $'result', 'success')
+end
