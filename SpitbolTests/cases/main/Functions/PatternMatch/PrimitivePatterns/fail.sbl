@@ -1,0 +1,16 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Fail.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Fail_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer'
+        pattern = fail
+        subject pattern      :s(m1_y)f(m1_n)
+m1_y       result = 'success'   :(m1_z)
+m1_n       result = 'fail' 
+m1_z    vchk('TEST_Fail_001 result', $'result', 'fail')
+
+END

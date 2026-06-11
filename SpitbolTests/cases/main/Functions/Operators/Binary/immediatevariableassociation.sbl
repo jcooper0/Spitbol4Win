@@ -1,0 +1,76 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from ImmediateVariableAssociation ($).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_ImmediateVariableAssociation_001 =====
+        clear()
+        caughtf =
+	subject = 'mississippi'
+	pattern = 'is' $ temp1  'si' $ temp2
+	subject pattern :s(m1_y)f(m1_n)
+m1_y	result = 'success' 
+	temp4 = temp3 = temp1 '  ' temp2  :(m1_z)
+m1_n	result = 'fail'
+
+m1_z    vchk('TEST_ImmediateVariableAssociation_001 result', $'result', 'success')
+        vchk('TEST_ImmediateVariableAssociation_001 temp4', $'temp4', 'is  si')
+
+* ===== TEST_ImmediateVariableAssociation_002 =====
+        clear()
+        caughtf =
+        subject = 'BEARROOSDSITS'
+        P = 'BE'  | 'BEA' | 'BEAR'
+        Q = 'RO'  | 'ROO' | 'ROOS'
+        R = 'D'  | 'DS'
+        S = 'ITA' | 'ITS'
+        PAT = P $ temp1  Q $ temp2  R $ temp3  S $ temp4
+        subject PAT
+m2_z    vchk('TEST_ImmediateVariableAssociation_002 temp1', $'temp1', 'BEAR')
+        vchk('TEST_ImmediateVariableAssociation_002 temp2', $'temp2', 'ROOS')
+        vchk('TEST_ImmediateVariableAssociation_002 temp3', $'temp3', 'DS')
+        vchk('TEST_ImmediateVariableAssociation_002 temp4', $'temp4', 'ITS')
+
+* ===== TEST_ConditionalVariableAssociation_001 =====
+        clear()
+        caughtf =
+	subject = 'mississippi'
+	pattern = 'is' . temp1  'si' . temp2
+	subject pattern :s(m3_y)f(m3_n)
+m3_y	result = 'success' 
+	temp4 = temp3 = temp1 '  ' temp2  :(m3_z)
+m3_n	result = 'fail'
+
+m3_z    vchk('TEST_ConditionalVariableAssociation_001 result', $'result', 'success')
+        vchk('TEST_ConditionalVariableAssociation_001 temp4', $'temp4', 'is  si')
+
+* ===== TEST_ConditionalVariableAssociation_002 =====
+        clear()
+        caughtf =
+        subject = 'BEARROOSDSITS'
+        P = 'BE'  | 'BEA' | 'BEAR'
+        Q = 'RO'  | 'ROO' | 'ROOS'
+        R = 'D'  | 'DS'
+        S = 'ITA' | 'ITS'
+        PAT = P . temp1  Q . temp2  R . temp3  S . temp4
+        subject PAT
+m4_z    vchk('TEST_ConditionalVariableAssociation_002 temp1', $'temp1', 'BEAR')
+        vchk('TEST_ConditionalVariableAssociation_002 temp2', $'temp2', 'ROOS')
+        vchk('TEST_ConditionalVariableAssociation_002 temp3', $'temp3', 'DS')
+        vchk('TEST_ConditionalVariableAssociation_002 temp4', $'temp4', 'ITS')
+
+* ===== TEST_ConditionalVariableAssociation_003 =====
+        clear()
+        caughtf =
+        subject = 'BEARROOSDSITS'
+        P = 'BE'  | 'BEA' | 'BEAR'
+        Q = 'RO'  | 'ROO' | 'ROOS'
+        R = 'D'  | 'DS'
+        S = 'ITA' | 'ITT'
+        PAT = P . temp1  Q . temp2  R . temp3  S . temp4
+        subject PAT
+m5_z    vchk('TEST_ConditionalVariableAssociation_003 temp1', $'temp1', '')
+        vchk('TEST_ConditionalVariableAssociation_003 temp2', $'temp2', '')
+        vchk('TEST_ConditionalVariableAssociation_003 temp3', $'temp3', '')
+        vchk('TEST_ConditionalVariableAssociation_003 temp4', $'temp4', '')
+
+END

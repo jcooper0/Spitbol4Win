@@ -1,0 +1,15 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Arg_003 =====
+        caughtf =
+                define('pythagoras(a,b)c,d')  :(double_end)
+pythagoras      pythagoras = sqrt(a * a + b * b)  :(return)
+double_end      b = pythagoras(4,12)
+                r1 = arg('pythagoras',3)  :f(n)
+                r2 = 'success' :(qzdone)
+n               r2 = 'failure'
+qzdone  okchk('TEST_Arg_003')
+        vchk('TEST_Arg_003 r1', $'r1', '')
+        vchk('TEST_Arg_003 r2', $'r2', 'failure')
+END

@@ -1,0 +1,16 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Define_006 =====
+        caughtf =
+        define('add(x,y)front,rest')
+        front = 99
+        rest = 88
+        x = 77
+        y = 66             :(addend)
+add     add = x + y        
+        front = 9
+        rest = 8            :(return)
+addend  output = a = add(3,4)
+qzdone  okchk('TEST_Define_006')
+END

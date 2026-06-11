@@ -1,0 +1,68 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Rpad.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Rpad_001 =====
+        clear()
+        caughtf =
+        s = 'this is a test'
+        r = rpad(s,20,'-+')
+m1_z    okchk('TEST_Rpad_001')
+        vchk('TEST_Rpad_001 r', $'r', 'this is a test------')
+
+* ===== TEST_Rpad_002 =====
+        clear()
+        caughtf =
+        s = 'this is a test'
+        r = rpad(s,20)
+m2_z    okchk('TEST_Rpad_002')
+        vchk('TEST_Rpad_002 r', $'r', 'this is a test      ')
+
+* ===== TEST_Rpad_003 =====
+        clear()
+        caughtf =
+        s = 'this is a test'
+        r = rpad(s,20,'')
+m3_z    okchk('TEST_Rpad_003')
+        vchk('TEST_Rpad_003 r', $'r', 'this is a test      ')
+
+* ===== TEST_Rpad_004 =====
+        clear()
+        caughtf =
+        s = any('this is a test')
+        r = rpad(s,20,'')
+m4_z    errchk('TEST_Rpad_004', 180)
+
+* ===== TEST_Rpad_005 =====
+        clear()
+        caughtf =
+        s = 'this is a test'
+        r = rpad(s,'abc','')
+m5_z    errchk('TEST_Rpad_005', 179)
+
+* ===== TEST_Rpad_006 =====
+        clear()
+        caughtf =
+        s = 'this is a test'
+        r = rpad(s,20,any('abc'))
+m6_z    errchk('TEST_Rpad_006', 178)
+
+* ===== TEST_Rpad_007 =====
+        clear()
+        caughtf =
+        s = 'this is a test'
+        r = rpad(s,2)
+m7_z    okchk('TEST_Rpad_007')
+        vchk('TEST_Rpad_007 r', $'r', 'this is a test')
+
+* ===== TEST_Rpad_008 =====
+        clear()
+        caughtf =
+        r = ''
+        s = 'this is a test'
+        r = rpad(s,-2) :s(m8_z)
+        r = 'fail'
+m8_z    okchk('TEST_Rpad_008')
+        vchk('TEST_Rpad_008 r', $'r', 'this is a test')
+
+END

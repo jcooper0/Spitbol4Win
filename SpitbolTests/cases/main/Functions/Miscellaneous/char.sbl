@@ -1,0 +1,11 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Char.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Char_1 =====
+        clear()
+        caughtf =
+        b = char(array(20))
+m1_z    errchk('TEST_Char_1', 281)
+
+END

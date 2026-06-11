@@ -1,0 +1,41 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Rem.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Rem_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer'
+        pattern = 'gra' rem . test
+        subject pattern      :s(m1_y)f(m1_n)
+m1_y       result = 'success'   :(m1_z)
+m1_n       result = 'fail' 
+m1_z    vchk('TEST_Rem_001 result', $'result', 'success')
+        vchk('TEST_Rem_001 test', $'test', 'mmer')
+
+* ===== TEST_Rem_002 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'THE WINTER WINDS'
+        pattern = 'WIN' rem . test
+        subject pattern      :s(m2_y)f(m2_n)
+m2_y       result = 'success'   :(m2_z)
+m2_n       result = 'fail' 
+m2_z    vchk('TEST_Rem_002 result', $'result', 'success')
+        vchk('TEST_Rem_002 test', $'test', 'TER WINDS')
+
+* ===== TEST_Rem_003 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'THE WINTER WINDS'
+        pattern = 'WINDS' rem . test
+        subject pattern      :s(m3_y)f(m3_n)
+m3_y       result = 'success'   :(m3_z)
+m3_n       result = 'fail' 
+m3_z    vchk('TEST_Rem_003 result', $'result', 'success')
+        vchk('TEST_Rem_003 test', $'test', '')
+
+END

@@ -1,0 +1,207 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Indirection ($).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Indirection_001 =====
+        clear()
+        caughtf =
+        $'123' = 'abc'
+        b = $'123'
+m1_z    okchk('TEST_Indirection_001')
+        vchk('TEST_Indirection_001 123', $'123', 'abc')
+        vchk('TEST_Indirection_001 b', $'b', 'abc')
+
+* ===== TEST_Indirection_002 =====
+        clear()
+        caughtf =
+        v = '123'
+        $v = 'abc'
+        b = $v
+m2_z    okchk('TEST_Indirection_002')
+        vchk('TEST_Indirection_002 b', $'b', 'abc')
+
+* ===== TEST_Indirection_003 =====
+        clear()
+        caughtf =
+        v = 123
+        $v = 'abc'
+        b = $v
+m3_z    okchk('TEST_Indirection_003')
+        vchk('TEST_Indirection_003 b', $'b', 'abc')
+
+* ===== TEST_Indirection_004 =====
+        clear()
+        caughtf =
+        v = 123.45
+        $v = 'abc'
+        b = $v
+m4_z    okchk('TEST_Indirection_004')
+        vchk('TEST_Indirection_004 b', $'b', 'abc')
+
+* ===== TEST_Indirection_005 =====
+        clear()
+        caughtf =
+        t = table(1)
+        t[1] = '123'
+        $t[1] = 'abc'
+        b = $'123'
+m5_z    okchk('TEST_Indirection_005')
+        vchk('TEST_Indirection_005 b', $'b', 'abc')
+
+* ===== TEST_Indirection_006 =====
+        clear()
+        caughtf =
+        v = table(1)
+        $v = 'abc'
+        b = $v
+m6_z    errchk('TEST_Indirection_006', 239)
+
+* ===== TEST_Indirection_007 =====
+        clear()
+        caughtf =
+        v = array('10')
+        $v = 'abc'
+        b = $v
+m7_z    errchk('TEST_Indirection_007', 239)
+
+* ===== TEST_Indirection_008 =====
+        clear()
+        caughtf =
+        v = any('abc')
+        $v = 'abc'
+        b = $v
+m8_z    errchk('TEST_Indirection_008', 239)
+
+* ===== TEST_Indirection_009 =====
+        clear()
+        caughtf =
+        v = '123'
+        $v = 'abc'
+        b = $v
+m9_z    okchk('TEST_Indirection_009')
+        vchk('TEST_Indirection_009 b', $'b', 'abc')
+
+* ===== TEST_Indirection_010 =====
+        clear()
+        caughtf =
+        v = ''
+        $v = 'abc'
+        b = $v
+m10_z   errchk('TEST_Indirection_010', 239)
+
+* ===== TEST_Indirection_011 =====
+        clear()
+        caughtf =
+        word = 'run'
+        $(word ':') = 99
+        $(word ':') = $(word ':') + 1
+        a = $(word ':')
+m11_z   okchk('TEST_Indirection_011')
+        vchk('TEST_Indirection_011 a', $'a', 100)
+
+* ===== TEST_Indirection_012 =====
+        clear()
+        caughtf =
+        ''
+        month = 'april'
+        $month = 'cruel'
+        a = month
+        b = $month
+m12_z   okchk('TEST_Indirection_012')
+        vchk('TEST_Indirection_012 a', $'a', 'april')
+        vchk('TEST_Indirection_012 b', $'b', 'cruel')
+
+* ===== TEST_Indirection_013 =====
+        clear()
+        caughtf =
+        month = 'april'
+        $month = 'cruel'
+        a = month
+        b = $month
+m13_z   okchk('TEST_Indirection_013')
+        vchk('TEST_Indirection_013 a', $'a', 'april')
+        vchk('TEST_Indirection_013 b', $'b', 'cruel')
+
+* ===== TEST_Indirection_014 =====
+        clear()
+        caughtf =
+        dog = 'bark'
+        cat = 'meow'
+        animal = 'cat'
+        a = $animal
+        animal = 'dog'
+        b = $animal
+        $dog = 'ruff'
+        c = $animal
+        d = $$animal
+m14_z   okchk('TEST_Indirection_014')
+        vchk('TEST_Indirection_014 a', $'a', 'meow')
+        vchk('TEST_Indirection_014 b', $'b', 'bark')
+        vchk('TEST_Indirection_014 c', $'c', 'bark')
+        vchk('TEST_Indirection_014 d', $'d', 'ruff')
+
+* ===== TEST_Indirection_015 =====
+        clear()
+        caughtf =
+        $'Alabama' = 'Montgomery'
+        $'Alaska' = 'Juneau'
+        $'Arizona' = 'Phoenix'
+        $'Arkansas' = 'Little Rock'
+        $'California' = 'Sacramento'
+        $'Colorado' = 'Denver'
+        $'Connecticut' = 'Hartford'
+        $'Delaware' = 'Dover'
+        $'Hawaii' = 'Honolulu'
+        $'Florida' = 'Tallahassee'
+        $'Georgia' = 'Atlanta'
+        $'Idaho' = 'Boise'
+        $'Illinois' = 'Springfield'
+        $'Indiana' = 'Indianapolis'
+        $'Iowa' = 'Des Moines'
+        $'Kansas' = 'Topeka'
+        $'Kentucky' = 'Frankfort'
+        $'Louisiana' = 'Baton Rouge'
+        $'Maine' = 'Augusta'
+        $'Maryland' = 'Annapolis'
+        $'Massachusetts' = 'Boston'
+        leq(Alabama,'Montgomery')  :f(m15_z)
+        leq(Alaska,'Juneau')  :f(m15_z)
+        leq(Arizona,'Phoenix')  :f(m15_z)
+        leq(Arkansas,'Little Rock')  :f(m15_z)
+        leq(California,'Sacramento')  :f(m15_z)
+        leq(Colorado,'Denver')  :f(m15_z)
+        leq(Connecticut,'Hartford')  :f(m15_z)
+        leq(Delaware,'Dover')  :f(m15_z)
+        leq(Florida,'Tallahassee')  :f(m15_z)
+        leq(Georgia,'Atlanta')  :f(m15_z)
+        leq(Hawaii,'Honolulu')  :f(m15_z)
+        leq(Idaho,'Boise')  :f(m15_z)
+        leq(Illinois,'Springfield')  :f(m15_z)
+        leq(Indiana,'Indianapolis')  :f(m15_z)
+        leq(Iowa,'Des Moines')  :f(m15_z)
+        leq(Kansas,'Topeka')  :f(m15_z)
+        leq(Kentucky,'Frankfort')  :f(m15_z)
+        leq(Louisiana,'Baton Rouge')  :f(m15_z)
+        leq(Maine,'Augusta')  :f(m15_z)
+        leq(Maryland,'Annapolis')  :f(m15_z)
+        leq(Massachusetts,'Boston')  :f(m15_z)
+        d = 'success'
+
+m15_z   okchk('TEST_Indirection_015')
+        vchk('TEST_Indirection_015 d', $'d', 'success')
+
+* ===== TEST_Indirection_016 =====
+        clear()
+        caughtf =
+        $'~' = 'doublequote'
+        $'$#@!*' = 53.1
+        nm = dupl('ab cd', 1000)
+        $nm = 'long'
+        a = $'$#@!*' $'~' $nm
+        b = size(nm)
+        d = 'success'
+m16_z   okchk('TEST_Indirection_016')
+        vchk('TEST_Indirection_016 a', $'a', '53.1doublequotelong')
+        vchk('TEST_Indirection_016 b', $'b', 5000)
+
+END

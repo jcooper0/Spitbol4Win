@@ -1,0 +1,35 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Interrogation (Question).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Interrogation_001 =====
+        clear()
+        caughtf =
+        S = 'this'
+        P = 'is'
+        N = 123
+        N = ?(S ? P) N + 1
+m1_z    okchk('TEST_Interrogation_001')
+        vchk('TEST_Interrogation_001 N', $'N', 124)
+
+* ===== TEST_Interrogation_002 =====
+        clear()
+        caughtf =
+	    int = ?integer('a')   :f(m2_n)
+	    results = 'succeed'  :(m2_z)
+m2_n	    results = 'failure'
+m2_z    okchk('TEST_Interrogation_002')
+        vchk('TEST_Interrogation_002 results', $'results', 'failure')
+        vchk('TEST_Interrogation_002 int', $'int', '')
+
+* ===== TEST_Interrogation_00e =====
+        clear()
+        caughtf =
+	    int = ?integer('42')   :f(m3_n)
+	    results = 'succeed'  :(m3_z)
+m3_n	    results = 'failure'
+m3_z    okchk('TEST_Interrogation_00e')
+        vchk('TEST_Interrogation_00e results', $'results', 'succeed')
+        vchk('TEST_Interrogation_00e int', $'int', '')
+
+END

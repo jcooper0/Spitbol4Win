@@ -1,0 +1,37 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  Prototype.cs  ->  native SPITBOL    (Test.ArraysTables.Prototype)
+*    164  prototype() argument is not an array or table
+*  ===========================================================================
+
+*  --- 001: prototype of a multi-dimensional array --------------------------
+P001    caughtf =
+        a = array('-5:10,3:5,20')
+        b = prototype(a)
+        okchk('Prototype_001 no error')
+        vchk('Prototype_001 b', b, '-5:10,3:5,20')
+
+*  --- 002: prototype of a 1-D array ----------------------------------------
+*  Note: native returns the integer 20 (the C# port a string); value matches.
+P002    caughtf =
+        a = array(20)
+        b = prototype(a)
+        okchk('Prototype_002 no error')
+        vchk('Prototype_002 b', b, '20')
+
+*  --- 003: prototype of a table --------------------------------------------
+*  DIVERGENCE: native SPITBOL returns the table's size (integer 20); the C#
+*  port expects the null string ''.  Asserting native behaviour.
+P003    caughtf =
+        a = table(20)
+        b = prototype(a)
+        okchk('Prototype_003 no error')
+        vchk('Prototype_003 b (native: table size; C# port: null)', b, '20')
+
+*  --- 004: prototype of an undefined (null) value -> 164 -------------------
+P004    caughtf =
+        b = prototype(u)
+        errchk('Prototype_004 prototype(undefined)', 164)
+
+END

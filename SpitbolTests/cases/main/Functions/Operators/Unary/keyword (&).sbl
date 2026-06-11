@@ -1,0 +1,36 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Keyword (&).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Alphabet_001 =====
+        clear()
+        caughtf =
+        a = &alphabet
+m1_z    okchk('TEST_Alphabet_001')
+
+* ===== TEST_Alphabet_208 =====
+        clear()
+        caughtf =
+        &alphabet = 'abcxyz'
+m2_z    errchk('TEST_Alphabet_208', 208)
+
+* ===== TEST_Trim_208a =====
+        clear()
+        caughtf =
+        &trim = 'a'
+m3_z    errchk('TEST_Trim_208a', 208)
+
+* ===== TEST_Unknown_251 =====
+        clear()
+        caughtf =
+        &unknown = 1
+m5_z    errchk('TEST_Unknown_251', 251)
+
+* ===== TEST_Abend =====
+        clear()
+        caughtf =
+        &abend = 1
+        a = &abend
+        &abend = '1'
+m6_z    vchk('TEST_Abend a', $'a', 1)
+END

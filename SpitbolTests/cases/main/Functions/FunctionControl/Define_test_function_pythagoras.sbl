@@ -1,0 +1,12 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Function_Pythagoras =====
+        caughtf =
+                define('pythagoras(a,b)')  :(double_end)
+pythagoras      pythagoras = sqrt(a * a + b * b)  :(return)
+double_end      b = pythagoras(4,12)
+                output = b
+qzdone  okchk('TEST_Function_Pythagoras')
+        vchk('TEST_Function_Pythagoras', $'b', '12.6491106406735')
+END

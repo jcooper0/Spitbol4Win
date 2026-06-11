@@ -1,0 +1,55 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Fence.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Abort_001 =====
+        clear()
+        caughtf =
+        P = FENCE(BREAK(',') | REM) $ STR *DIFFER(STR)
+        'ABC' P . R1
+        '123,,456' P . R2
+m1_z    vchk('TEST_Abort_001 R1', $'R1', 'ABC')
+        vchk('TEST_Abort_001 R2', $'R2', '123')
+
+* ===== TEST_Abort_002 =====
+        clear()
+        caughtf =
+	    '1AB+' ANY('AB') FENCE('+') :S(m2_Y)F(m2_N)
+m2_Y	    R1 = 'SUCCESS' :(m2_z)
+m2_N	    R1 = 'FAILURE'
+m2_z    vchk('TEST_Abort_002 R1', $'R1', 'SUCCESS')
+
+* ===== TEST_Abort_003 =====
+        clear()
+        caughtf =
+        '1AB+' ANY('AB') FENCE '+' :S(m3_Y)F(m3_N)
+m3_Y	    R1 = 'SUCCESS' :(m3_z)
+m3_N	    R1 = 'FAILURE'
+m3_z    vchk('TEST_Abort_003 R1', $'R1', 'FAILURE')
+
+* ===== TEST_Abort_004 =====
+        clear()
+        caughtf =
+	    'ABC'  FENCE('B') :S(m4_Y)F(m4_N)
+m4_Y	    R1 = 'SUCCESS' :(m4_z)
+m4_N	    R1 = 'FAILURE'
+m4_z    vchk('TEST_Abort_004 R1', $'R1', 'SUCCESS')
+
+* ===== TEST_Abort_005 =====
+        clear()
+        caughtf =
+	    'ABC'  FENCE 'B' :S(m5_Y)F(m5_N)
+m5_Y	    R1 = 'SUCCESS' :(m5_z)
+m5_N	    R1 = 'FAILURE'
+m5_z    vchk('TEST_Abort_005 R1', $'R1', 'FAILURE')
+
+* ===== TEST_Abort_006 =====
+        clear()
+        caughtf =
+        B = *'B'
+	    'ABC' FENCE(B) :S(m6_Y)F(m6_N)
+m6_Y	    R1 = 'SUCCESS' :(m6_z)
+m6_N	    R1 = 'FAILURE'
+m6_z    vchk('TEST_Abort_006 R1', $'R1', 'SUCCESS')
+
+END

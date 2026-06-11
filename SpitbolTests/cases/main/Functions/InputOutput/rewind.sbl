@@ -1,0 +1,80 @@
+        &ANCHOR   = 0
+        &TRIM     = 0
+        &ERRLIMIT = 100000
+        NTOT  = 0
+        NPASS = 0
+        NFAIL = 0
+        NSKIP = 0
+        NULLV = ''
+        DEFINE('PASS(W)')                                   :(H_PE)
+PASS    NPASS = NPASS + 1
+        NTOT  = NTOT + 1                                    :(RETURN)
+H_PE    DEFINE('FAILED(W)')                                 :(H_FE)
+FAILED  NFAIL = NFAIL + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'FAIL: ' W                               :(RETURN)
+H_FE    DEFINE('SKIPPED(W)')                                :(H_SE)
+SKIPPED NSKIP = NSKIP + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'SKIP: ' W                               :(RETURN)
+H_SE    DEFINE('EQS(W,G,X)')                                :(H_QE)
+EQS     EQS = IDENT(G,X)                                    :S(H_QOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_QOK   PASS(W)                                             :(RETURN)
+H_QE    DEFINE('EQN(W,G,X)')                                :(H_NE)
+EQN     EQN = EQ(G,X)                                       :S(H_NOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_NOK   PASS(W)                                             :(RETURN)
+*       CHK(NAME, EXPECTSET, STRICT)  --  inspect a trapped &ERRTYPE.
+*       EXPECTSET is a space-free or space-separated string of one or
+*       more acceptable codes; ECAUGHT holds the trapped code (0 = none).
+H_NE    DEFINE('CHK(NAME,EXPECTSET,STRICT)')                :(H_CE)
+CHK     EQ(ECAUGHT, 0)                                      :F(H_CFIRED)
+        EQ(STRICT, 1)                                       :S(H_CNF) F(H_CSK)
+H_CNF   FAILED(NAME ' | expected err ' EXPECTSET ', none raised') :(RETURN)
+H_CSK   SKIPPED(NAME ' | err ' EXPECTSET ' not triggerable here') :(RETURN)
+H_CFIRED (' ' EXPECTSET ' ') (' ' ECAUGHT ' ')             :S(H_COK) F(H_CWR)
+H_COK   PASS(NAME ' -> &ERRTYPE ' ECAUGHT)                  :(RETURN)
+H_CWR   FAILED(NAME ' | expected ' EXPECTSET ', got ' ECAUGHT) :(RETURN)
+H_CE
+*-----------------------------------------------------------------------
+*  rewind.sbl -- REWIND(channel) conformance tests.
+*  Behaviour per Emmer & Quillen SPITBOL Manual (p. 237).
+*  Error codes per sbl.min / ERR.ASM:  172 173 174 175 176.
+*-----------------------------------------------------------------------
+
+*--- functional: REWIND repositions to start of file ---
+        OUTPUT(.W, 1, 'io_t_rw.tmp')                        :F(RW_SET)
+        W = 'first'
+        W = 'second'
+        ENDFILE(1)
+        INPUT(.R, 1, 'io_t_rw.tmp')                         :F(RW_SET)
+        L1 = R
+        L2 = R
+        REWIND(1)
+        EQS('REWIND: re-reads first record', R, 'first')
+        ENDFILE(1)                                          :(RW_ERR)
+RW_SET  FAILED('rewind functional setup')
+
+*--- errors ---
+RW_ERR  SETEXIT(.ETRAP)
+        ECAUGHT = 0
+        REWIND(LEN(1))                                      :S(e172) F(e172)
+e172    CHK('REWIND 172 argument is not a suitable name', '172', 1)
+        ECAUGHT = 0
+        REWIND(NULLV)                                       :S(e173) F(e173)
+e173    CHK('REWIND 173 argument is null', '173', 1)
+        ECAUGHT = 0
+        REWIND(77)                                          :S(e174) F(e174)
+e174    CHK('REWIND 174 file does not exist (channel not open)', '174', 1)
+        SKIPPED('REWIND 175 file does not permit rewind (needs non-seekable device)')
+        SKIPPED('REWIND 176 caused non-recoverable error (needs I/O fault)')
+        :(REPORT)
+
+*------------------------------- summary -------------------------------
+REPORT  OUTPUT =
+        OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
+        OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
+        OUTPUT = 'RESULT: FAIL'                             :(END)
+ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+END

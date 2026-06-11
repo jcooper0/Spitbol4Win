@@ -1,0 +1,140 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Name (.).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Name_001 =====
+        clear()
+        caughtf =
+        dog = 'kharma'
+        dog
+        a = .dog
+        datatype(a)
+        b = $.dog
+        c = .$dog
+        
+m1_z    okchk('TEST_Name_001')
+        vchk('TEST_Name_001 dog', $'dog', 'kharma')
+        vchk('TEST_Name_001 a', $'a', 'dog')
+        vchk('TEST_Name_001 c', $'c', 'kharma')
+        vchk('TEST_Name_001 b', $'b', 'kharma')
+
+* ===== TEST_Name_004 =====
+        clear()
+        caughtf =
+        a = .table(0)
+m4_z    errchk('TEST_Name_004', 21)
+
+* ===== TEST_Name_005 =====
+        clear()
+        caughtf =
+        a = .array('10')
+m5_z    errchk('TEST_Name_005', 21)
+
+* ===== TEST_Name_006 =====
+        clear()
+        caughtf =
+		a = table()
+		b = 'something'
+		n = .b
+		x = b
+		y = $n
+		z = datatype(b)        
+m6_z    okchk('TEST_Name_006')
+        vchk('TEST_Name_006 x', $'x', 'something')
+        vchk('TEST_Name_006 y', $'y', 'something')
+        vchk('TEST_Name_006 z', $'z', 'string')
+
+* ===== TEST_Name_007 =====
+        clear()
+        caughtf =
+		a = table()
+		b = 'something'
+		n = .b
+		x = b
+		y = $n
+		z = datatype(b)    
+
+		b = 'else'
+		x = b
+		y = $n
+		z = datatype(b)
+m7_z    okchk('TEST_Name_007')
+        vchk('TEST_Name_007 x', $'x', 'else')
+        vchk('TEST_Name_007 y', $'y', 'else')
+        vchk('TEST_Name_007 z', $'z', 'string')
+
+* ===== TEST_Name_008 =====
+        clear()
+        caughtf =
+		a = table()
+		b = 'something'
+		n = .b
+		x = b
+		y = $n
+		z = datatype(b)  
+
+		$n = 'else'
+		x = b
+		y = $n
+		z = datatype(b)
+
+m8_z    okchk('TEST_Name_008')
+        vchk('TEST_Name_008 x', $'x', 'else')
+        vchk('TEST_Name_008 y', $'y', 'else')
+        vchk('TEST_Name_008 z', $'z', 'string')
+
+* ===== TEST_Name_009 =====
+        clear()
+        caughtf =
+        a = table()
+		a[2] = 'something'
+		n = .a[2]
+		x = a[2]
+		y = $n
+		z = datatype(a[2])
+
+m9_z    okchk('TEST_Name_009')
+        vchk('TEST_Name_009 x', $'x', 'something')
+        vchk('TEST_Name_009 y', $'y', 'something')
+        vchk('TEST_Name_009 z', $'z', 'string')
+
+* ===== TEST_Name_010 =====
+        clear()
+        caughtf =
+        a = table()
+		a[2] = 'something'
+		n = .a[2]
+		x = a[2]
+		y = $n
+		z = datatype(a[2])
+
+		$n = 'else'
+		a[2] = 'else'
+		x = a[2]
+		y = $n
+		z = datatype(a[2])
+m10_z   okchk('TEST_Name_010')
+        vchk('TEST_Name_010 x', $'x', 'else')
+        vchk('TEST_Name_010 y', $'y', 'else')
+        vchk('TEST_Name_010 z', $'z', 'string')
+
+* ===== TEST_Name_011 =====
+        clear()
+        caughtf =
+        a = table()
+		a[2] = 'something'
+		n = .a[2]
+		x = a[2]
+		y = $n
+		z = datatype(a[2])
+
+		$n = 'else'
+		x = a[2]
+		y = $n
+		z = datatype(a[2])
+m11_z   okchk('TEST_Name_011')
+        vchk('TEST_Name_011 x', $'x', 'else')
+        vchk('TEST_Name_011 y', $'y', 'else')
+        vchk('TEST_Name_011 z', $'z', 'string')
+
+END

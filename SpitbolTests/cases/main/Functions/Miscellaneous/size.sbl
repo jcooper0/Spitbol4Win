@@ -1,0 +1,26 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Size.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Size_001 =====
+        clear()
+        caughtf =
+        r = size('123456')
+m1_z    okchk('TEST_Size_001')
+        vchk('TEST_Size_001 r', $'r', '6')
+
+* ===== TEST_Size_002 =====
+        clear()
+        caughtf =
+        r = size(123456)
+m2_z    okchk('TEST_Size_002')
+        vchk('TEST_Size_002 r', $'r', '6')
+
+* ===== TEST_Size_003 =====
+        clear()
+        caughtf =
+        T = TABLE(3)
+        R = SIZE(T)
+m3_z    errchk('TEST_Size_003', 189)
+
+END

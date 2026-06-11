@@ -1,0 +1,93 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Eval.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Eval001 =====
+        clear()
+        caughtf =
+        a = eval(17)
+m1_z    okchk('TEST_Eval001')
+
+* ===== TEST_Eval002 =====
+        clear()
+        caughtf =
+        a = eval(17 * 2)
+m2_z    okchk('TEST_Eval002')
+
+* ===== TEST_Eval003 =====
+        clear()
+        caughtf =
+        a = eval('17')
+m3_z    okchk('TEST_Eval003')
+
+* ===== TEST_Eval004 =====
+        clear()
+        caughtf =
+        a = eval('17' '34')
+m4_z    okchk('TEST_Eval004')
+
+* ===== TEST_Eval005 =====
+        clear()
+        caughtf =
+        a = eval(17.34)
+m5_z    okchk('TEST_Eval005')
+
+* ===== TEST_Eval006 =====
+        clear()
+        caughtf =
+        a = eval(1.0 / 3.0)
+m6_z    okchk('TEST_Eval006')
+
+* ===== TEST_Eval007 =====
+        clear()
+        caughtf =
+        a = eval('17.34')
+m7_z    okchk('TEST_Eval007')
+
+* ===== TEST_Eval008 =====
+        clear()
+        caughtf =
+        a = eval('17' '.34')
+m8_z    okchk('TEST_Eval008')
+
+* ===== TEST_Eval009 =====
+        clear()
+        caughtf =
+        a = eval('17 + 34')
+m9_z    okchk('TEST_Eval009')
+
+* ===== TEST_Eval010 =====
+        clear()
+        caughtf =
+        n = 15
+        a = eval('n * 2')
+m10_z   okchk('TEST_Eval010')
+
+* ===== TEST_Eval011 =====
+        clear()
+        caughtf =
+        a = eval('4 ' ' - 8')
+m11_z   okchk('TEST_Eval011')
+
+* ===== TEST_Eval012 =====
+        clear()
+        caughtf =
+        a = eval('2 + eval(3)')
+m12_z   okchk('TEST_Eval012')
+
+* ===== TEST_Eval013 =====
+        clear()
+        caughtf =
+        N = 15
+        a = eval('3 * N + 2')
+m13_z   okchk('TEST_Eval013')
+
+* ===== TEST_Eval014 =====
+        clear()
+        caughtf =
+        e = *('n squared is ' n ^ 2)
+        n = 15
+        a = eval(e)
+m14_z   okchk('TEST_Eval014')
+
+END

@@ -1,0 +1,15 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Local_001 =====
+        caughtf =
+                define('pythagoras(a,b)c,d')  :(double_end)
+pythagoras      pythagoras = sqrt(a * a + b * b)  :(return)
+double_end      b = pythagoras(4,12)
+                r1 = local('pythagoras',1);
+                r2 = local('pythagoras',2);
+                vchk('TEST_Function_Pythagoras', $'r1', 'c')
+                vchk('TEST_Function_Pythagoras', $'r2', 'd')
+
+qzdone  okchk('TEST_Local_001')
+END

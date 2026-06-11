@@ -1,0 +1,52 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Trim.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Trim_001 =====
+        clear()
+        caughtf =
+        a = 'abc   '
+        b = trim(a)
+m1_z    okchk('TEST_Trim_001')
+        vchk('TEST_Trim_001 b', $'b', 'abc')
+
+* ===== TEST_Trim_002 =====
+        clear()
+        caughtf =
+        a = 'abc'
+        b = trim(a)
+m2_z    okchk('TEST_Trim_002')
+        vchk('TEST_Trim_002 b', $'b', 'abc')
+
+* ===== TEST_Trim_003 =====
+        clear()
+        caughtf =
+        a = '   abc'
+        b = trim(a)
+m3_z    okchk('TEST_Trim_003')
+        vchk('TEST_Trim_003 b', $'b', '   abc')
+
+* ===== TEST_Trim_004 =====
+        clear()
+        caughtf =
+        a = '   abc         '
+        b = trim(a)
+m4_z    okchk('TEST_Trim_004')
+        vchk('TEST_Trim_004 b', $'b', '   abc')
+
+* ===== TEST_Trim_005 =====
+        clear()
+        caughtf =
+        a = 1234
+        b = trim(a)
+m5_z    okchk('TEST_Trim_005')
+        vchk('TEST_Trim_005 b', $'b', '1234')
+
+* ===== TEST_Trim_006 =====
+        clear()
+        caughtf =
+        a = 'ab' | 'cd'
+        b = trim(a)
+m6_z    errchk('TEST_Trim_006', 200)
+
+END

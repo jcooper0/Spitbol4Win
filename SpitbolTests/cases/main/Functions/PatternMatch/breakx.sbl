@@ -1,0 +1,156 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from BreakX.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_BreakX_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        gap = breakx(letters) 
+        subject = ':= one,,, two,..  three';
+        subject gap . temp1  :s(m1_y)f(m1_n)
+m1_y       result = 'success'   :(m1_z)
+m1_n       result = 'fail' 
+m1_z    vchk('TEST_BreakX_001 result', $'result', 'success')
+        vchk('TEST_BreakX_001 temp1', $'temp1', ':= ')
+
+* ===== TEST_BreakX_002 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        gap = notany(letters) breakx(letters) 
+        subject = 'one,,, two,..  three';
+        subject gap . temp1  :s(m2_y)f(m2_n)
+m2_y       result = 'success'   :(m2_z)
+m2_n       result = 'fail' 
+m2_z    vchk('TEST_BreakX_002 result', $'result', 'success')
+        vchk('TEST_BreakX_002 temp1', $'temp1', ',,, ')
+
+* ===== TEST_BreakX_003 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        gap = breakx(letters) 
+        subject = 'one,,, two,..  three';
+        subject gap . temp1  :s(m3_y)f(m3_n)
+m3_y       result = 'success'   :(m3_z)
+m3_n       result = 'fail' 
+m3_z    vchk('TEST_BreakX_003 result', $'result', 'success')
+        vchk('TEST_BreakX_003 temp1', $'temp1', '')
+
+* ===== TEST_BreakX_004 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = ''
+        gap = breakx(letters) 
+        subject = 'one,,, two,..  three';
+        subject gap . temp1  :s(m4_y)f(m4_n)
+m4_y       result = 'success'   :(m4_z)
+m4_n       result = 'fail' 
+m4_z    errchk('TEST_BreakX_004', 70)
+
+* ===== TEST_BreakX_005 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'c'
+        pattern = breakx('c')
+        subject pattern = '****'   :f(m5_n)
+        temp1 = '[' subject ']'   
+m5_y       result = 'success'   :(m5_z)
+m5_n       result = 'fail' 
+m5_z    vchk('TEST_BreakX_005 result', $'result', 'success')
+        vchk('TEST_BreakX_005 temp1', $'temp1', '[****c]')
+
+* ===== TEST_BreakX_006 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        gap = breakx(letters) 
+        subject = '5675765()*)(*)';
+        subject gap . temp1  :s(m6_y)f(m6_n)
+m6_y       result = 'success'   :(m6_z)
+m6_n       result = 'fail' 
+m6_z    vchk('TEST_BreakX_006 result', $'result', 'fail')
+
+* ===== TEST_BreakX_007 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = '12345'
+        char = '3'
+        gap = breakx(char)
+        subject gap . temp1  :s(m7_y)f(m7_n)
+m7_y       result = 'success'   :(m7_z)
+m7_n       result = 'fail' 
+m7_z    vchk('TEST_BreakX_007 result', $'result', 'success')
+        vchk('TEST_BreakX_007 temp1', $'temp1', '12')
+
+* ===== TEST_BreakX_008 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = '12345'
+        char = ''
+        gap = breakx(char)
+        subject gap . temp1  :s(m8_y)f(m8_n)
+m8_y       result = 'success'   :(m8_z)
+m8_n       result = 'fail' 
+m8_z    errchk('TEST_BreakX_008', 70)
+
+* ===== TEST_BreakX_009 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = '12345'
+        char = '8'
+        gap = breakx(char)
+        subject gap . temp1  :s(m9_y)f(m9_n)
+m9_y       result = 'success'   :(m9_z)
+m9_n       result = 'fail' 
+m9_z    vchk('TEST_BreakX_009 result', $'result', 'fail')
+
+* ===== TEST_BreakX_010 =====
+        clear()
+        caughtf =
+        A = BREAKX(*B)
+        B = '123'
+        'ABCD3FG' A . R1
+        B = 'ABC'
+        '1234C56' A . R2
+m10_z   vchk('TEST_BreakX_010 R1', $'R1', 'ABCD')
+        vchk('TEST_BreakX_010 R2', $'R2', '1234')
+
+* ===== TEST_BreakX_011 =====
+        clear()
+        caughtf =
+        A = BREAKX(*B)
+        B = '123' | 'ABC'
+        'ABCD3FG' A . R1
+m11_z   errchk('TEST_BreakX_011', 45)
+
+* ===== TEST_BreakX_012 =====
+        clear()
+        caughtf =
+        A = BREAKX('123456')
+        '' A.R1
+m12_z   vchk('TEST_BreakX_012 r1', $'r1', '')
+
+* ===== TEST_BreakX_014 =====
+        clear()
+        caughtf =
+	SUB = 'EXCEPTIONS-ARE-AS-TRUE-AS-RULES'
+	P1 = POS(0) BREAKX('A') . R2 'AS'
+	SUB P1    :S(m14_Y)F(m14_N)
+m14_Y	R1 = 'SUCCESS' :(m14_z)
+m14_N	R1 = 'FAILURE'
+m14_z   okchk('TEST_BreakX_014')
+        vchk('TEST_BreakX_014 R1', $'R1', 'SUCCESS')
+        vchk('TEST_BreakX_014 R2', $'R2', 'EXCEPTIONS-ARE-')
+
+END

@@ -1,0 +1,164 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  Sort.cs  ->  native SPITBOL    (Test.ArraysTables.Sort)
+*    256  argument of sort/rsort is not a sortable array or table
+*    258  invalid sort field/key
+*  sort() returns a NEW array, so the 15x4 source 'a' is built once and reused
+*  for the column-1/2/3 sorts.  Each value case checks the post-sort
+*  permutation 'r' (the original row numbers, column 4, in sorted order).
+*  ===========================================================================
+
+*  --- build the 15x4 source array once --------------------------------------
+        a = array('15,4')
+        a<1,1> = 'LE1;K3'
+        a<2,1> = ')1B!M/'
+        a<3,1> = '^60MN '
+        a<4,1> = '^&!I(G'
+        a<5,1> = 'G#Q*OR'
+        a<6,1> = '/UK:@U'
+        a<7,1> = '1PB*Q6'
+        a<8,1> = 'J6JD<:'
+        a<9,1> = ')@990%'
+        a<10,1> = ':F.@HY'
+        a<11,1> = 'E%$_H;'
+        a<12,1> = 'W,DSJV'
+        a<13,1> = 'XH$Q$C'
+        a<14,1> = 'YB3IRM'
+        a<15,1> = 'TGL, ='
+        a<1,2> = -322.949
+        a<2,2> = -218.23
+        a<3,2> = -496.834
+        a<4,2> = 323.164
+        a<5,2> = -74.752
+        a<6,2> = 258.34
+        a<7,2> = 178.413
+        a<8,2> = 93.172
+        a<9,2> = 117.829
+        a<10,2> = 279.952
+        a<11,2> = -409.301
+        a<12,2> = -63.012
+        a<13,2> = -318.769
+        a<14,2> = -458.497
+        a<15,2> = 339.188
+        a<1,3> = -22748
+        a<2,3> = 4490
+        a<3,3> = -12061
+        a<4,3> = 39784
+        a<5,3> = 39306
+        a<6,3> = -46890
+        a<7,3> = -37241
+        a<8,3> = -8910
+        a<9,3> = 48338
+        a<10,3> = 2877
+        a<11,3> = 25808
+        a<12,3> = -4626
+        a<13,3> = -1974
+        a<14,3> = -47059
+        a<15,3> = 45064
+        a<1,4> = 1
+        a<2,4> = 2
+        a<3,4> = 3
+        a<4,4> = 4
+        a<5,4> = 5
+        a<6,4> = 6
+        a<7,4> = 7
+        a<8,4> = 8
+        a<9,4> = 9
+        a<10,4> = 10
+        a<11,4> = 11
+        a<12,4> = 12
+        a<13,4> = 13
+        a<14,4> = 14
+        a<15,4> = 15
+
+*  --- Sort001: sort by column 1 (strings) -----------------------------------
+        caughtf =
+        b = sort(a,1)
+        okchk('Sort001 no error')
+        i = 1
+        r = ''
+S001L   r = r ' ' b<i,4>
+        i = i + 1
+        le(i,15)                                        :s(S001L)
+*  DIVERGENCE: the order below is the correct ASCII collation of column 1.
+*  The C# port expected ' 10 9 2 6 4 3 7 11 5 8 1 15 12 13 14' (a different
+*  ordering -- likely a C# string-sort bug).  Asserting native behaviour.
+        vchk('Sort001 order by col1 (native ASCII)', r,
++ ' 2 9 6 7 10 11 5 8 1 15 12 13 14 4 3')
+
+*  --- Sort002: sort by column 2 (reals) -------------------------------------
+        caughtf =
+        b = sort(a,2)
+        okchk('Sort002 no error')
+        i = 1
+        r = ''
+S002L   r = r ' ' b<i,4>
+        i = i + 1
+        le(i,15)                                        :s(S002L)
+        vchk('Sort002 order by col2', r,
++ ' 3 14 11 1 13 2 5 12 8 9 7 6 10 4 15')
+
+*  --- Sort003: sort by column 3 (integers) ----------------------------------
+        caughtf =
+        b = sort(a,3)
+        okchk('Sort003 no error')
+        i = 1
+        r = ''
+S003L   r = r ' ' b<i,4>
+        i = i + 1
+        le(i,15)                                        :s(S003L)
+        vchk('Sort003 order by col3', r,
++ ' 14 6 7 1 3 8 12 13 10 2 11 5 4 15 9')
+
+*  --- Sort004: heterogeneous 1-D array; check the first 4 sorted elements ---
+        caughtf =
+        c = array('15')
+        c<1> = 'LE1;K3'
+        c<2> = ')1B!M/'
+        c<3> = 123
+        c<4> = 3.14159
+        c<5> = array(10)
+        c<6> = table()
+        c<7> = 'a' | 'b'
+        c<8> = .def
+        c<9> = $456
+        c<10> = eval(' w = 1 + 2')
+        c<11> = eval(' w = 1 + 2')
+        c<12> = eval(' w = 1 + 2')
+        c<13> = code(' y = 1 + 2')
+        c<14> = eval(' w = 1 + 2')
+        c<15> = eval(' w = 1 + 2')
+        d = sort(c,1)
+        okchk('Sort004 sort of heterogeneous array completes')
+*  DIVERGENCE / not value-checked: native SPITBOL's cross-type sort ordering
+*  differs from the C# port (which expected '  LE1;K3 )1B!M/ 123 3.14159'),
+*  and the sorted result holds non-string objects (array, table, pattern,
+*  code) that cannot be concatenated for a textual compare (error 008).  We
+*  assert only that sort() of a mixed-type array runs without error.
+
+*  --- error cases: 256 (not sortable) ---------------------------------------
+        caughtf =
+        ea = array('15,4,2')
+        b = sort(ea,1)
+        errchk('Sort256a sort a 3-D array', 256)
+
+        caughtf =
+        b = sort('123',1)
+        errchk('Sort256b sort a string', 256)
+
+*  --- error cases: 258 (invalid sort field) ---------------------------------
+        caughtf =
+        fa = array('15,4')
+        b = sort(fa,'b')
+        errchk('Sort258a field non-numeric', 258)
+
+        caughtf =
+        b = sort(fa,10)
+        errchk('Sort258b field out of range', 258)
+
+        caughtf =
+        b = sort(fa,-10)
+        errchk('Sort258c field negative', 258)
+
+END

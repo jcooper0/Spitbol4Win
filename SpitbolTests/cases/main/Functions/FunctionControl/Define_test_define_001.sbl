@@ -1,0 +1,14 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Define_001 =====
+        caughtf =
+        DEFINE('SHIFT(S,N)FRONT,REST')
+        SHIFT_PAT = LEN(*N) . FRONT REM . REST :(SHIFT_END)
+SHIFT   S ? SHIFT_PAT :F(FRETURN)
+        SHIFT = REST FRONT :(RETURN)
+SHIFT_END
+        r = SHIFT('COTTON',4)
+qzdone  okchk('TEST_Define_001')
+        vchk('TEST_Define_001 r', $'r', 'ONCOTT')
+END

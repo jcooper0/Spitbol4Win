@@ -1,0 +1,316 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from AssignReplace (=).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Assign_SA =====
+        clear()
+        caughtf =
+		array(3) = 'this is a test'
+m28_z   errchk('TEST_Assign_SA', 21)
+
+* ===== TEST_Assign_IA =====
+        clear()
+        caughtf =
+		array(3) = 2
+m29_z   errchk('TEST_Assign_IA', 21)
+
+* ===== TEST_Assign_RA =====
+        clear()
+        caughtf =
+		array(3) = array(3)
+m30_z   errchk('TEST_Assign_RA', 21)
+
+* ===== TEST_Assign_AA =====
+        clear()
+        caughtf =
+    array(3) = array(3)
+m31_z   errchk('TEST_Assign_AA', 21)
+
+* ===== TEST_Assign_AiA =====
+        clear()
+        caughtf =
+    array(3) = array(3)[1]
+m32_z   errchk('TEST_Assign_AiA', 21)
+
+* ===== TEST_Assign_TA =====
+        clear()
+        caughtf =
+    array(3) = table()
+m33_z   errchk('TEST_Assign_TA', 21)
+
+* ===== TEST_Assign_TiA =====
+        clear()
+        caughtf =
+    array(3) = table()[1]
+m34_z   errchk('TEST_Assign_TiA', 21)
+
+* ===== TEST_Assign_PA =====
+        clear()
+        caughtf =
+    array(3) =  a | b
+m35_z   errchk('TEST_Assign_PA', 21)
+
+* ===== TEST_Assign_NA =====
+        clear()
+        caughtf =
+    array(3) =  a
+m36_z   errchk('TEST_Assign_NA', 21)
+
+* ===== TEST_Assign_ST =====
+        clear()
+        caughtf =
+		table() = 'this is a test'
+m37_z   errchk('TEST_Assign_ST', 21)
+
+* ===== TEST_Assign_IT =====
+        clear()
+        caughtf =
+		table() = 2
+m38_z   errchk('TEST_Assign_IT', 21)
+
+* ===== TEST_Assign_RT =====
+        clear()
+        caughtf =
+		table() = 3.14
+m39_z   errchk('TEST_Assign_RT', 21)
+
+* ===== TEST_Assign_AT =====
+        clear()
+        caughtf =
+    table() = array(3)
+m40_z   errchk('TEST_Assign_AT', 21)
+
+* ===== TEST_Assign_AiT =====
+        clear()
+        caughtf =
+    table() = array(3)[1]
+m41_z   errchk('TEST_Assign_AiT', 21)
+
+* ===== TEST_Assign_TT =====
+        clear()
+        caughtf =
+    table() = table()
+m42_z   errchk('TEST_Assign_TT', 21)
+
+* ===== TEST_Assign_TiT =====
+        clear()
+        caughtf =
+    table() = table()[1]
+m43_z   errchk('TEST_Assign_TiT', 21)
+
+* ===== TEST_Assign_PT =====
+        clear()
+        caughtf =
+    table() =  a | b
+m44_z   errchk('TEST_Assign_PT', 21)
+
+* ===== TEST_Assign_NT =====
+        clear()
+        caughtf =
+    table() =  a
+m45_z   errchk('TEST_Assign_NT', 21)
+
+* ===== TEST_Assign_SAi =====
+        clear()
+        caughtf =
+    a = array(3)[1] =  'subject'
+m55_z   okchk('TEST_Assign_SAi')
+        vchk('TEST_Assign_SAi a', $'a', 'subject')
+
+* ===== TEST_Assign_IAi =====
+        clear()
+        caughtf =
+		a = array(3)[1] = 2
+m56_z   okchk('TEST_Assign_IAi')
+        vchk('TEST_Assign_IAi a', $'a', '2')
+
+* ===== TEST_Assign_RAi =====
+        clear()
+        caughtf =
+		a = array(3)[1] = 3.14
+m57_z   okchk('TEST_Assign_RAi')
+        vchk('TEST_Assign_RAi a', $'a', '3.14')
+
+* ===== TEST_Assign_AAi =====
+        clear()
+        caughtf =
+    a = array(3)[1] = 'subject'
+m58_z   okchk('TEST_Assign_AAi')
+        vchk('TEST_Assign_AAi a', $'a', 'subject')
+
+* ===== TEST_Assign_AiAi =====
+        clear()
+        caughtf =
+    a = array(3)[1] = array(3)[2] = 'subject'
+m59_z   okchk('TEST_Assign_AiAi')
+        vchk('TEST_Assign_AiAi a', $'a', 'subject')
+
+* ===== TEST_Assign_TAi =====
+        clear()
+        caughtf =
+   a = array(3)[1] = table()[1] = 'subject'
+m60_z   okchk('TEST_Assign_TAi')
+        vchk('TEST_Assign_TAi a', $'a', 'subject')
+
+* ===== TEST_Assign_TiAi =====
+        clear()
+        caughtf =
+        a = array(3)[1] = table()[1] = 'subject'
+m61_z   okchk('TEST_Assign_TiAi')
+        vchk('TEST_Assign_TiAi a', $'a', 'subject')
+
+* ===== TEST_Assign_PAi =====
+        clear()
+        caughtf =
+        c = array(3)[1] =  a | b
+m62_z   okchk('TEST_Assign_PAi')
+        vchk('TEST_Assign_PAi c', $'c', 'pattern')
+
+* ===== TEST_Assign_NAi =====
+        clear()
+        caughtf =
+    a = array(3)[1] =  a = 'subject'
+m63_z   okchk('TEST_Assign_NAi')
+        vchk('TEST_Assign_NAi a', $'a', 'subject')
+
+* ===== TEST_Assign_STI =====
+        clear()
+        caughtf =
+    a = table()[1] =  'subject'
+m64_z   okchk('TEST_Assign_STI')
+        vchk('TEST_Assign_STI a', $'a', 'subject')
+
+* ===== TEST_Assign_ITI =====
+        clear()
+        caughtf =
+		a = table()[1] = 2
+m65_z   okchk('TEST_Assign_ITI')
+        vchk('TEST_Assign_ITI a', $'a', '2')
+
+* ===== TEST_Assign_RTI =====
+        clear()
+        caughtf =
+		a = table()[1] = 3.14
+m66_z   okchk('TEST_Assign_RTI')
+        vchk('TEST_Assign_RTI a', $'a', '3.14')
+
+* ===== TEST_Assign_ATI =====
+        clear()
+        caughtf =
+    a = table()[1] = 'subject'
+m67_z   okchk('TEST_Assign_ATI')
+        vchk('TEST_Assign_ATI a', $'a', 'subject')
+
+* ===== TEST_Assign_AiTI =====
+        clear()
+        caughtf =
+    a = table()[1] = array(3)[2] = 'subject'
+m68_z   okchk('TEST_Assign_AiTI')
+        vchk('TEST_Assign_AiTI a', $'a', 'subject')
+
+* ===== TEST_Assign_TTI =====
+        clear()
+        caughtf =
+   a = table()[1] = table()[1] = 'subject'
+m69_z   okchk('TEST_Assign_TTI')
+        vchk('TEST_Assign_TTI a', $'a', 'subject')
+
+* ===== TEST_Assign_TiTI =====
+        clear()
+        caughtf =
+    a = table()[1] = table()[1] = 'subject'
+m70_z   okchk('TEST_Assign_TiTI')
+        vchk('TEST_Assign_TiTI a', $'a', 'subject')
+
+* ===== TEST_Assign_PTI =====
+        clear()
+        caughtf =
+    a = table()[1] =  a | b
+m71_z   okchk('TEST_Assign_PTI')
+        vchk('TEST_Assign_PTI a', $'a', 'pattern')
+
+* ===== TEST_Assign_NTI =====
+        clear()
+        caughtf =
+    a = table()[1] =  a = 'subject'
+m72_z   okchk('TEST_Assign_NTI')
+        vchk('TEST_Assign_NTI a', $'a', 'subject')
+
+* ===== TEST_Assign_SIv =====
+        clear()
+        caughtf =
+    a =  'subject'
+        a = 'replacement'
+m73_z   okchk('TEST_Assign_SIv')
+        vchk('TEST_Assign_SIv a', $'a', 'replacement')
+
+* ===== TEST_Assign_IIv =====
+        clear()
+        caughtf =
+    a =  'subject'
+        a =  100
+m74_z   okchk('TEST_Assign_IIv')
+        vchk('TEST_Assign_IIv a', $'a', '100')
+
+* ===== TEST_Assign_RIv =====
+        clear()
+        caughtf =
+    a =  'subject'
+        a = 3.14
+m75_z   okchk('TEST_Assign_RIv')
+        vchk('TEST_Assign_RIv a', $'a', '3.14')
+
+* ===== TEST_Assign_AIv =====
+        clear()
+        caughtf =
+    a =  'subject'
+        a = array(3)
+m76_z   okchk('TEST_Assign_AIv')
+        vchk('TEST_Assign_AIv a', $'a', 'array')
+
+* ===== TEST_Assign_AiIv =====
+        clear()
+        caughtf =
+        a =  'subject'
+        b = array(20)
+        b[10] = 'replacement'
+        a = b[10]
+m77_z   okchk('TEST_Assign_AiIv')
+        vchk('TEST_Assign_AiIv a', $'a', 'replacement')
+
+* ===== TEST_Assign_TIv =====
+        clear()
+        caughtf =
+        a = 'subject'
+        a = table()
+m78_z   okchk('TEST_Assign_TIv')
+        vchk('TEST_Assign_TIv a', $'a', 'table')
+
+* ===== TEST_Assign_TiIv =====
+        clear()
+        caughtf =
+    a =  'subject'
+        b = table()
+        b[1] = 'replacement'
+        a = b[1]
+m79_z   okchk('TEST_Assign_TiIv')
+        vchk('TEST_Assign_TiIv a', $'a', 'replacement')
+
+* ===== TEST_Assign_PIv =====
+        clear()
+        caughtf =
+    a =  'subject'
+        a = 'a' | 'b'
+m80_z   okchk('TEST_Assign_PIv')
+        vchk('TEST_Assign_PIv a', $'a', 'pattern')
+
+* ===== TEST_Assign_NIv =====
+        clear()
+        caughtf =
+    a =  'subject'
+        b = 'replacement'
+        a = b
+m81_z   okchk('TEST_Assign_NIv')
+        vchk('TEST_Assign_NIv a', $'a', 'replacement')
+
+END

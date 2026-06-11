@@ -1,0 +1,68 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Any.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Any_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        vowel = any('aeiou')
+        subject = 'vacuum'
+        subject vowel . v1  :s(m1_y)f(m1_n)
+m1_y       result = 'success'   :(m1_z)
+m1_n       result = 'fail' 
+m1_z    vchk('TEST_Any_001 result', $'result', 'success')
+        vchk('TEST_Any_001 v1', $'v1', 'a')
+
+* ===== TEST_Any_002 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        dvowel = any('aeiou') any('aeiou') 
+        subject = 'vacuum'
+        subject dvowel . v1  :s(m2_y)f(m2_n)
+m2_y       result = 'success'   :(m2_z)
+m2_n       result = 'fail' 
+m2_z    vchk('TEST_Any_002 result', $'result', 'success')
+        vchk('TEST_Any_002 v1', $'v1', 'uu')
+
+* ===== TEST_Any_005 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        vowel = any('aeiou')
+        subject = ''
+        subject vowel . v1  :s(m5_y)f(m5_n)
+m5_y       result = 'success'   :(m5_z)
+m5_n       result = 'fail' 
+m5_z    vchk('TEST_Any_005 result', $'result', 'fail')
+
+* ===== TEST_Any_006 =====
+        clear()
+        caughtf =
+        A = ANY(*B)
+        B = '123'
+        'ABCD3FG' A . R1
+        B = 'ABC'
+        '1234C56' A . R2
+m6_z    vchk('TEST_Any_006 R1', $'R1', '3')
+        vchk('TEST_Any_006 R2', $'R2', 'C')
+
+* ===== TEST_Any_007 =====
+        clear()
+        caughtf =
+        A = ANY(*B)
+        B = '123' | 'ABC'
+        'ABCD3FG' A . R1
+m7_z    errchk('TEST_Any_007', 43)
+
+* ===== TEST_Any_009 =====
+        clear()
+        caughtf =
+        A = ANY('123456')
+        '' A . R1  :S(m9_z)F(m9_N)
+m9_N       R1 = 'FAIL'
+m9_z    okchk('TEST_Any_009')
+        vchk('TEST_Any_009 R1', $'R1', 'FAIL')
+
+END

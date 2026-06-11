@@ -1,0 +1,13 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Local_004 =====
+        caughtf =
+                define('pythagoras(a,b)c,d')  :(double_end)
+pythagoras      pythagoras = sqrt(a * a + b * b)  :(return)
+double_end      b = pythagoras(4,12)
+                r1 = local('pithagoras',1)  :f(n)
+                r2 = 'success' :(qzdone)
+n               r2 = 'failure'
+qzdone  errchk('TEST_Local_004', 135)
+END

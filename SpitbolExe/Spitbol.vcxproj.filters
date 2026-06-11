@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="osint (C runtime)">
+      <UniqueIdentifier>{6f1c0a01-1111-4a01-aaaa-000000000001}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="generated asm">
+      <UniqueIdentifier>{6f1c0a01-2222-4a01-aaaa-000000000002}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="$(OsintDir)\*.c">
+      <Filter>osint (C runtime)</Filter>
+    </ClCompile>
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+    <ClCompile Include="$(OsintDir)\*.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <MASM Include="$(RuntimeDir)\sbl_masm.asm">
+      <Filter>generated asm</Filter>
+    </MASM>
+    <MASM Include="$(RuntimeDir)\err_masm.asm">
+      <Filter>generated asm</Filter>
+    </MASM>
+    <MASM Include="$(RuntimeDir)\int_masm.asm">
+      <Filter>generated asm</Filter>
+    </MASM>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="hello.sbl" />
+  </ItemGroup>
+</Project>

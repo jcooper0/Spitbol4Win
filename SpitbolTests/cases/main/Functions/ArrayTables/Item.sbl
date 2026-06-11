@@ -1,0 +1,143 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  Item.cs  ->  native SPITBOL    (Test.ArraysTables.Item)
+*  Native &ERRTYPE asserted for the error cases:
+*    235  operand is not a table or array
+*    236  array referenced with the wrong number of subscripts
+*    237  table referenced with more than one subscript
+*    238  array subscript is not an integer
+*    067  array dimension is zero, negative or out of range
+*  Subscript OUT OF RANGE is not an error -- the reference FAILS (no &errtype).
+*  Each "first error" assertion mirrors the C# check on ErrorCodeHistory[0].
+*  ===========================================================================
+
+*  --- 005: item() get on a table populated with [ ] / < > -------------------
+I005    caughtf =
+        a = table()
+        a['abc'] = 'ABC'
+        a<'def'> = 'DEF'
+        r1 = item(a,'abc')
+        r2 = item(a,'def')
+        okchk('TableItem_005 no error')
+        vchk('TableItem_005 r1', r1, 'ABC')
+        vchk('TableItem_005 r2', r2, 'DEF')
+
+*  --- 005a: item() set and get on a table -----------------------------------
+I005a   caughtf =
+        a = table()
+        item(a,'abc') = 'ABC'
+        item(a,'def') = 'DEF'
+        r1 = item(a,'abc')
+        r2 = item(a,'def')
+        okchk('TableItem_005a no error')
+        vchk('TableItem_005a r1', r1, 'ABC')
+        vchk('TableItem_005a r2', r2, 'DEF')
+
+*  --- 006: item() set on a table with two keys -> 237 -----------------------
+I006    caughtf =
+        a = table()
+        item(a,'abc','def') = 'ABC'
+        errchk('TableItem_006 item table 2 keys', 237)
+
+*  --- 007: item() on a string -> 235 ----------------------------------------
+I007    caughtf =
+        a = 'abc'
+        b = item(a,'abc')
+        errchk('TableItem_007 item on a string', 235)
+
+*  --- Array_010: item() on a string with an integer subscript -> 235 --------
+I010    caughtf =
+        a = 'abc'
+        b = item(a,3)
+        errchk('Array_010 item(string,3)', 235)
+
+*  --- Array_011: non-integer subscript on an array -> 238 -------------------
+I011    caughtf =
+        a = array(20)
+        b = item(a,'abc')
+        errchk('Array_011 item(array,abc)', 238)
+
+*  --- Array_012: wrong subscript count (3-D array, 2 subs) -> 236 -----------
+I012    caughtf =
+        a = array('20,10,5')
+        b = item(a,30,1)
+        errchk('Array_012 item(a,30,1) wrong count', 236)
+
+*  --- Array_013: array(0) zero dimension -> 67 (first error) ----------------
+I013    caughtf =
+        a = array(0)
+        b = item(a,30)
+        errchk('Array_013 array(0) zero dimension', 67)
+
+*  --- Array_014: item(array(10),-1) out of range -> FAILS (no error) --------
+I014    caughtf =
+        a = array(10)
+        b = item(a,-1)                                  :s(I014y)f(I014n)
+I014y   result = 'success'                              :(I014c)
+I014n   result = 'failure'
+I014c   okchk('Array_014 out-of-range, no error')
+        vchk('Array_014 result', result, 'failure')
+
+*  --- Array_015: array(0) zero dimension (3-arg item) -> 67 -----------------
+I015    caughtf =
+        a = array(0)
+        b = item(a,3,3)
+        errchk('Array_015 array(0) zero dimension', 67)
+
+*  --- Array_016: item(array('3,3'),1) too few subscripts -> 236 -------------
+I016    caughtf =
+        a = array('3,3')
+        b = item(a,1)
+        errchk('Array_016 item(a,1) too few subs', 236)
+
+*  --- Array_021: item(array('20,10,5'),6,1,5,2) too many subs -> 236 --------
+I021    caughtf =
+        a = array('20,10,5')
+        b = item(a,6,1,5,2)
+        errchk('Array_021 item(a,6,1,5,2) too many subs', 236)
+
+*  --- Array_022: item(array(10),0) out of range -> FAILS --------------------
+I022    caughtf =
+        a = array(10)
+        b = item(a,0)                                   :s(I022y)f(I022n)
+I022y   result = 'success'                              :(I022c)
+I022n   result = 'failure'
+I022c   okchk('Array_022 out-of-range, no error')
+        vchk('Array_022 result', result, 'failure')
+
+*  --- Array_023: item(array(10),1) in range -> SUCCEEDS ---------------------
+I023    caughtf =
+        a = array(10)
+        b = item(a,1)                                   :s(I023y)f(I023n)
+I023y   result = 'success'                              :(I023c)
+I023n   result = 'failure'
+I023c   okchk('Array_023 no error')
+        vchk('Array_023 result', result, 'success')
+
+*  --- Array_024: item(array(10),10) in range -> SUCCEEDS --------------------
+I024    caughtf =
+        a = array(10)
+        b = item(a,10)                                  :s(I024y)f(I024n)
+I024y   result = 'success'                              :(I024c)
+I024n   result = 'failure'
+I024c   okchk('Array_024 no error')
+        vchk('Array_024 result', result, 'success')
+
+*  --- Array_025: item(array(10),11) out of range -> FAILS -------------------
+I025    caughtf =
+        a = array(10)
+        b = item(a,11)                                  :s(I025y)f(I025n)
+I025y   result = 'success'                              :(I025c)
+I025n   result = 'failure'
+I025c   okchk('Array_025 out-of-range, no error')
+        vchk('Array_025 result', result, 'failure')
+
+*  --- Array_026: array(10,999); item(a,3) returns the fill value 999 --------
+I026    caughtf =
+        a = array(10,999)
+        b = item(a,3)
+        okchk('Array_026 no error')
+        vchk('Array_026 item(a,3) fill value', b, 999)
+
+END

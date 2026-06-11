@@ -1,0 +1,99 @@
+        &ANCHOR   = 0
+        &TRIM     = 0
+        &ERRLIMIT = 100000
+        NTOT  = 0
+        NPASS = 0
+        NFAIL = 0
+        NSKIP = 0
+        NULLV = ''
+        DEFINE('PASS(W)')                                   :(H_PE)
+PASS    NPASS = NPASS + 1
+        NTOT  = NTOT + 1                                    :(RETURN)
+H_PE    DEFINE('FAILED(W)')                                 :(H_FE)
+FAILED  NFAIL = NFAIL + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'FAIL: ' W                               :(RETURN)
+H_FE    DEFINE('SKIPPED(W)')                                :(H_SE)
+SKIPPED NSKIP = NSKIP + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'SKIP: ' W                               :(RETURN)
+H_SE    DEFINE('EQS(W,G,X)')                                :(H_QE)
+EQS     EQS = IDENT(G,X)                                    :S(H_QOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_QOK   PASS(W)                                             :(RETURN)
+H_QE    DEFINE('EQN(W,G,X)')                                :(H_NE)
+EQN     EQN = EQ(G,X)                                       :S(H_NOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_NOK   PASS(W)                                             :(RETURN)
+*       CHK(NAME, EXPECTSET, STRICT)  --  inspect a trapped &ERRTYPE.
+*       EXPECTSET is a space-free or space-separated string of one or
+*       more acceptable codes; ECAUGHT holds the trapped code (0 = none).
+H_NE    DEFINE('CHK(NAME,EXPECTSET,STRICT)')                :(H_CE)
+CHK     EQ(ECAUGHT, 0)                                      :F(H_CFIRED)
+        EQ(STRICT, 1)                                       :S(H_CNF) F(H_CSK)
+H_CNF   FAILED(NAME ' | expected err ' EXPECTSET ', none raised') :(RETURN)
+H_CSK   SKIPPED(NAME ' | err ' EXPECTSET ' not triggerable here') :(RETURN)
+H_CFIRED (' ' EXPECTSET ' ') (' ' ECAUGHT ' ')             :S(H_COK) F(H_CWR)
+H_COK   PASS(NAME ' -> &ERRTYPE ' ECAUGHT)                  :(RETURN)
+H_CWR   FAILED(NAME ' | expected ' EXPECTSET ', got ' ECAUGHT) :(RETURN)
+H_CE
+*-----------------------------------------------------------------------
+*  set.sbl -- SET(channel, offset, whence) conformance tests.
+*  Behaviour per Emmer & Quillen SPITBOL Manual (p. 238):
+*  repositions the channel and returns the new byte position.
+*  whence: 0 = from start, 1 = from current, 2 = from end.
+*  Error codes per sbl.min / ERR.ASM:  291 292 295 296 297,
+*  plus 324 (second arg not numeric, .cusr build) or 293/294
+*  (inappropriate second/third arg, returned by the system seek).
+*-----------------------------------------------------------------------
+
+*--- functional: SET seeks; verify returned position AND the byte read ---
+        OUTPUT(.W, 1, 'io_t_set.tmp[-r1]')                  :F(ST_SET)
+        W = 'ABCDEFGHIJ'
+        ENDFILE(1)
+        INPUT(.R, 1, 'io_t_set.tmp[-r1]')                   :F(ST_SET)
+        P = SET(1, 3, 0)
+        EQN('SET(.,3,0) returns position 3', P, 3)
+        EQS('SET to 3 then read = D', R, 'D')
+        P = SET(1, 0, 0)
+        EQS('SET to 0 then read = A', R, 'A')
+        P = SET(1, 0, 2)
+        EQN('SET(.,0,2) returns file size 10', P, 10)
+        P = SET(1, -1, 2)
+        EQN('SET(.,-1,2) returns position 9', P, 9)
+        EQS('SET end-1 then read = J', R, 'J')
+        ENDFILE(1)                                          :(ST_ERR)
+ST_SET  FAILED('set functional setup')
+
+*--- errors ---
+ST_ERR  SETEXIT(.ETRAP)
+        ECAUGHT = 0
+        SET(LEN(1), 0, 0)                                   :S(e291) F(e291)
+e291    CHK('SET 291 first argument is not a suitable name', '291', 1)
+        ECAUGHT = 0
+        SET(NULLV, 0, 0)                                    :S(e292) F(e292)
+e292    CHK('SET 292 first argument is null', '292', 1)
+        ECAUGHT = 0
+        SET(77, 0, 0)                                       :S(e295) F(e295)
+e295    CHK('SET 295 file does not exist (channel not open)', '295', 1)
+*       open a real channel for the argument-validation cases
+        INPUT(.R2, 9, 'io_t_set.tmp[-r1]')                  :F(ST_AS)
+        ECAUGHT = 0
+        SET(9, LEN(1), 0)                                   :S(e2nd) F(e2nd)
+e2nd    CHK('SET 324/293 second argument not numeric/inappropriate', '324 293', 0)
+        ECAUGHT = 0
+        SET(9, 0, 99)                                       :S(e294) F(e294)
+e294    CHK('SET 294 inappropriate third argument (bad whence)', '294', 0)
+        ENDFILE(9)                                          :(ST_96)
+ST_AS   SKIPPED('SET 324/293/294 setup (open channel)')
+ST_96   SKIPPED('SET 296 file does not permit setting pointer (needs non-seekable device)')
+        SKIPPED('SET 297 caused non-recoverable I/O error (needs I/O fault)')
+        :(REPORT)
+
+*------------------------------- summary -------------------------------
+REPORT  OUTPUT =
+        OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
+        OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
+        OUTPUT = 'RESULT: FAIL'                             :(END)
+ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+END

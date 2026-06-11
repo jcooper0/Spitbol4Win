@@ -1,0 +1,4 @@
+-include 'assert.inc'
+		result = 'Hello, World!'
+		chk('TEST_Hello_World result', $'result', 'Hello, World!')
+end

@@ -1,0 +1,26 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Copy.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Copy_001 =====
+        clear()
+        caughtf =
+        A = '123456'
+        B = COPY(A)
+m1_z    okchk('TEST_Copy_001')
+
+* ===== TEST_Copy_002 =====
+        clear()
+        caughtf =
+        A = 123456
+        B = COPY(A)
+m2_z    okchk('TEST_Copy_002')
+
+* ===== TEST_Copy_003 =====
+        clear()
+        caughtf =
+        A = 'a' | 'b'
+        B = COPY(A)
+m3_z    okchk('TEST_Copy_003')
+
+END

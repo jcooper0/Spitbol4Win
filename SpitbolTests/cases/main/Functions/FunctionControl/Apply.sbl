@@ -1,0 +1,63 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Apply.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Apply_001 =====
+        clear()
+        caughtf =
+          a = 'gt'
+        b = 3
+        c = 1
+        r1 = gt(b,c) 'success'
+        r2 = apply(a, b, c) 'success'
+m1_z    okchk('TEST_Apply_001')
+        vchk('TEST_Apply_001 r1', $'r1', 'success')
+        vchk('TEST_Apply_001 r2', $'r2', 'success')
+
+* ===== TEST_Apply_002 =====
+        clear()
+        caughtf =
+          a = 'gt'
+        b = 3
+        c = 1
+        r1 = gt(b) 'success'
+        r2 = apply(a, b) 'success'
+m2_z    okchk('TEST_Apply_002')
+        vchk('TEST_Apply_002 r1', $'r1', 'success')
+        vchk('TEST_Apply_002 r2', $'r2', 'success')
+
+* ===== TEST_Apply_003 =====
+        clear()
+        caughtf =
+          a = 'gt'
+        b = 3
+        c = 1
+        r1 = gt(,b) 'success'
+        r2 = apply(,b) 'success'
+m3_z    errchk('TEST_Apply_003', 60)
+
+* ===== TEST_Apply_004 =====
+        clear()
+        caughtf =
+        a = 'gt'
+        b = 3
+        c = 1
+        r1 = gt(c,b) 'success'
+        r2 = apply(a,c,b) 'success'
+m4_z    okchk('TEST_Apply_004')
+        vchk('TEST_Apply_004 r1', $'r1', '')
+        vchk('TEST_Apply_004 r2', $'r2', '')
+
+* ===== TEST_Apply_005 =====
+        clear()
+        caughtf =
+        a = 'gt'
+        b = 3
+        c = 1
+        r1 = gt(b) 'success'
+        r2 = apply(a,b) 'success'
+m5_z    okchk('TEST_Apply_005')
+        vchk('TEST_Apply_005 r1', $'r1', 'success')
+        vchk('TEST_Apply_005 r2', $'r2', 'success')
+
+END

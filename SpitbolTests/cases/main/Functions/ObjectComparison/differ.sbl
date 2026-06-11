@@ -1,0 +1,401 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from DIffer.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_NotDiffer_AnyPattern =====
+        clear()
+        caughtf =
+        a = any('abc')
+        b = any('abc')
+        differ(a,b)    :s(m1_diff)
+        out = 'not differ'    :(m1_z)
+m1_diff    out = 'differ'
+m1_z    okchk('TEST_NotDiffer_AnyPattern')
+        vchk('TEST_NotDiffer_AnyPattern out', $'out', 'differ')
+
+* ===== TEST_Differ_AnyPattern =====
+        clear()
+        caughtf =
+        a = any('abc')
+        b = a
+        differ(a,b)    :s(m2_diff)
+        out = 'not differ'    :(m2_z)
+m2_diff    out = 'differ'
+m2_z    okchk('TEST_Differ_AnyPattern')
+        vchk('TEST_Differ_AnyPattern out', $'out', 'not differ')
+
+* ===== TEST_Differ_ArbNoPattern =====
+        clear()
+        caughtf =
+        a = arbno(any('abc'))
+        b = arbno(any('abc'))
+        differ(a,b)    :s(m3_diff)
+        out = 'not differ'    :(m3_z)
+m3_diff    out = 'differ'
+m3_z    okchk('TEST_NotDiffer_ArbNoPattern')
+        vchk('TEST_NotDiffer_ArbNoPattern out', $'out', 'differ')
+
+* ===== TEST_NotDiffer_ArbNoPattern =====
+        clear()
+        caughtf =
+        a = arbno(any('abc'))
+        b = a
+        differ(a,b)    :s(m4_diff)
+        out = 'not differ'    :(m4_z)
+m4_diff    out = 'differ'
+m4_z    okchk('TEST_Differ_ArbNoPattern')
+        vchk('TEST_Differ_ArbNoPattern out', $'out', 'not differ')
+
+* ===== TEST_NotDiffer_ArbNoAnyPattern =====
+        clear()
+        caughtf =
+        a = arbno(any('abc'))
+        b = arbno(notany('abc'))
+        differ(a,b)    :s(m5_diff)
+        out = 'not differ'    :(m5_z)
+m5_diff    out = 'differ'
+m5_z    okchk('TEST_NotDiffer_ArbNoAnyPattern')
+        vchk('TEST_NotDiffer_ArbNoAnyPattern out', $'out', 'differ')
+
+* ===== TEST_NotDiffer_AtPattern =====
+        clear()
+        caughtf =
+        a = any('abc') @n break('xyz')
+        b = any('abc') @n break('xyz')
+        differ(a,b)    :s(m6_diff)
+        out = 'not differ'    :(m6_z)
+m6_diff    out = 'differ'
+m6_z    okchk('TEST_NotDiffer_AtPattern')
+        vchk('TEST_NotDiffer_AtPattern out', $'out', 'differ')
+
+* ===== TEST_NotDiffer_BalPattern =====
+        clear()
+        caughtf =
+        a = any('abc') bal len(10)
+        b = any('abc') bal len(10)
+        differ(a,b)    :s(m7_diff)
+        out = 'not differ'    :(m7_z)
+m7_diff    out = 'differ'
+m7_z    okchk('TEST_NotDiffer_BalPattern')
+        vchk('TEST_NotDiffer_BalPattern out', $'out', 'differ')
+
+* ===== TEST_Differ_BalPattern_Non =====
+        clear()
+        caughtf =
+        a = any('abc') bal len(10)
+        b = any('abc') bal len(12)
+        differ(a,b)    :s(m8_diff)
+        out = 'differ'    :(m8_z)
+m8_diff     out = 'not differ'
+m8_z    okchk('TEST_Differ_BalPattern_Non')
+        vchk('TEST_Differ_BalPattern_Non out', $'out', 'not differ')
+
+* ===== TEST_NotDiffer_FencePattern =====
+        clear()
+        caughtf =
+        a = fence 'abc' pos(10)
+        b = fence 'abc' pos(10)
+        differ(a,b)    :s(m9_diff)
+        out = 'differ'    :(m9_z)
+m9_diff     out = 'not differ'
+m9_z    okchk('TEST_NotDiffer_FencePattern')
+        vchk('TEST_NotDiffer_FencePattern out', $'out', 'not differ')
+
+* ===== TEST_NotDiffer_ComplexPattern =====
+        clear()
+        caughtf =
+        a = snoExpr7 ('#' 2) | epsilon
+        b = snoExpr7 ('#' 2) | epsilon
+        differ(a,b)    :s(m10_diff)
+        out = 'differ'    :(m10_z)
+m10_diff     out = 'not differ'
+m10_z   okchk('TEST_NotDiffer_ComplexPattern')
+        vchk('TEST_NotDiffer_ComplexPattern out', $'out', 'not differ')
+
+* ===== TEST_NotDiffer_Array_Array =====
+        clear()
+        caughtf =
+        a = array(10)
+        b = array(10)
+        differ(a,b)    :s(m11_diff)
+        out = 'differ'    :(m11_z)
+m11_diff     out = 'not differ'
+m11_z   okchk('TEST_NotDiffer_Array_Array')
+        vchk('TEST_NotDiffer_Array_Array out', $'out', 'not differ')
+
+* ===== TEST_NotDiffer_Table_Table =====
+        clear()
+        caughtf =
+        a = table()
+        b = table()
+        differ(a,b)    :s(m12_diff)
+        out = 'differ'    :(m12_z)
+m12_diff     out = 'not differ'
+m12_z   okchk('TEST_NotDiffer_Table_Table')
+        vchk('TEST_NotDiffer_Table_Table out', $'out', 'not differ')
+
+* ===== TEST_Differ_Array_Array =====
+        clear()
+        caughtf =
+        a = array(10)
+        b = a
+        differ(a,b)    :s(m13_diff)
+        out = 'differ'    :(m13_z)
+m13_diff     out = 'not differ'
+m13_z   okchk('TEST_Differ_Array_Array')
+        vchk('TEST_Differ_Array_Array out', $'out', 'differ')
+
+* ===== TEST_Differ_Table_Table =====
+        clear()
+        caughtf =
+        a = table()
+        b = a
+        differ(a,b)    :s(m14_diff)
+        out = 'differ'    :(m14_z)
+m14_diff     out = 'not differ'
+m14_z   okchk('TEST_Differ_Table_Table')
+        vchk('TEST_Differ_Table_Table out', $'out', 'differ')
+
+* ===== TEST_Differ_Integer_Array =====
+        clear()
+        caughtf =
+        a = 2
+        b = array(10)
+        differ(a,b)    :s(m15_diff)
+        out = 'differ'    :(m15_z)
+m15_diff     out = 'not differ'
+m15_z   okchk('TEST_Differ_Integer_Array')
+        vchk('TEST_Differ_Integer_Array out', $'out', 'not differ')
+
+* ===== TEST_Differ_Integer_Code =====
+        clear()
+        caughtf =
+        a = 2
+        b = code(' b = 1.0')
+        differ(a,b)    :s(m16_diff)
+        out = 'differ'    :(m16_z)
+m16_diff     out = 'not differ'
+m16_z   okchk('TEST_Differ_Integer_Code')
+        vchk('TEST_Differ_Integer_Code out', $'out', 'not differ')
+
+* ===== TEST_Differ_Integer_Integer =====
+        clear()
+        caughtf =
+        a = 2
+        b = 2
+        differ(a,b)    :s(m17_diff)
+        out = 'differ'    :(m17_z)
+m17_diff     out = 'not differ'
+m17_z   okchk('TEST_Differ_Integer_Integer')
+        vchk('TEST_Differ_Integer_Integer out', $'out', 'differ')
+
+* ===== TEST_Differ_Integer_Integer_Diff =====
+        clear()
+        caughtf =
+        a = 2
+        b = 1
+        differ(a,b)    :s(m18_diff)
+        out = 'differ'    :(m18_z)
+m18_diff     out = 'not differ'
+m18_z   okchk('TEST_Differ_Integer_Integer_Diff')
+        vchk('TEST_Differ_Integer_Integer_Diff out', $'out', 'not differ')
+
+* ===== TEST_Differ_Integer_Pattern =====
+        clear()
+        caughtf =
+        a = 2
+        b = any('1.0')
+        differ(a,b)    :s(m19_diff)
+        out = 'differ'    :(m19_z)
+m19_diff     out = 'not differ'
+m19_z   okchk('TEST_Differ_Integer_Pattern')
+        vchk('TEST_Differ_Integer_Pattern out', $'out', 'not differ')
+
+* ===== TEST_Differ_Integer_Real =====
+        clear()
+        caughtf =
+        a = 2
+        b = 1.0
+        differ(a,b)    :s(m20_diff)
+        out = 'differ'    :(m20_z)
+m20_diff     out = 'not differ'
+m20_z   okchk('TEST_Differ_Integer_Real')
+        vchk('TEST_Differ_Integer_Real out', $'out', 'not differ')
+
+* ===== TEST_Differ_Integer_String =====
+        clear()
+        caughtf =
+        a = 2
+        b = '1.0'
+        differ(a,b)    :s(m21_diff)
+        out = 'differ'    :(m21_z)
+m21_diff     out = 'not differ'
+m21_z   okchk('TEST_Differ_Integer_String')
+        vchk('TEST_Differ_Integer_String out', $'out', 'not differ')
+
+* ===== TEST_Differ_Integer_Table =====
+        clear()
+        caughtf =
+        a = 2
+        b = table()
+        differ(a,b)    :s(m22_diff)
+        out = 'differ'    :(m22_z)
+m22_diff     out = 'not differ'
+m22_z   okchk('TEST_Differ_Integer_Table')
+        vchk('TEST_Differ_Integer_Table out', $'out', 'not differ')
+
+* ===== TEST_Differ_Real_Array =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = array(10)
+        differ(a,b)    :s(m23_diff)
+        out = 'differ'    :(m23_z)
+m23_diff     out = 'not differ'
+m23_z   okchk('TEST_Differ_Real_Array')
+        vchk('TEST_Differ_Real_Array out', $'out', 'not differ')
+
+* ===== TEST_Differ_Real_Code =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = code(' b = 1.0')
+        differ(a,b)    :s(m24_diff)
+        out = 'differ'    :(m24_z)
+m24_diff     out = 'not differ'
+m24_z   okchk('TEST_Differ_Real_Code')
+        vchk('TEST_Differ_Real_Code out', $'out', 'not differ')
+
+* ===== TEST_Differ_Real_Integer =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = 1
+        differ(a,b)    :s(m25_diff)
+        out = 'differ'    :(m25_z)
+m25_diff     out = 'not differ'
+m25_z   okchk('TEST_Differ_Real_Integer')
+        vchk('TEST_Differ_Real_Integer out', $'out', 'not differ')
+
+* ===== TEST_Differ_Real_Pattern =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = any('1.0')
+        differ(a,b)    :s(m26_diff)
+        out = 'differ'    :(m26_z)
+m26_diff     out = 'not differ'
+m26_z   okchk('TEST_Differ_Real_Pattern')
+        vchk('TEST_Differ_Real_Pattern out', $'out', 'not differ')
+
+* ===== TEST_Differ_Real_Real =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = 1.0
+        differ(a,b)    :s(m27_diff)
+        out = 'differ'    :(m27_z)
+m27_diff     out = 'not differ'
+m27_z   okchk('TEST_Differ_Real_Real')
+        vchk('TEST_Differ_Real_Real out', $'out', 'differ')
+
+* ===== TEST_Differ_Real_String =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = '1.0'
+        differ(a,b)    :s(m28_diff)
+        out = 'differ'    :(m28_z)
+m28_diff     out = 'not differ'
+m28_z   okchk('TEST_Differ_Real_String')
+        vchk('TEST_Differ_Real_String out', $'out', 'not differ')
+
+* ===== TEST_Differ_Real_Table =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = table()
+        differ(a,b)    :s(m29_diff)
+        out = 'differ'    :(m29_z)
+m29_diff     out = 'not differ'
+m29_z   okchk('TEST_Differ_Real_Table')
+        vchk('TEST_Differ_Real_Table out', $'out', 'not differ')
+
+* ===== TEST_Differ_String_Array =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = array(10)
+        differ(a,b)    :s(m30_diff)
+        out = 'differ'    :(m30_z)
+m30_diff     out = 'not differ'
+m30_z   okchk('TEST_Differ_String_Array')
+        vchk('TEST_Differ_String_Array out', $'out', 'not differ')
+
+* ===== TEST_Differ_String_Code =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = code(' b = 1.0')
+        differ(a,b)    :s(m31_diff)
+        out = 'differ'    :(m31_z)
+m31_diff     out = 'not differ'
+m31_z   okchk('TEST_Differ_String_Code')
+        vchk('TEST_Differ_String_Code out', $'out', 'not differ')
+
+* ===== TEST_Differ_String_Integer =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = 1
+        differ(a,b)    :s(m32_diff)
+        out = 'differ'    :(m32_z)
+m32_diff     out = 'not differ'
+m32_z   okchk('TEST_Differ_String_Integer')
+        vchk('TEST_Differ_String_Integer out', $'out', 'not differ')
+
+* ===== TEST_Differ_String_Pattern =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = any('1.0')
+        differ(a,b)    :s(m33_diff)
+        out = 'differ'    :(m33_z)
+m33_diff     out = 'not differ'
+m33_z   okchk('TEST_Differ_String_Pattern')
+        vchk('TEST_Differ_String_Pattern out', $'out', 'not differ')
+
+* ===== TEST_Differ_String_Real =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = 1.0
+        differ(a,b)    :s(m34_diff)
+        out = 'differ'    :(m34_z)
+m34_diff     out = 'not differ'
+m34_z   okchk('TEST_Differ_String_Real')
+        vchk('TEST_Differ_String_Real out', $'out', 'not differ')
+
+* ===== TEST_Differ_String_String =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = '1.0'
+        differ(a,b)    :s(m35_diff)
+        out = 'differ'    :(m35_z)
+m35_diff     out = 'differ'
+m35_z   okchk('TEST_Differ_String_String')
+        vchk('TEST_Differ_String_String out', $'out', 'differ')
+
+* ===== TEST_Differ_String_Table =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = table()
+        differ(a,b)    :s(m36_diff)
+        out = 'differ'    :(m36_z)
+m36_diff     out = 'not differ'
+m36_z   okchk('TEST_Differ_String_Table')
+        vchk('TEST_Differ_String_Table out', $'out', 'not differ')
+
+END

@@ -1,0 +1,169 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Clear.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Clear_001f =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        skip = 'b,bb'
+        clear()
+m1_z    okchk('TEST_Clear_001f')
+        vchk('TEST_Clear_001f a', $'a', '')
+        vchk('TEST_Clear_001f b', $'b', '')
+        vchk('TEST_Clear_001f c', $'c', '')
+        vchk('TEST_Clear_001f aa', $'aa', '')
+        vchk('TEST_Clear_001f bb', $'bb', '')
+        vchk('TEST_Clear_001f cc', $'cc', '')
+
+* ===== TEST_Clear_002f =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        skip = 'b,bb'
+        clear(skip)
+m2_z    okchk('TEST_Clear_002f')
+        vchk('TEST_Clear_002f a', $'a', '')
+        vchk('TEST_Clear_002f b', $'b', 'b')
+        vchk('TEST_Clear_002f c', $'c', '')
+        vchk('TEST_Clear_002f aa', $'aa', '')
+        vchk('TEST_Clear_002f bb', $'bb', '2')
+        vchk('TEST_Clear_002f cc', $'cc', '')
+
+* ===== TEST_Clear_003f =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        skip = ''
+        clear(skip)
+m3_z    okchk('TEST_Clear_003f')
+        vchk('TEST_Clear_003f a', $'a', '')
+        vchk('TEST_Clear_003f b', $'b', '')
+        vchk('TEST_Clear_003f c', $'c', '')
+        vchk('TEST_Clear_003f aa', $'aa', '')
+        vchk('TEST_Clear_003f bb', $'bb', '')
+        vchk('TEST_Clear_003f cc', $'cc', '')
+
+* ===== TEST_Clear_004f =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        skip = 'a,,b'
+        clear(skip)
+m4_z    errchk('TEST_Clear_004f', 72)
+
+* ===== TEST_Clear_005f =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        clear(any('123'))
+m5_z    errchk('TEST_Clear_005f', 71)
+
+* ===== TEST_Clear_001 =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        skip = 'b,bb'
+        clear()
+m6_z    okchk('TEST_Clear_001')
+        vchk('TEST_Clear_001 a', $'a', '')
+        vchk('TEST_Clear_001 b', $'b', '')
+        vchk('TEST_Clear_001 c', $'c', '')
+        vchk('TEST_Clear_001 aa', $'aa', '')
+        vchk('TEST_Clear_001 bb', $'bb', '')
+        vchk('TEST_Clear_001 cc', $'cc', '')
+
+* ===== TEST_Clear_002 =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        skip = 'b,bb'
+        clear(skip)
+m7_z    okchk('TEST_Clear_002')
+        vchk('TEST_Clear_002 a', $'a', '')
+        vchk('TEST_Clear_002 b', $'b', 'b')
+        vchk('TEST_Clear_002 c', $'c', '')
+        vchk('TEST_Clear_002 aa', $'aa', '')
+        vchk('TEST_Clear_002 bb', $'bb', '2')
+        vchk('TEST_Clear_002 cc', $'cc', '')
+
+* ===== TEST_Clear_003 =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        skip = ''
+        clear(skip)
+m8_z    okchk('TEST_Clear_003')
+        vchk('TEST_Clear_003 a', $'a', '')
+        vchk('TEST_Clear_003 b', $'b', '')
+        vchk('TEST_Clear_003 c', $'c', '')
+        vchk('TEST_Clear_003 aa', $'aa', '')
+        vchk('TEST_Clear_003 bb', $'bb', '')
+        vchk('TEST_Clear_003 cc', $'cc', '')
+
+* ===== TEST_Clear_004 =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        skip = 'a,,b'
+        clear(skip)
+m9_z    errchk('TEST_Clear_004', 72)
+
+* ===== TEST_Clear_005 =====
+        clear()
+        caughtf =
+        a = 'a'
+        b = 'b'
+        c = 'c'
+        aa = '1'
+        bb = '2'
+        cc = '3'
+        clear(any('123'))
+m10_z   errchk('TEST_Clear_005', 71)
+
+END

@@ -1,0 +1,437 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Comparison.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_EQ_001 =====
+        clear()
+        caughtf =
+        eq(0,0):s(m1_true)f(m1_false)
+m1_true    a =  'true'   :(m1_z)
+m1_false   a =  'false'  :(m1_z)
+m1_z    okchk('TEST_EQ_001')
+
+* ===== TEST_EQ_002 =====
+        clear()
+        caughtf =
+        ~eq(0,0) :s(m2_true)f(m2_false)
+m2_true    a =  'true'   :(m2_z)
+m2_false   a =  'false'  :(m2_z)
+m2_z    okchk('TEST_EQ_002')
+
+* ===== TEST_EQ_003 =====
+        clear()
+        caughtf =
+        eq(1.23,12) :s(m3_true)f(m3_false)
+m3_true    a =  'true'   :(m3_z)
+m3_false   a =  'false'  :(m3_z)
+m3_z    okchk('TEST_EQ_003')
+
+* ===== TEST_EQ_004 =====
+        clear()
+        caughtf =
+        eq(1.0,1) :s(m4_true)f(m4_false)
+m4_true    a =  'true'   :(m4_z)
+m4_false   a =  'false'  :(m4_z)
+m4_z    okchk('TEST_EQ_004')
+
+* ===== TEST_EQ_005 =====
+        clear()
+        caughtf =
+        eq(1,1.2) :s(m5_true)f(m5_false)
+m5_true    a =  'true'   :(m5_z)
+m5_false   a =  'false'  :(m5_z)
+m5_z    okchk('TEST_EQ_005')
+
+* ===== TEST_EQ_006 =====
+        clear()
+        caughtf =
+        eq('1.0','1') :s(m6_true)f(m6_false)
+m6_true    a =  'true'   :(m6_z)
+m6_false   a =  'false'  :(m6_z)
+m6_z    okchk('TEST_EQ_006')
+
+* ===== TEST_EQ_007 =====
+        clear()
+        caughtf =
+        eq('1','1.2') :s(m7_true)f(m7_false)
+m7_true    a =  'true'   :(m7_z)
+m7_false   a =  'false'  :(m7_z)
+m7_z    okchk('TEST_EQ_007')
+
+* ===== TEST_EQ_008 =====
+        clear()
+        caughtf =
+        eq('b','1.2') :s(m8_true)f(m8_false)
+m8_true    a =  'true'   :(m8_z)
+m8_false   a =  'false'  :(m8_z)
+m8_z    errchk('TEST_EQ_008', 101)
+
+* ===== TEST_EQ_009 =====
+        clear()
+        caughtf =
+        eq('1.2','b') :s(m9_true)f(m9_false)
+m9_true    a =  'true'   :(m9_z)
+m9_false   a =  'false'  :(m9_z)
+m9_z    errchk('TEST_EQ_009', 102)
+
+* ===== TEST_GE_001 =====
+        clear()
+        caughtf =
+        ge(0,0) :s(m10_true)f(m10_false)
+m10_true    a =  'true'   :(m10_z)
+m10_false   a =  'false'  :(m10_z)
+m10_z   okchk('TEST_GE_001')
+
+* ===== TEST_GE_002 =====
+        clear()
+        caughtf =
+        ~ge(0,0) :s(m11_true)f(m11_false)
+m11_true    a =  'true'   :(m11_z)
+m11_false   a =  'false'  :(m11_z)
+m11_z   okchk('TEST_GE_002')
+
+* ===== TEST_GE_003 =====
+        clear()
+        caughtf =
+        ge(1.2,1.23) :s(m12_true)f(m12_false)
+m12_true    a =  'true'   :(m12_z)
+m12_false   a =  'false'  :(m12_z)
+m12_z   okchk('TEST_GE_003')
+
+* ===== TEST_GE_004 =====
+        clear()
+        caughtf =
+        ge(1.0,1) :s(m13_true)f(m13_false)
+m13_true    a =  'true'   :(m13_z)
+m13_false   a =  'false'  :(m13_z)
+m13_z   okchk('TEST_GE_004')
+
+* ===== TEST_GE_005 =====
+        clear()
+        caughtf =
+        ge(1,1.2) :s(m14_true)f(m14_false)
+m14_true    a =  'true'   :(m14_z)
+m14_false   a =  'false'  :(m14_z)
+m14_z   okchk('TEST_GE_005')
+
+* ===== TEST_GE_006 =====
+        clear()
+        caughtf =
+        ge('1.0','1') :s(m15_true)f(m15_false)
+m15_true    a =  'true'   :(m15_z)
+m15_false   a =  'false'  :(m15_z)
+m15_z   okchk('TEST_GE_006')
+
+* ===== TEST_GE_007 =====
+        clear()
+        caughtf =
+        ge('1','1.2') :s(m16_true)f(m16_false)
+m16_true    a =  'true'   :(m16_z)
+m16_false   a =  'false'  :(m16_z)
+m16_z   okchk('TEST_GE_007')
+
+* ===== TEST_GE_008 =====
+        clear()
+        caughtf =
+        ge('b','1.2') :s(m17_true)f(m17_false)
+m17_true    a =  'true'   :(m17_z)
+m17_false   a =  'false'  :(m17_z)
+m17_z   errchk('TEST_GE_008', 109)
+
+* ===== TEST_GE_009 =====
+        clear()
+        caughtf =
+        ge('1.2','b') :s(m18_true)f(m18_false)
+m18_true    a =  'true'   :(m18_z)
+m18_false   a =  'false'  :(m18_z)
+m18_z   errchk('TEST_GE_009', 110)
+
+* ===== TEST_GT_001 =====
+        clear()
+        caughtf =
+        gt(0,0) :s(m19_true)f(m19_false)
+m19_true    a =  'true'   :(m19_z)
+m19_false   a =  'false'  :(m19_z)
+m19_z   okchk('TEST_GT_001')
+
+* ===== TEST_GT_002 =====
+        clear()
+        caughtf =
+        ~gt(0,0) :s(m20_true)f(m20_false)
+m20_true    a =  'true'   :(m20_z)
+m20_false   a =  'false'  :(m20_z)
+m20_z   okchk('TEST_GT_002')
+
+* ===== TEST_GT_003 =====
+        clear()
+        caughtf =
+        gt(1.2,1.23) :s(m21_true)f(m21_false)
+m21_true    a =  'true'   :(m21_z)
+m21_false   a =  'false'  :(m21_z)
+m21_z   okchk('TEST_GT_003')
+
+* ===== TEST_GT_004 =====
+        clear()
+        caughtf =
+        gt(1.0,1) :s(m22_true)f(m22_false)
+m22_true    a =  'true'   :(m22_z)
+m22_false   a =  'false'  :(m22_z)
+m22_z   okchk('TEST_GT_004')
+
+* ===== TEST_GT_005 =====
+        clear()
+        caughtf =
+        gt(1,1.2) :s(m23_true)f(m23_false)
+m23_true    a =  'true'   :(m23_z)
+m23_false   a =  'false'  :(m23_z)
+m23_z   okchk('TEST_GT_005')
+
+* ===== TEST_GT_006 =====
+        clear()
+        caughtf =
+        gt('1.0','1') :s(m24_true)f(m24_false)
+m24_true    a =  'true'   :(m24_z)
+m24_false   a =  'false'  :(m24_z)
+m24_z   okchk('TEST_GT_006')
+
+* ===== TEST_GT_007 =====
+        clear()
+        caughtf =
+        gt('1','1.2') :s(m25_true)f(m25_false)
+m25_true    a =  'true'   :(m25_z)
+m25_false   a =  'false'  :(m25_z)
+m25_z   okchk('TEST_GT_007')
+
+* ===== TEST_GT_008 =====
+        clear()
+        caughtf =
+        gt('b','1.2') :s(m26_true)f(m26_false)
+m26_true    a =  'true'   :(m26_z)
+m26_false   a =  'false'  :(m26_z)
+m26_z   errchk('TEST_GT_008', 111)
+
+* ===== TEST_GT_009 =====
+        clear()
+        caughtf =
+        gt('1.2','b') :s(m27_true)f(m27_false)
+m27_true    a =  'true'   :(m27_z)
+m27_false   a =  'false'  :(m27_z)
+m27_z   errchk('TEST_GT_009', 112)
+
+* ===== TEST_LT_001 =====
+        clear()
+        caughtf =
+        lt(0,0) :s(m28_true)f(m28_false)
+m28_true    a =  'true'   :(m28_z)
+m28_false   a =  'false'  :(m28_z)
+m28_z   okchk('TEST_LT_001')
+
+* ===== TEST_LT_002 =====
+        clear()
+        caughtf =
+        ~lt(0,0) :s(m29_true)f(m29_false)
+m29_true    a =  'true'   :(m29_z)
+m29_false   a =  'false'  :(m29_z)
+m29_z   okchk('TEST_LT_002')
+
+* ===== TEST_LT_003 =====
+        clear()
+        caughtf =
+        lt(1.2,1.23) :s(m30_true)f(m30_false)
+m30_true    a =  'true'   :(m30_z)
+m30_false   a =  'false'  :(m30_z)
+m30_z   okchk('TEST_LT_003')
+
+* ===== TEST_LT_004 =====
+        clear()
+        caughtf =
+        lt(1.0,1) :s(m31_true)f(m31_false)
+m31_true    a =  'true'   :(m31_z)
+m31_false   a =  'false'  :(m31_z)
+m31_z   okchk('TEST_LT_004')
+
+* ===== TEST_LT_005 =====
+        clear()
+        caughtf =
+        lt(1,1.2) :s(m32_true)f(m32_false)
+m32_true    a =  'true'   :(m32_z)
+m32_false   a =  'false'  :(m32_z)
+m32_z   okchk('TEST_LT_005')
+
+* ===== TEST_LT_006 =====
+        clear()
+        caughtf =
+        lt('1.0','1') :s(m33_true)f(m33_false)
+m33_true    a =  'true'   :(m33_z)
+m33_false   a =  'false'  :(m33_z)
+m33_z   okchk('TEST_LT_006')
+
+* ===== TEST_LT_007 =====
+        clear()
+        caughtf =
+        lt('1','1.2') :s(m34_true)f(m34_false)
+m34_true    a =  'true'   :(m34_z)
+m34_false   a =  'false'  :(m34_z)
+m34_z   okchk('TEST_LT_007')
+
+* ===== TEST_LT_008 =====
+        clear()
+        caughtf =
+        lt('b','1.2') :s(m35_true)f(m35_false)
+m35_true    a =  'true'   :(m35_z)
+m35_false   a =  'false'  :(m35_z)
+m35_z   errchk('TEST_LT_008', 147)
+
+* ===== TEST_LT_009 =====
+        clear()
+        caughtf =
+        lt('1.2','b') :s(m36_true)f(m36_false)
+m36_true    a =  'true'   :(m36_z)
+m36_false   a =  'false'  :(m36_z)
+m36_z   errchk('TEST_LT_009', 148)
+
+* ===== TEST_LE_001 =====
+        clear()
+        caughtf =
+        le(0,0) :s(m37_true)f(m37_false)
+m37_true    a =  'true'   :(m37_z)
+m37_false   a =  'false'  :(m37_z)
+m37_z   okchk('TEST_LE_001')
+
+* ===== TEST_LE_002 =====
+        clear()
+        caughtf =
+        ~le(0,0) :s(m38_true)f(m38_false)
+m38_true    a =  'true'   :(m38_z)
+m38_false   a =  'false'  :(m38_z)
+m38_z   okchk('TEST_LE_002')
+
+* ===== TEST_LE_003 =====
+        clear()
+        caughtf =
+        le(1.2,1.23) :s(m39_true)f(m39_false)
+m39_true    a =  'true'   :(m39_z)
+m39_false   a =  'false'  :(m39_z)
+m39_z   okchk('TEST_LE_003')
+
+* ===== TEST_LE_004 =====
+        clear()
+        caughtf =
+        le(1.0,1) :s(m40_true)f(m40_false)
+m40_true    a =  'true'   :(m40_z)
+m40_false   a =  'false'  :(m40_z)
+m40_z   okchk('TEST_LE_004')
+
+* ===== TEST_LE_005 =====
+        clear()
+        caughtf =
+        le(1,1.2) :s(m41_true)f(m41_false)
+m41_true    a =  'true'   :(m41_z)
+m41_false   a =  'false'  :(m41_z)
+m41_z   okchk('TEST_LE_005')
+
+* ===== TEST_LE_006 =====
+        clear()
+        caughtf =
+        le('1.0','1') :s(m42_true)f(m42_false)
+m42_true    a =  'true'   :(m42_z)
+m42_false   a =  'false'  :(m42_z)
+m42_z   okchk('TEST_LE_006')
+
+* ===== TEST_LE_007 =====
+        clear()
+        caughtf =
+        le('1','1.2') :s(m43_true)f(m43_false)
+m43_true    a =  'true'   :(m43_z)
+m43_false   a =  'false'  :(m43_z)
+m43_z   okchk('TEST_LE_007')
+
+* ===== TEST_LE_008 =====
+        clear()
+        caughtf =
+        le('b','1.2') :s(m44_true)f(m44_false)
+m44_true    a =  'true'   :(m44_z)
+m44_false   a =  'false'  :(m44_z)
+m44_z   errchk('TEST_LE_008', 118)
+
+* ===== TEST_LE_009 =====
+        clear()
+        caughtf =
+        le('1.2','b') :s(m45_true)f(m45_false)
+m45_true    a =  'true'   :(m45_z)
+m45_false   a =  'false'  :(m45_z)
+m45_z   errchk('TEST_LE_009', 119)
+
+* ===== TEST_NE_001 =====
+        clear()
+        caughtf =
+        ne(0,0) :s(m46_true)f(m46_false)
+m46_true    a =  'true'   :(m46_z)
+m46_false   a =  'false'  :(m46_z)
+m46_z   okchk('TEST_NE_001')
+
+* ===== TEST_NE_002 =====
+        clear()
+        caughtf =
+        ~ne(0,0) :s(m47_true)f(m47_false)
+m47_true    a =  'true'   :(m47_z)
+m47_false   a =  'false'  :(m47_z)
+m47_z   okchk('TEST_NE_002')
+
+* ===== TEST_NE_003 =====
+        clear()
+        caughtf =
+        ne(1.2,1.23) :s(m48_true)f(m48_false)
+m48_true    a =  'true'   :(m48_z)
+m48_false   a =  'false'  :(m48_z)
+m48_z   okchk('TEST_NE_003')
+
+* ===== TEST_NE_004 =====
+        clear()
+        caughtf =
+        ne(1.0,1) :s(m49_true)f(m49_false)
+m49_true    a =  'true'   :(m49_z)
+m49_false   a =  'false'  :(m49_z)
+m49_z   okchk('TEST_NE_004')
+
+* ===== TEST_NE_005 =====
+        clear()
+        caughtf =
+        ne(1,1.2) :s(m50_true)f(m50_false)
+m50_true    a =  'true'   :(m50_z)
+m50_false   a =  'false'  :(m50_z)
+m50_z   okchk('TEST_NE_005')
+
+* ===== TEST_NE_006 =====
+        clear()
+        caughtf =
+        ne('1.0','1') :s(m51_true)f(m51_false)
+m51_true    a =  'true'   :(m51_z)
+m51_false   a =  'false'  :(m51_z)
+m51_z   okchk('TEST_NE_006')
+
+* ===== TEST_NE_007 =====
+        clear()
+        caughtf =
+        ne('1','1.2') :s(m52_true)f(m52_false)
+m52_true    a =  'true'   :(m52_z)
+m52_false   a =  'false'  :(m52_z)
+m52_z   okchk('TEST_NE_007')
+
+* ===== TEST_NE_008 =====
+        clear()
+        caughtf =
+        ne('b','1.2') :s(m53_true)f(m53_false)
+m53_true    a =  'true'   :(m53_z)
+m53_false   a =  'false'  :(m53_z)
+m53_z   errchk('TEST_NE_008', 149)
+
+* ===== TEST_NE_009 =====
+        clear()
+        caughtf =
+        ne('1.2','b') :s(m54_true)f(m54_false)
+m54_true    a =  'true'   :(m54_z)
+m54_false   a =  'false'  :(m54_z)
+m54_z   errchk('TEST_NE_009', 150)
+
+END

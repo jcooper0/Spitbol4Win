@@ -1,0 +1,56 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from LNe.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_LNe_001 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is a test'
+        lne(a,b) :s(m1_z)
+        r = 'failure'
+m1_z    okchk('TEST_LNe_001')
+        vchk('TEST_LNe_001 r', $'r', 'failure')
+
+* ===== TEST_LNe_002 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is not a test'
+        lne(a,b) :s(m2_z)
+        r = 'failure'
+m2_z    okchk('TEST_LNe_002')
+        vchk('TEST_LNe_002 r', $'r', 'success')
+
+* ===== TEST_LNe_003 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is not a test'
+        lne(b,a) :s(m3_z)
+        r = 'failure'
+m3_z    okchk('TEST_LNe_003')
+        vchk('TEST_LNe_003 r', $'r', 'success')
+
+* ===== TEST_LNe_004 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = any('this is a test')
+        b = 'this is not a test'
+        lne(a,b) :s(m4_z)
+        r = 'failure'
+m4_z    errchk('TEST_LNe_004', 132)
+
+* ===== TEST_LNe_005 =====
+        clear()
+        caughtf =
+        a = 'this is a test'
+        b = any('this is a test')
+        lne(a,b)
+m5_z    errchk('TEST_LNe_005', 133)
+
+END

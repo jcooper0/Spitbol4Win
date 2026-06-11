@@ -1,0 +1,56 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from LEq.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_LEq_001 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is a test'
+        leq(a,b) :s(m1_z)
+        r = 'failure'
+m1_z    okchk('TEST_LEq_001')
+        vchk('TEST_LEq_001 r', $'r', 'success')
+
+* ===== TEST_LEq_002 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is not a test'
+        leq(a,b) :s(m2_z)
+        r = 'failure'
+m2_z    okchk('TEST_LEq_002')
+        vchk('TEST_LEq_002 r', $'r', 'failure')
+
+* ===== TEST_LEq_003 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is not a test'
+        leq(b,a) :s(m3_z)
+        r = 'failure'
+m3_z    okchk('TEST_LEq_003')
+        vchk('TEST_LEq_003 r', $'r', 'failure')
+
+* ===== TEST_LEq_004 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = any('this is a test')
+        b = 'this is not a test'
+        leq(a,b) :s(m4_z)
+        r = 'failure'
+m4_z    errchk('TEST_LEq_004', 122)
+
+* ===== TEST_LEq_005 =====
+        clear()
+        caughtf =
+        a = 'this is a test'
+        b = any('this is a test')
+        leq(a,b)
+m5_z    errchk('TEST_LEq_005', 123)
+
+END

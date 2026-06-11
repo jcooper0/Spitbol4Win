@@ -1,0 +1,79 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Replace.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Replace_001 =====
+        clear()
+        caughtf =
+        a = 'abc'
+        from = 'cb'
+        to = 'CB'
+        b = replace(a,from, to)
+m1_z    okchk('TEST_Replace_001')
+        vchk('TEST_Replace_001 b', $'b', 'aBC')
+
+* ===== TEST_Replace_002 =====
+        clear()
+        caughtf =
+        a = ''
+        from = 'cb'
+        to = 'CB'
+        b = replace(a,from, to)
+m2_z    okchk('TEST_Replace_002')
+        vchk('TEST_Replace_002 b', $'b', '')
+
+* ===== TEST_Replace_170 =====
+        clear()
+        caughtf =
+        a = 'abc' | 'def'
+        from = 'cb'
+        to = 'CB'
+        b = replace(a,from, to)
+m3_z    errchk('TEST_Replace_170', 170)
+
+* ===== TEST_Replace_169 =====
+        clear()
+        caughtf =
+        a = 'abc'
+        from = 'cb' | 'CB'
+        to = 'CB'
+        b = replace(a,from, to)
+m4_z    errchk('TEST_Replace_169', 169)
+
+* ===== TEST_Replace_168 =====
+        clear()
+        caughtf =
+        a = 'abc'
+        from = 'cb'
+        to = 'CB' | 'cb'
+        b = replace(a,from, to)
+m5_z    errchk('TEST_Replace_168', 168)
+
+* ===== TEST_Replace_171a =====
+        clear()
+        caughtf =
+        a = 'abc'
+        from = ''
+        to = 'CB'
+        b = replace(a,from, to)
+m6_z    errchk('TEST_Replace_171a', 171)
+
+* ===== TEST_Replace_171b =====
+        clear()
+        caughtf =
+        a = 'abc'
+        from = 'cb'
+        to = ''
+        b = replace(a,from, to)
+m7_z    errchk('TEST_Replace_171b', 171)
+
+* ===== TEST_Replace_171c =====
+        clear()
+        caughtf =
+        a = 'abc'
+        from = 'c'
+        to = 'CB'
+        b = replace(a,from, to)
+m8_z    errchk('TEST_Replace_171c', 171)
+
+END

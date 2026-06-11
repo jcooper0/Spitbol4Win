@@ -1,0 +1,9 @@
+{
+  "profiles": {
+    "SpitbolBuild": {
+      "commandName": "Project",
+      "commandLineArgs": "sbl.min",
+      "workingDirectory": "C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SpitbolBuild"
+    }
+  }
+}

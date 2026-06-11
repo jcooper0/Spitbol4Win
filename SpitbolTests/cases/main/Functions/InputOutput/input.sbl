@@ -1,0 +1,95 @@
+        &ANCHOR   = 0
+        &TRIM     = 0
+        &ERRLIMIT = 100000
+        NTOT  = 0
+        NPASS = 0
+        NFAIL = 0
+        NSKIP = 0
+        NULLV = ''
+        DEFINE('PASS(W)')                                   :(H_PE)
+PASS    NPASS = NPASS + 1
+        NTOT  = NTOT + 1                                    :(RETURN)
+H_PE    DEFINE('FAILED(W)')                                 :(H_FE)
+FAILED  NFAIL = NFAIL + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'FAIL: ' W                               :(RETURN)
+H_FE    DEFINE('SKIPPED(W)')                                :(H_SE)
+SKIPPED NSKIP = NSKIP + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'SKIP: ' W                               :(RETURN)
+H_SE    DEFINE('EQS(W,G,X)')                                :(H_QE)
+EQS     EQS = IDENT(G,X)                                    :S(H_QOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_QOK   PASS(W)                                             :(RETURN)
+H_QE    DEFINE('EQN(W,G,X)')                                :(H_NE)
+EQN     EQN = EQ(G,X)                                       :S(H_NOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_NOK   PASS(W)                                             :(RETURN)
+*       CHK(NAME, EXPECTSET, STRICT)  --  inspect a trapped &ERRTYPE.
+*       EXPECTSET is a space-free or space-separated string of one or
+*       more acceptable codes; ECAUGHT holds the trapped code (0 = none).
+H_NE    DEFINE('CHK(NAME,EXPECTSET,STRICT)')                :(H_CE)
+CHK     EQ(ECAUGHT, 0)                                      :F(H_CFIRED)
+        EQ(STRICT, 1)                                       :S(H_CNF) F(H_CSK)
+H_CNF   FAILED(NAME ' | expected err ' EXPECTSET ', none raised') :(RETURN)
+H_CSK   SKIPPED(NAME ' | err ' EXPECTSET ' not triggerable here') :(RETURN)
+H_CFIRED (' ' EXPECTSET ' ') (' ' ECAUGHT ' ')             :S(H_COK) F(H_CWR)
+H_COK   PASS(NAME ' -> &ERRTYPE ' ECAUGHT)                  :(RETURN)
+H_CWR   FAILED(NAME ' | expected ' EXPECTSET ', got ' ECAUGHT) :(RETURN)
+H_CE
+*-----------------------------------------------------------------------
+*  input.sbl -- INPUT(name, channel, s) conformance tests.
+*  Behaviour per Emmer & Quillen SPITBOL Manual (pp. 42-44, 224-230).
+*  Error codes per sbl.min / ERR.ASM:  113 114 115 116 117 289.
+*  (A missing file is statement FAILURE, not an error -- tested below.)
+*-----------------------------------------------------------------------
+
+*--- functional: read records, EOL stripped, EOF signals failure ---
+        OUTPUT(.W, 1, 'io_t_in.tmp')                        :F(IN_SET)
+        W = 'line one'
+        W = 'line two'
+        ENDFILE(1)
+        INPUT(.R, 1, 'io_t_in.tmp')                         :F(IN_SET)
+        EQS('INPUT: record 1', R, 'line one')
+        EQS('INPUT: record 2', R, 'line two')
+        X = R                                               :S(IN_EB) F(IN_EOK)
+IN_EB   FAILED('INPUT: should fail at end-of-file')         :(IN_ED)
+IN_EOK  PASS('INPUT: fails (no error) at end-of-file')
+IN_ED   ENDFILE(1)
+*       opening a non-existent file is statement failure, not an error
+        INPUT(.NF, 2, 'io_t_missing_zzz.dat')               :S(IN_MB) F(IN_MOK)
+IN_MB   FAILED('INPUT: open of missing file should fail')   :(IN_ERR)
+IN_MOK  PASS('INPUT: open of missing file fails (statement failure)') :(IN_ERR)
+IN_SET  FAILED('input functional setup')
+
+*--- errors ---
+IN_ERR  SETEXIT(.ETRAP)
+        ECAUGHT = 0
+        INPUT(.V, 50, LEN(1))                               :S(i113) F(i113)
+i113    CHK('INPUT 113 third argument is not a string', '113', 1)
+        ECAUGHT = 0
+        INPUT(.V, LEN(1), 'io_t_in.tmp')                    :S(i114) F(i114)
+i114    CHK('INPUT 114 inappropriate second argument', '114', 1)
+        ECAUGHT = 0
+        INPUT(LEN(1), 50, 'io_t_in.tmp')                    :S(i115) F(i115)
+i115    CHK('INPUT 115 inappropriate first argument', '115', 1)
+        ECAUGHT = 0
+        INPUT(.V, 50, 'io_t_in.tmp[-l')                     :S(i116) F(i116)
+i116    CHK('INPUT 116 inappropriate file specification', '116', 0)
+*       289: a filename on an already-open channel is invalid
+        INPUT(.U1, 8, 'io_t_in.tmp')                        :F(IN_89S)
+        ECAUGHT = 0
+        INPUT(.U2, 8, 'io_t_in.tmp')                        :S(i289) F(i289)
+i289    CHK('INPUT 289 channel currently in use', '289', 0)
+        ENDFILE(8)                                          :(IN_117)
+IN_89S  SKIPPED('INPUT 289 setup (open channel)')
+IN_117  SKIPPED('INPUT 117 file cannot be read (needs unreadable file/permissions)')
+        :(REPORT)
+
+*------------------------------- summary -------------------------------
+REPORT  OUTPUT =
+        OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
+        OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
+        OUTPUT = 'RESULT: FAIL'                             :(END)
+ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+END

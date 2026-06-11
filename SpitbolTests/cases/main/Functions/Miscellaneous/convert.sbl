@@ -1,0 +1,1196 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Convert.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Convert_String_String =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 'test'
+        b = convert(a,'string') :f(m1_z)
+        c = datatype(b) 
+        d = 'success'
+m1_z    okchk('TEST_Convert_String_String')
+        vchk('TEST_Convert_String_String a', $'a', 'test')
+        vchk('TEST_Convert_String_String b', $'b', 'test')
+        vchk('TEST_Convert_String_String c', $'c', 'string')
+        vchk('TEST_Convert_String_String d', $'d', 'success')
+
+* ===== TEST_Convert_String_Integer =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '32767'
+        b = convert(a,'integer') :f(m2_z)
+        c = datatype(b) 
+        d = 'success'
+m2_z    okchk('TEST_Convert_String_Integer')
+        vchk('TEST_Convert_String_Integer a', $'a', '32767')
+        vchk('TEST_Convert_String_Integer b', $'b', 32767)
+        vchk('TEST_Convert_String_Integer c', $'c', 'integer')
+        vchk('TEST_Convert_String_Integer d', $'d', 'success')
+
+* ===== TEST_Convert_String_Integer_O_ =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767'
+        b = convert(a,'integer') :f(m3_z)
+        d = 'success'
+m3_z    okchk('TEST_Convert_String_Integer_O_')
+        vchk('TEST_Convert_String_Integer_O_ a', $'a', '327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767327673276732767')
+        vchk('TEST_Convert_String_Integer_O_ d', $'d', 'failure')
+
+* ===== TEST_Convert_String_Real =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '3.14159'
+        b = convert(a,'real')  :f(m4_z)
+        c = datatype(b) 
+        d = 'success'
+m4_z    okchk('TEST_Convert_String_Real')
+        vchk('TEST_Convert_String_Real a', $'a', '3.14159')
+        vchk('TEST_Convert_String_Real b', $'b', 3.14159)
+        vchk('TEST_Convert_String_Real c', $'c', 'real')
+        vchk('TEST_Convert_String_Real d', $'d', 'success')
+
+* ===== TEST_Convert_String_Real_O_ =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '3.14159e900'
+        b = convert(a,'real')  :f(m5_z)
+        d = 'success'
+m5_z    okchk('TEST_Convert_String_Real_O_')
+        vchk('TEST_Convert_String_Real_O_ a', $'a', '3.14159e900')
+        vchk('TEST_Convert_String_Real_O_ d', $'d', 'failure')
+
+* ===== TEST_Convert_String_Array =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '3.14159'
+        b = convert(a,'array')  :f(m6_z)
+        d = 'success'
+m6_z    okchk('TEST_Convert_String_Array')
+        vchk('TEST_Convert_String_Array d', $'d', 'failure')
+
+* ===== TEST_Convert_String_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '3.14159'
+        b = convert(a,'table')  :f(m7_z)
+        d = 'success'
+m7_z    okchk('TEST_Convert_String_Table')
+        vchk('TEST_Convert_String_Table d', $'d', 'failure')
+
+* ===== TEST_Convert_String_Pattern =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '3.14159'
+        b = convert(a,'pattern')  :f(m8_z)
+        c = datatype(b) 
+        d = 'success'
+m8_z    okchk('TEST_Convert_String_Pattern')
+        vchk('TEST_Convert_String_Pattern a', $'a', '3.14159')
+        vchk('TEST_Convert_String_Pattern c', $'c', 'pattern')
+        vchk('TEST_Convert_String_Pattern d', $'d', 'success')
+
+* ===== TEST_Convert_String_Name =====
+        clear()
+        caughtf =
+        a = 'quick'
+        b = convert(a,'name')   :f(m9_z)
+        c = datatype(b)
+        d = convert(b,'string')   :f(m9_z)
+        e = 'success'
+m9_z    okchk('TEST_Convert_String_Name')
+        vchk('TEST_Convert_String_Name a', $'a', 'quick')
+        vchk('TEST_Convert_String_Name b', $'b', 'quick')
+        vchk('TEST_Convert_String_Name c', $'c', 'name')
+        vchk('TEST_Convert_String_Name d', $'d', 'quick')
+        vchk('TEST_Convert_String_Name e', $'e', 'success')
+
+* ===== TEST_Convert_String_Expression =====
+        clear()
+        caughtf =
+        a = convert('3.14 * 2.0', 'expression') :f(m10_z)
+        b = datatype(a);
+        c = eval(a)
+        d = datatype(c)
+m10_z   okchk('TEST_Convert_String_Expression')
+        vchk('TEST_Convert_String_Expression b', $'b', 'expression')
+        vchk('TEST_Convert_String_Expression c', $'c', '6.28')
+        vchk('TEST_Convert_String_Expression d', $'d', 'real')
+
+* ===== TEST_Convert_Integer_String =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 32767
+        b = convert(a,'string') :f(m12_z)
+        c = datatype(b)
+        d = 'success'
+m12_z   okchk('TEST_Convert_Integer_String')
+        vchk('TEST_Convert_Integer_String a', $'a', 32767)
+        vchk('TEST_Convert_Integer_String b', $'b', '32767')
+        vchk('TEST_Convert_Integer_String c', $'c', 'string')
+        vchk('TEST_Convert_Integer_String d', $'d', 'success')
+
+* ===== TEST_Convert_Integer_Integer =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 32767
+        b = convert(a,'integer') :f(m13_z)
+        c = datatype(b)
+        d = 'success'
+m13_z   okchk('TEST_Convert_Integer_Integer')
+        vchk('TEST_Convert_Integer_Integer a', $'a', 32767)
+        vchk('TEST_Convert_Integer_Integer b', $'b', 32767)
+        vchk('TEST_Convert_Integer_Integer c', $'c', 'integer')
+        vchk('TEST_Convert_Integer_Integer c', $'c', 'integer')
+        vchk('TEST_Convert_Integer_Integer d', $'d', 'success')
+
+* ===== TEST_Convert_Integer_Real =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 32767
+        b = convert(a,'real')  :f(m14_z)
+        c = datatype(b)
+        d = 'success'
+m14_z   okchk('TEST_Convert_Integer_Real')
+        vchk('TEST_Convert_Integer_Real a', $'a', 32767)
+        vchk('TEST_Convert_Integer_Real b', $'b', 32767.0)
+        vchk('TEST_Convert_Integer_Real c', $'c', 'real')
+        vchk('TEST_Convert_Integer_Real d', $'d', 'success')
+
+* ===== TEST_Convert_Integer_Array =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '3.14159'
+        b = convert(a,'array') :f(m15_z)
+        d = 'success'
+m15_z   okchk('TEST_Convert_Integer_Array')
+        vchk('TEST_Convert_Integer_Array d', $'d', 'failure')
+
+* ===== TEST_Convert_Integer_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 32767
+        b = convert(a,'table') :f(m16_z)
+        d = 'success'
+m16_z   okchk('TEST_Convert_Integer_Table')
+        vchk('TEST_Convert_Integer_Table d', $'d', 'failure')
+
+* ===== TEST_Convert_Integer_Pattern =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '32767'
+        b = convert(a,'pattern') :f(m17_z)
+        c = datatype(b)
+        d = 'success'
+m17_z   okchk('TEST_Convert_Integer_Pattern')
+        vchk('TEST_Convert_Integer_Pattern a', $'a', '32767')
+        vchk('TEST_Convert_Integer_Pattern c', $'c', 'pattern')
+        vchk('TEST_Convert_Integer_Pattern d', $'d', 'success')
+
+* ===== TEST_Convert_Integer_Expression =====
+        clear()
+        caughtf =
+        a = convert(3, 'expression')
+        b = datatype(a);
+        c = eval(a)
+        d = datatype(c)
+m18_z   okchk('TEST_Convert_Integer_Expression')
+        vchk('TEST_Convert_Integer_Expression b', $'b', 'expression')
+        vchk('TEST_Convert_Integer_Expression c', $'c', '3')
+        vchk('TEST_Convert_Integer_Expression d', $'d', 'integer')
+
+* ===== TEST_Convert_Integer_Code =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = convert(3, 'code') :f(m19_z)
+        d = 'success'
+m19_z   okchk('TEST_Convert_Integer_Code')
+        vchk('TEST_Convert_Integer_Code d', $'d', 'success')
+
+* ===== TEST_Convert_Real_String =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 3.14159
+        b = convert(a,'string') :f(m20_z)
+        c = datatype(b)
+        d = 'success'
+m20_z   okchk('TEST_Convert_Real_String')
+        vchk('TEST_Convert_Real_String a', $'a', 3.14159)
+        vchk('TEST_Convert_Real_String b', $'b', '3.14159')
+        vchk('TEST_Convert_Real_String c', $'c', 'string')
+        vchk('TEST_Convert_Real_String d', $'d', 'success')
+
+* ===== TEST_Convert_Real_Integer =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 3.14159
+        b = convert(a,'integer') :f(m21_z)
+        c = datatype(b)
+        d = 'success'
+m21_z   okchk('TEST_Convert_Real_Integer')
+        vchk('TEST_Convert_Real_Integer a', $'a', 3.14159)
+        vchk('TEST_Convert_Real_Integer b', $'b', 3)
+        vchk('TEST_Convert_Real_Integer c', $'c', 'integer')
+        vchk('TEST_Convert_Real_Integer d', $'d', 'success')
+
+* ===== TEST_Convert_Real_Integer_O_ =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 3.14159e200
+        b = convert(a,'integer') :f(m22_z)
+        c = datatype(b)
+        d = 'success'
+m22_z   okchk('TEST_Convert_Real_Integer_O_')
+        vchk('TEST_Convert_Real_Integer_O_ d', $'d', 'success')
+
+* ===== TEST_Convert_Real_Real =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 3.14159
+        b = convert(a,'real') :f(m23_z)
+        c = datatype(b)
+        d = 'success'
+m23_z   okchk('TEST_Convert_Real_Real')
+        vchk('TEST_Convert_Real_Real a', $'a', 3.14159)
+        vchk('TEST_Convert_Real_Real b', $'b', 3.14159)
+        vchk('TEST_Convert_Real_Real c', $'c', 'real')
+        vchk('TEST_Convert_Real_Real d', $'d', 'success')
+
+* ===== TEST_Convert_Real_Array =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '3.14159'
+        b = convert(a,'array') :f(m24_z)
+        d = 'success'
+m24_z   okchk('TEST_Convert_Real_Array')
+        vchk('TEST_Convert_Real_Array d', $'d', 'failure')
+
+* ===== TEST_Convert_Real_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 3.14159
+        b = convert(a,'table') :f(m25_z)
+        d = 'success'
+m25_z   okchk('TEST_Convert_Real_Table')
+        vchk('TEST_Convert_Real_Table d', $'d', 'failure')
+
+* ===== TEST_Convert_Real_Pattern =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = '3.14159'
+        b = convert(a,'pattern') :f(m26_z)
+        c = datatype(b) 
+        d = 'success'
+m26_z   okchk('TEST_Convert_Real_Pattern')
+        vchk('TEST_Convert_Real_Pattern a', $'a', '3.14159')
+        vchk('TEST_Convert_Real_Pattern c', $'c', 'pattern')
+        vchk('TEST_Convert_Real_Pattern d', $'d', 'success')
+
+* ===== TEST_Convert_Real_Name =====
+        clear()
+        caughtf =
+        a = 3.14159
+        b = convert(a,'name')   :f(m27_z)
+        c = datatype(b)
+        d = convert(b,'real')   :f(m27_z)
+        e = 'success'
+m27_z   okchk('TEST_Convert_Real_Name')
+        vchk('TEST_Convert_Real_Name a', $'a', 3.14159)
+        vchk('TEST_Convert_Real_Name b', $'b', '3.14159')
+        vchk('TEST_Convert_Real_Name c', $'c', 'name')
+        vchk('TEST_Convert_Real_Name d', $'d', 3.14159)
+        vchk('TEST_Convert_Real_Name e', $'e', 'success')
+
+* ===== TEST_Convert_Real_Expression =====
+        clear()
+        caughtf =
+        a = convert(3.14159, 'expression')
+        b = datatype(a);
+        c = eval(a)
+        d = datatype(c)
+m28_z   okchk('TEST_Convert_Real_Expression')
+        vchk('TEST_Convert_Real_Expression b', $'b', 'expression')
+        vchk('TEST_Convert_Real_Expression c', $'c', '3.14159')
+        vchk('TEST_Convert_Real_Expression d', $'d', 'real')
+
+* ===== TEST_Convert_Real_Code =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = convert(3.14159, 'code') :f(m29_z)
+        d = 'success'
+m29_z   okchk('TEST_Convert_Real_Code')
+        vchk('TEST_Convert_Real_Code d', $'d', 'success')
+
+* ===== TEST_Convert_Array_String =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'string') :f(m30_z)
+        d = 'success'
+m30_z   okchk('TEST_Convert_Array_String')
+        vchk('TEST_Convert_Array_String d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Integer =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'integer') :f(m31_z)
+        d = 'success'
+m31_z   okchk('TEST_Convert_Array_Integer')
+        vchk('TEST_Convert_Array_Integer d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Real =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'real') :f(m32_z)
+        d = 'success'
+m32_z   okchk('TEST_Convert_Array_Real')
+        vchk('TEST_Convert_Array_Real d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Array =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'array') :f(m33_z)
+        d = 'success'
+m33_z   okchk('TEST_Convert_Array_Array')
+        vchk('TEST_Convert_Array_Array d', $'d', 'success')
+
+* ===== TEST_Convert_Array_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'table') :f(m34_z)
+        r = a['a'] a['b'] a['c'] a['d'] a['e']
+        d = 'success'
+m34_z   okchk('TEST_Convert_Array_Table')
+        vchk('TEST_Convert_Array_Table d', $'d', 'success')
+        vchk('TEST_Convert_Array_Table r', $'r', '12345')
+
+* ===== TEST_Convert_Array_Table_2_ =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+        a = convert(b, 'table') :f(m35_z)
+        d = 'success'
+m35_z   okchk('TEST_Convert_Array_Table_2_')
+        vchk('TEST_Convert_Array_Table_2_ d', $'d', 'success')
+
+* ===== TEST_Convert_Array_Table_3_ =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,1')
+        a = convert(b, 'table') :f(m36_z)
+        d = 'success'
+m36_z   okchk('TEST_Convert_Array_Table_3_')
+        vchk('TEST_Convert_Array_Table_3_ d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Table_4_ =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5')
+        a = convert(b, 'table') :f(m37_z)
+        d = 'success'
+m37_z   okchk('TEST_Convert_Array_Table_4_')
+        vchk('TEST_Convert_Array_Table_4_ d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Table_5_ =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,3')
+        a = convert(b, 'table') :f(m38_z)
+        d = 'success'
+m38_z   okchk('TEST_Convert_Array_Table_5_')
+        vchk('TEST_Convert_Array_Table_5_ d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Pattern =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'pattern') :f(m39_z)
+        d = 'success'
+m39_z   okchk('TEST_Convert_Array_Pattern')
+        vchk('TEST_Convert_Array_Pattern d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Name =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'name') :f(m40_z)
+        d = 'success'
+m40_z   okchk('TEST_Convert_Array_Name')
+        vchk('TEST_Convert_Array_Name d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Expression =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'expression') :f(m41_z)
+        d = 'success'
+m41_z   okchk('TEST_Convert_Array_Expression')
+        vchk('TEST_Convert_Array_Expression d', $'d', 'failure')
+
+* ===== TEST_Convert_Array_Code =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = array('5,2')
+	    b[1,1] = 'a'
+	    b[2,1] = 'b'
+	    b[3,1] = 'c'
+	    b[4,1] = 'd'
+	    b[5,1] = 'e'
+        b[1,2] = 1
+	    b[2,2] = 2
+	    b[3,2] = 3
+	    b[4,2] = 4
+	    b[5,2] = 5
+        a = convert(b, 'code') :f(m42_z)
+        d = 'success'
+m42_z   okchk('TEST_Convert_Array_Code')
+        vchk('TEST_Convert_Array_Code d', $'d', 'failure')
+
+* ===== TEST_Convert_Table_String =====
+        clear()
+        caughtf =
+        d = 'failure'
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'string')  :f(m43_z)
+        d = 'success'
+m43_z   okchk('TEST_Convert_Table_String')
+        vchk('TEST_Convert_Table_String d', $'d', 'failure')
+
+* ===== TEST_Convert_Table_Integer =====
+        clear()
+        caughtf =
+        d = 'failure'
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'integer')  :f(m44_z)
+        d = 'success'
+m44_z   okchk('TEST_Convert_Table_Integer')
+        vchk('TEST_Convert_Table_Integer d', $'d', 'failure')
+
+* ===== TEST_Convert_Table_Real =====
+        clear()
+        caughtf =
+        d = 'failure'
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'real')  :f(m45_z)
+        d = 'success'
+m45_z   okchk('TEST_Convert_Table_Real')
+        vchk('TEST_Convert_Table_Real d', $'d', 'failure')
+
+* ===== TEST_Convert_Table_Array =====
+        clear()
+        caughtf =
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'array')
+
+	    r1 = b[1,1] ' ' b[1,2]
+	    r2 = b[2,1] ' ' b[2,2]
+	    r3 = b[3,1] ' ' b[3,2]
+	    r4 = b[4,1] ' ' b[4,2]
+	    r5 = b[5,1] ' ' b[5,2]
+m46_z   okchk('TEST_Convert_Table_Array')
+        vchk('TEST_Convert_Table_Array r1', $'r1', '1 2')
+        vchk('TEST_Convert_Table_Array r2', $'r2', '2 4')
+        vchk('TEST_Convert_Table_Array r3', $'r3', '3 6')
+        vchk('TEST_Convert_Table_Array r4', $'r4', '4 8')
+        vchk('TEST_Convert_Table_Array r5', $'r5', '5 10')
+
+* ===== TEST_Convert_Table_Array_2_ =====
+        clear()
+        caughtf =
+	    t = table()
+	    t[1] = 'one'
+	    t[2] = 'two'
+	    t[3] = 'three'
+	    t[4] = 'four'
+	    t[5] = 'five'
+
+	    b = convert(t, 'array')
+
+	    r1 = b[1,1] ' ' b[1,2]
+	    r2 = b[2,1] ' ' b[2,2]
+	    r3 = b[3,1] ' ' b[3,2]
+	    r4 = b[4,1] ' ' b[4,2]
+	    r5 = b[5,1] ' ' b[5,2]
+m47_z   okchk('TEST_Convert_Table_Array_2_')
+        vchk('TEST_Convert_Table_Array_2_ r1', $'r1', '1 one')
+        vchk('TEST_Convert_Table_Array_2_ r2', $'r2', '2 two')
+        vchk('TEST_Convert_Table_Array_2_ r3', $'r3', '3 three')
+        vchk('TEST_Convert_Table_Array_2_ r4', $'r4', '4 four')
+        vchk('TEST_Convert_Table_Array_2_ r5', $'r5', '5 five')
+
+* ===== TEST_Convert_Table_Array_3_ =====
+        clear()
+        caughtf =
+	    t = table()
+	    t[1] = any('one')
+	    t[2] = any('two')
+	    t[3] = any('three')
+	    t[4] = any('four')
+	    t[5] = any('five')
+
+	    b = convert(t, 'array')
+
+	    r1 = b[1,1] ' ' b[1,2]
+	    r2 = b[2,1] ' ' b[2,2]
+	    r3 = b[3,1] ' ' b[3,2]
+	    r4 = b[4,1] ' ' b[4,2]
+	    r5 = b[5,1] ' ' b[5,2]
+m48_z   okchk('TEST_Convert_Table_Array_3_')
+
+* ===== TEST_Convert_Table_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'table')  :f(m49_z)
+        d = 'success'
+m49_z   okchk('TEST_Convert_Table_Table')
+        vchk('TEST_Convert_Table_Table d', $'d', 'success')
+
+* ===== TEST_Convert_Table_Pattern =====
+        clear()
+        caughtf =
+        d = 'failure'
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'pattern')  :f(m50_z)
+        d = 'success'
+m50_z   okchk('TEST_Convert_Table_Pattern')
+        vchk('TEST_Convert_Table_Pattern d', $'d', 'failure')
+
+* ===== TEST_Convert_Table_Name =====
+        clear()
+        caughtf =
+        d = 'failure'
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'name')  :f(m51_z)
+        d = 'success'
+m51_z   okchk('TEST_Convert_Table_Name')
+        vchk('TEST_Convert_Table_Name d', $'d', 'failure')
+
+* ===== TEST_Convert_Table_Expression =====
+        clear()
+        caughtf =
+        d = 'failure'
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'expression')  :f(m52_z)
+        d = 'success'
+m52_z   okchk('TEST_Convert_Table_Expression')
+        vchk('TEST_Convert_Table_Expression d', $'d', 'failure')
+
+* ===== TEST_Convert_Table_Code =====
+        clear()
+        caughtf =
+        d = 'failure'
+	    t = table()
+	    t[1] = 2
+	    t[2] = 4
+	    t[3] = 6
+	    t[4] = 8
+	    t[5] = 10
+
+	    b = convert(t, 'code')  :f(m53_z)
+        d = 'success'
+m53_z   okchk('TEST_Convert_Table_Code')
+        vchk('TEST_Convert_Table_Code d', $'d', 'failure')
+
+* ===== TEST_Convert_Name_String =====
+        clear()
+        caughtf =
+        a = 'something'
+        output = b = convert(a, 'name')   :f(m54_z)
+        output = c = datatype(b)
+        output = d = convert(b, 'string')   :f(m54_z)
+        output = e = datatype(d)
+        output = f = 'success'
+m54_z   okchk('TEST_Convert_Name_String')
+        vchk('TEST_Convert_Name_String a', $'a', 'something')
+        vchk('TEST_Convert_Name_String b', $'b', 'something')
+        vchk('TEST_Convert_Name_String c', $'c', 'name')
+        vchk('TEST_Convert_Name_String d', $'d', 'something')
+        vchk('TEST_Convert_Name_String e', $'e', 'string')
+        vchk('TEST_Convert_Name_String f', $'f', 'success')
+
+* ===== TEST_Convert_Name_String_2_ =====
+        clear()
+        caughtf =
+        a = '#$%'
+        output = b = convert(a, 'name')   :f(m55_z)
+        output = c = datatype(b)
+        output = d = convert(b, 'string')   :f(m55_z)
+        output = e = datatype(d)
+        output = f = 'success'
+m55_z   okchk('TEST_Convert_Name_String_2_')
+        vchk('TEST_Convert_Name_String_2_ a', $'a', '#$%')
+        vchk('TEST_Convert_Name_String_2_ b', $'b', '#$%')
+        vchk('TEST_Convert_Name_String_2_ c', $'c', 'name')
+        vchk('TEST_Convert_Name_String_2_ d', $'d', '#$%')
+        vchk('TEST_Convert_Name_String_2_ e', $'e', 'string')
+        vchk('TEST_Convert_Name_String_2_ f', $'f', 'success')
+
+* ===== TEST_Convert_Name_Integer =====
+        clear()
+        caughtf =
+        a = 32767
+        output = b = convert(a,'name')   :f(m56_z)
+        output = c = datatype(b)
+        output = d = convert(b,'integer')   :f(m56_z)
+        output = e = datatype(d)
+        output = f = 'success'
+m56_z   okchk('TEST_Convert_Name_Integer')
+        vchk('TEST_Convert_Name_Integer a', $'a', 32767)
+        vchk('TEST_Convert_Name_Integer b', $'b', '32767')
+        vchk('TEST_Convert_Name_Integer c', $'c', 'name')
+        vchk('TEST_Convert_Name_Integer d', $'d', 32767)
+        vchk('TEST_Convert_Name_Integer e', $'e', 'integer')
+        vchk('TEST_Convert_Name_Integer f', $'f', 'success')
+
+* ===== TEST_Convert_Integer_Name =====
+        clear()
+        caughtf =
+        a = 123456
+        b = convert(a,'name')   :f(m57_z)
+        c = datatype(b)
+        d = convert(b,'integer')   :f(m57_z)
+        e = 'success'
+m57_z   okchk('TEST_Convert_Integer_Name')
+        vchk('TEST_Convert_Integer_Name a', $'a', 123456)
+        vchk('TEST_Convert_Integer_Name b', $'b', '123456')
+        vchk('TEST_Convert_Integer_Name c', $'c', 'name')
+        vchk('TEST_Convert_Integer_Name d', $'d', 123456)
+        vchk('TEST_Convert_Integer_Name e', $'e', 'success')
+
+* ===== TEST_Convert_Name_Real =====
+        clear()
+        caughtf =
+        a = 3.14159
+        output = b = convert(a,'name')   :f(m58_z)
+        output = c = datatype(b)
+        output = d = convert(b,'real')   :f(m58_z)
+        output = e = datatype(d)
+        output = f = 'success'
+m58_z   okchk('TEST_Convert_Name_Real')
+        vchk('TEST_Convert_Name_Real a', $'a', 3.14159)
+        vchk('TEST_Convert_Name_Real b', $'b', '3.14159')
+        vchk('TEST_Convert_Name_Real c', $'c', 'name')
+        vchk('TEST_Convert_Name_Real d', $'d', 3.14159)
+        vchk('TEST_Convert_Name_Real e', $'e', 'real')
+        vchk('TEST_Convert_Name_Real f', $'f', 'success')
+
+* ===== TEST_Convert_Name_Array =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 'something'
+        b = convert(.a,'array')  :f(m59_z)
+        d = 'success'
+m59_z   okchk('TEST_Convert_Name_Array')
+        vchk('TEST_Convert_Name_Array d', $'d', 'failure')
+
+* ===== TEST_Convert_Name_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = 'something'
+        b = convert(.a,'table')  :f(m60_z)
+        d = 'success'
+m60_z   okchk('TEST_Convert_Name_Table')
+        vchk('TEST_Convert_Name_Table d', $'d', 'failure')
+
+* ===== TEST_Convert_Name_Pattern =====
+        clear()
+        caughtf =
+        output = a = .abc
+		output = b = datatype(a)
+		output = c = convert(b , 'pattern')
+		output = d = datatype(c)
+        output = e = 'success'
+m61_z   okchk('TEST_Convert_Name_Pattern')
+        vchk('TEST_Convert_Name_Pattern a', $'a', 'abc')
+        vchk('TEST_Convert_Name_Pattern b', $'b', 'name')
+        vchk('TEST_Convert_Name_Pattern c', $'c', 'pattern')
+        vchk('TEST_Convert_Name_Pattern d', $'d', 'pattern')
+        vchk('TEST_Convert_Name_Pattern e', $'e', 'success')
+
+* ===== TEST_Convert_Name_Name =====
+        clear()
+        caughtf =
+        d = 'failure'
+        b = convert(.abc,'name')   :f(m62_z)
+        c = datatype(.abc)
+        d = 'success'
+m62_z   okchk('TEST_Convert_Name_Name')
+        vchk('TEST_Convert_Name_Name c', $'c', 'name')
+        vchk('TEST_Convert_Name_Name d', $'d', 'success')
+
+* ===== TEST_Convert_Name_Expression =====
+        clear()
+        caughtf =
+        e = convert('1 + 2', 'name')
+        h = convert(e, 'expression')
+        $e = 45
+        c = $e    
+        f = eval(e)
+        g = $'1 + 2'
+        d = 'success'
+m63_z   okchk('TEST_Convert_Name_Expression')
+        vchk('TEST_Convert_Name_Expression e', $'e', '1 + 2')
+        vchk('TEST_Convert_Name_Expression c', $'c', 45)
+        vchk('TEST_Convert_Name_Expression g', $'g', 45)
+        vchk('TEST_Convert_Name_Expression d', $'d', 'success')
+
+* ===== TEST_Convert_Name_Code =====
+        clear()
+        caughtf =
+        d = 'failure'
+        e = convert(' 1 + 2', 'name')
+        h = convert(e, 'code')
+        c = $e = 45
+        f = code(e)
+        g = $' 1 + 2'
+        d = 'success'
+m64_z   okchk('TEST_Convert_Name_Code')
+        vchk('TEST_Convert_Name_Code e', $'e', ' 1 + 2')
+        vchk('TEST_Convert_Name_Code c', $'c', 45)
+        vchk('TEST_Convert_Name_Code g', $'g', 45)
+        vchk('TEST_Convert_Name_Code d', $'d', 'success')
+
+* ===== TEST_Convert_Pattern_Array =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'array')  :f(m65_z)
+        d = 'success'
+m65_z   okchk('TEST_Convert_Pattern_Array')
+        vchk('TEST_Convert_Pattern_Array d', $'d', 'failure')
+
+* ===== TEST_Convert_Pattern_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'table')  :f(m66_z)
+        d = 'success'
+m66_z   okchk('TEST_Convert_Pattern_Table')
+        vchk('TEST_Convert_Pattern_Table d', $'d', 'failure')
+
+* ===== TEST_Convert_Pattern_Integer =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'integer')  :f(m67_z)
+        d = 'success'
+m67_z   okchk('TEST_Convert_Pattern_Integer')
+        vchk('TEST_Convert_Pattern_Integer d', $'d', 'failure')
+
+* ===== TEST_Convert_Pattern_Real =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'real')  :f(m68_z)
+        d = 'success'
+m68_z   okchk('TEST_Convert_Pattern_Real')
+        vchk('TEST_Convert_Pattern_Real d', $'d', 'failure')
+
+* ===== TEST_Convert_Pattern_Pattern =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'pattern')  :f(m69_z)
+        d = 'success'
+m69_z   okchk('TEST_Convert_Pattern_Pattern')
+        vchk('TEST_Convert_Pattern_Pattern d', $'d', 'success')
+
+* ===== TEST_Convert_Pattern_String =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'string')  :f(m70_z)
+        d = 'success'
+m70_z   okchk('TEST_Convert_Pattern_String')
+        vchk('TEST_Convert_Pattern_String d', $'d', 'failure')
+
+* ===== TEST_Convert_Pattern_Expression =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'expression')  :f(m71_z)
+        d = 'success'
+m71_z   okchk('TEST_Convert_Pattern_Expression')
+        vchk('TEST_Convert_Pattern_Expression d', $'d', 'failure')
+
+* ===== TEST_Convert_Pattern_Code =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'code')  :f(m72_z)
+        d = 'success'
+m72_z   okchk('TEST_Convert_Pattern_Code')
+        vchk('TEST_Convert_Pattern_Code d', $'d', 'failure')
+
+* ===== TEST_Convert_Pattern_Name =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'name')  :f(m73_z)
+        d = 'success'
+m73_z   okchk('TEST_Convert_Pattern_Name')
+        vchk('TEST_Convert_Pattern_Name d', $'d', 'failure')
+
+* ===== TEST_Convert_Expression_Array =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = *(len(k) pos(m))
+        b = convert(a,'array')  :f(m74_z)
+        d = 'success'
+m74_z   okchk('TEST_Convert_Expression_Array')
+        vchk('TEST_Convert_Expression_Array d', $'d', 'failure')
+
+* ===== TEST_Convert_Expression_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = *(len(k) pos(m))
+        b = convert(a,'table')  :f(m75_z)
+        d = 'success'
+m75_z   okchk('TEST_Convert_Expression_Table')
+        vchk('TEST_Convert_Expression_Table d', $'d', 'failure')
+
+* ===== TEST_Convert_Expression_String =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = *(len(k) pos(m))
+        b = convert(a,'string')  :f(m76_z)
+        d = 'success'
+m76_z   okchk('TEST_Convert_Expression_String')
+        vchk('TEST_Convert_Expression_String d', $'d', 'failure')
+
+* ===== TEST_Convert_Expression_Name =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = *(len(k) pos(m))
+        b = convert(a,'name')  :f(m77_z)
+        d = 'success'
+m77_z   okchk('TEST_Convert_Expression_Name')
+        vchk('TEST_Convert_Expression_Name d', $'d', 'failure')
+
+* ===== TEST_Convert_Expression_Integer =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = any('abc')
+        b = convert(a,'integer')  :f(m78_z)
+        d = 'success'
+m78_z   okchk('TEST_Convert_Expression_Integer')
+        vchk('TEST_Convert_Expression_Integer d', $'d', 'failure')
+
+* ===== TEST_Convert_Expression_Real =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = *(len(k) pos(m))
+        b = convert(a,'string')  :f(m79_z)
+        d = 'success'
+m79_z   okchk('TEST_Convert_Expression_Real')
+        vchk('TEST_Convert_Expression_Real d', $'d', 'failure')
+
+* ===== TEST_Convert_Expression_Pattern =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = *(len(k) pos(m))
+        b = convert(a,'pattern')  :f(m80_z)
+        d = 'success'
+m80_z   okchk('TEST_Convert_Expression_Pattern')
+        vchk('TEST_Convert_Expression_Pattern d', $'d', 'success')
+
+* ===== TEST_Convert_Expression_Expression =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = *(len(k) pos(m))
+        b = convert(a,'expression')  :f(m81_z)
+        d = 'success'
+m81_z   okchk('TEST_Convert_Expression_Expression')
+        vchk('TEST_Convert_Expression_Expression d', $'d', 'success')
+
+* ===== TEST_Convert_Expression_Code =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = *(len(k) pos(m))
+        b = convert(a,'code')  :f(m82_z)
+        d = 'success'
+m82_z   okchk('TEST_Convert_Expression_Code')
+        vchk('TEST_Convert_Expression_Code d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_Array =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'array')  :f(m83_z)
+        d = 'success'
+m83_z   okchk('TEST_Convert_Code_Array')
+        vchk('TEST_Convert_Code_Array d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_Table =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'table')  :f(m84_z)
+        d = 'success'
+m84_z   okchk('TEST_Convert_Code_Table')
+        vchk('TEST_Convert_Code_Table d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_String =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'string')  :f(m85_z)
+        d = 'success'
+m85_z   okchk('TEST_Convert_Code_String')
+        vchk('TEST_Convert_Code_String d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_Name =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'name')  :f(m86_z)
+        d = 'success'
+m86_z   okchk('TEST_Convert_Code_Name')
+        vchk('TEST_Convert_Code_Name d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_Integer =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'integer')  :f(m87_z)
+        d = 'success'
+m87_z   okchk('TEST_Convert_Code_Integer')
+        vchk('TEST_Convert_Code_Integer d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_Real =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'string')  :f(m88_z)
+        d = 'success'
+m88_z   okchk('TEST_Convert_Code_Real')
+        vchk('TEST_Convert_Code_Real d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_Pattern =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'pattern')  :f(m89_z)
+        d = 'success'
+m89_z   okchk('TEST_Convert_Code_Pattern')
+        vchk('TEST_Convert_Code_Pattern d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_Expression =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'expression')  :f(m90_z)
+        d = 'success'
+m90_z   okchk('TEST_Convert_Code_Expression')
+        vchk('TEST_Convert_Code_Expression d', $'d', 'failure')
+
+* ===== TEST_Convert_Code_Code =====
+        clear()
+        caughtf =
+        d = 'failure'
+        a = code(' len(k) pos(m)')
+        b = convert(a,'code')  :f(m91_z)
+        d = 'success'
+m91_z   okchk('TEST_Convert_Code_Code')
+        vchk('TEST_Convert_Code_Code d', $'d', 'success')
+
+END

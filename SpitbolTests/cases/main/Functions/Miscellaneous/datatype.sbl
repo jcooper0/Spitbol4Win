@@ -1,0 +1,109 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Datatype.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_DataType_Array_1 =====
+        clear()
+        caughtf =
+        b = datatype(array(20))
+m1_z    okchk('TEST_DataType_Array_1')
+        vchk('TEST_DataType_Array_1 b', $'b', 'array')
+
+* ===== TEST_DataType_Array_2 =====
+        clear()
+        caughtf =
+        a = array(10)
+        b = datatype(a)
+m2_z    okchk('TEST_DataType_Array_2')
+        vchk('TEST_DataType_Array_2 b', $'b', 'array')
+
+* ===== TEST_DataType_Array_3 =====
+        clear()
+        caughtf =
+        a = array(10)
+        b = datatype(a<2>)
+m3_z    okchk('TEST_DataType_Array_3')
+        vchk('TEST_DataType_Array_3 b', $'b', 'string')
+
+* ===== TEST_DataType_Code =====
+        clear()
+        caughtf =
+        b = datatype(code(' c = 2'))
+m4_z    okchk('TEST_DataType_Code')
+        vchk('TEST_DataType_Code b', $'b', 'code')
+
+* ===== TEST_DataType_Expression =====
+        clear()
+        caughtf =
+        b = datatype(*c)
+m5_z    okchk('TEST_DataType_Expression')
+        vchk('TEST_DataType_Expression b', $'b', 'expression')
+
+* ===== TEST_DataType_Integer =====
+        clear()
+        caughtf =
+        b = datatype(1)
+m6_z    okchk('TEST_DataType_Integer')
+        vchk('TEST_DataType_Integer b', $'b', 'integer')
+
+* ===== TEST_DataType_Name =====
+        clear()
+        caughtf =
+        b = datatype(.c)
+m7_z    okchk('TEST_DataType_Name')
+        vchk('TEST_DataType_Name b', $'b', 'name')
+
+* ===== TEST_DataType_Pattern =====
+        clear()
+        caughtf =
+        b = datatype( arb )
+m8_z    okchk('TEST_DataType_Pattern')
+        vchk('TEST_DataType_Pattern b', $'b', 'pattern')
+
+* ===== TEST_DataType_Real =====
+        clear()
+        caughtf =
+        b = datatype( 3.14 )
+m9_z    okchk('TEST_DataType_Real')
+        vchk('TEST_DataType_Real b', $'b', 'real')
+
+* ===== TEST_DataType_String =====
+        clear()
+        caughtf =
+        b = datatype( 'test' )
+m10_z   okchk('TEST_DataType_String')
+        vchk('TEST_DataType_String b', $'b', 'string')
+
+* ===== TEST_DataType_Table_1 =====
+        clear()
+        caughtf =
+        b = datatype(table(20))
+m11_z   okchk('TEST_DataType_Table_1')
+        vchk('TEST_DataType_Table_1 b', $'b', 'table')
+
+* ===== TEST_DataType_Table_2 =====
+        clear()
+        caughtf =
+        a = table(10)
+        b = datatype(a)
+m12_z   okchk('TEST_DataType_Table_2')
+        vchk('TEST_DataType_Table_2 b', $'b', 'table')
+
+* ===== TEST_DataType_Table_3 =====
+        clear()
+        caughtf =
+        a = table(,,10)
+        b = datatype(a[2])
+m13_z   okchk('TEST_DataType_Table_3')
+        vchk('TEST_DataType_Table_3 b', $'b', 'integer')
+
+* ===== TEST_DataType_UserDefinedData =====
+        clear()
+        caughtf =
+     	data('product(name,price,quantity,mfg)')
+	    item1 = product('CAPERS', 2.39, 48, 'BRINE BROTHERS')
+        b = datatype(item1);
+m14_z   okchk('TEST_DataType_UserDefinedData')
+        vchk('TEST_DataType_UserDefinedData b', $'b', 'product')
+
+END

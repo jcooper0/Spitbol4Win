@@ -1,0 +1,34 @@
+*Area of circle with radius 4.5 is 63.6171975
+*Area of square with side  15.9 is 252.81
+
+-INCLUDE 'assert.inc'
+
+* ===== TEST_Opsyn_001 =====
+
+		define('AreaOfCircle(radius)')    :(AreaOfCircle_End)
+AreaOfCircle	AreaOfCircle = 3.14159 * radius ^ 2 :(return)
+AreaOfCircle_End
+		define('AreaOfSquare(side)')      :(AreaOfSquare_End)
+AreaOfSquare	AreaOfSquare = side ^ 2 :(return)
+AreaOfSquare_End	
+		opsyn('#','AreaOfCircle',1)
+       		opsyn('%','AreaOfSquare',1)
+
+	    r1  =  #4.5
+		r2  =  %15.9
+
+		opsyn('ACircle','AreaOfCircle',0)
+       		opsyn('ASquare','AreaOfSquare',0)
+
+		r3 = ACircle(4.5)
+		r4 = ASquare(15.9)
+
+		opsyn('LENGTH','size')
+		r5 = LENGTH('rabbit')
+
+		vchk('TEST_Opsyn_001 r1', $'r1', '63.6171975')
+		vchk('TEST_Opsyn_001 r2', $'r2', '252.81')
+		vchk('TEST_Opsyn_001 r3', $'r3', '63.6171975')
+		vchk('TEST_Opsyn_001 r4', $'r4', '252.81')
+		vchk('TEST_Opsyn_001 r5', $'r5', '6')
+end

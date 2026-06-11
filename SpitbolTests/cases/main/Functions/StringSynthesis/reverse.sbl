@@ -1,0 +1,20 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Reverse.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Reverse_001 =====
+        clear()
+        caughtf =
+        a = 'this is a test'
+        b = reverse(a)
+m1_z    okchk('TEST_Reverse_001')
+        vchk('TEST_Reverse_001 b', $'b', 'tset a si siht')
+
+* ===== TEST_Reverse_002 =====
+        clear()
+        caughtf =
+        a = any('this is a test')
+        b = reverse(a)
+m2_z    errchk('TEST_Reverse_002', 177)
+
+END

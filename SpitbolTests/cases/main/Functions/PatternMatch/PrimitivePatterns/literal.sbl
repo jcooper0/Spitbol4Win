@@ -1,0 +1,114 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Literal.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Literal_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer'
+        pattern = 'gram'
+        subject pattern      :s(m1_y)f(m1_n)
+m1_y       result = 'success'   :(m1_z)
+m1_n       result = 'fail' 
+m1_z    vchk('TEST_Literal_001 subject', $'subject', 'programmer')
+        vchk('TEST_Literal_001 result', $'result', 'success')
+
+* ===== TEST_Literal_002 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer'
+        pattern = 'gram'
+        subject pattern = ''      :s(m2_y)f(m2_n)
+m2_y       result = 'success'   :(m2_z)
+m2_n       result = 'fail' 
+m2_z    vchk('TEST_Literal_002 subject', $'subject', 'promer')
+        vchk('TEST_Literal_002 result', $'result', 'success')
+
+* ===== TEST_Literal_003 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer'
+        pattern = 'gram'
+        subject pattern =     :s(m3_y)f(m3_n)
+m3_y       result = 'success'   :(m3_z)
+m3_n       result = 'fail' 
+m3_z    vchk('TEST_Literal_003 subject', $'subject', 'promer')
+        vchk('TEST_Literal_003 result', $'result', 'success')
+
+* ===== TEST_Literal_004 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer'
+        pattern = 'gram'
+        subject pattern = 'meter'     :s(m4_y)f(m4_n)
+m4_y       result = 'success'   :(m4_z)
+m4_n       result = 'fail' 
+m4_z    vchk('TEST_Literal_004 subject', $'subject', 'prometermer')
+        vchk('TEST_Literal_004 result', $'result', 'success')
+
+* ===== TEST_Literal_005 =====
+        clear()
+        caughtf =
+        &anchor = 1
+        subject = 'programmer'
+        pattern = 'gram'
+        subject pattern      :s(m5_y)f(m5_n)
+m5_y       result = 'success'   :(m5_z)
+m5_n       result = 'fail' 
+m5_z    vchk('TEST_Literal_005 subject', $'subject', 'programmer')
+        vchk('TEST_Literal_005 result', $'result', 'fail')
+
+* ===== TEST_Literal_006 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer    '
+        pattern = 'gram'
+        subject pattern  =    :s(m6_y)f(m6_n)
+m6_y       result = 'success'   :(m6_z)
+m6_n       result = 'fail' 
+m6_z    vchk('TEST_Literal_006 subject', $'subject', 'promer    ')
+        vchk('TEST_Literal_006 result', $'result', 'success')
+
+* ===== TEST_Literal_007 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer    '
+        pattern = 'gram'
+        subject pattern =     :s(m7_y)f(m7_n)
+m7_y       result = 'success'   :(m7_z)
+m7_n       result = 'fail' 
+m7_z    vchk('TEST_Literal_007 subject', $'subject', 'promer    ')
+        vchk('TEST_Literal_007 result', $'result', 'success')
+
+* ===== TEST_Literal_008 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer    '
+        pattern = ''
+        subject pattern =     :s(m8_y)f(m8_n)
+m8_y       result = 'success'   :(m8_z)
+m8_n       result = 'fail' 
+m8_z    vchk('TEST_Literal_008 subject', $'subject', 'programmer    ')
+        vchk('TEST_Literal_008 result', $'result', 'success')
+
+* ===== TEST_Literal_009 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer    '
+        pattern = *B
+        B = 'gram'
+        subject pattern =     :s(m9_y)f(m9_n)
+m9_y       result = 'success'   :(m9_z)
+m9_n       result = 'fail' 
+m9_z    vchk('TEST_Literal_009 subject', $'subject', 'promer    ')
+        vchk('TEST_Literal_009 result', $'result', 'success')
+
+END

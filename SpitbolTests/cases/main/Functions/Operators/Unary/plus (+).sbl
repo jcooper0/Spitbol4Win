@@ -1,0 +1,28 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Plus (+).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Plus_001 =====
+        clear()
+        caughtf =
+        a = +5
+        okchk('TEST_Plus_001')
+        vchk('TEST_Plus_001 result', $'a', '5')
+
+* ===== TEST_Plus_002 =====
+        clear()
+        caughtf =
+	    b = -3.3
+        a = +b
+        okchk('TEST_Plus_002')
+        vchk('TEST_Plus_002 result', $'a', '-3.3')
+
+* ===== TEST_Plus_003 =====
+        clear()
+        caughtf =
+	    b = 3.4 
+        a = +b
+        okchk('TEST_Plus_003')
+        vchk('TEST_Plus_003 result', $'a', '3.4')
+
+END

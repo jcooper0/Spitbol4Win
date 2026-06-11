@@ -1,0 +1,17 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Function_Bump2 =====
+        caughtf =
+        define('bump(v)') :(bumpend)
+bump    bump = v + 1 :(return)
+bumpend
+        s = ''
+        j = 0
+loop    s = s bump(2 * j)
+        j = j + 1
+        lt(j,10)     :s(loop)
+        
+qzdone  okchk('TEST_Function_Bump2')
+        vchk('TEST_Function_Bump2 s', $'s', '135791113151719')
+END

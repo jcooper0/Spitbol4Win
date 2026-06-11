@@ -1,0 +1,148 @@
+
+*  array.sbl  --  ARRAY() construction and reference coverage, asserting the
+*  EXACT native SPITBOL &ERRTYPE for every error case.
+*
+*  Codes were taken from the SPITBOL source error table (sbl.min):
+*    064  array first argument is not integer or string
+*    065  array first argument lower bound is not integer
+*    066  array first argument upper bound is not integer
+*    067  array dimension is zero, negative or out of range   (zero dim AND lower>upper)
+*    068  array size exceeds maximum permitted
+*    235  subscripted operand is not table or array
+*    236  array referenced with wrong number of subscripts
+*    238  array subscript is not integer
+*  Subscript OUT OF RANGE is not an error -- the reference simply FAILS.
+*
+*  ----------------------------------------------------------------------------
+*  How &ERRTYPE is captured
+*  ----------------------------------------------------------------------------
+*  &ERRTYPE is only set when an error is DELIVERED to a SETEXIT handler.  A
+*  runtime error inside eval() makes eval() merely FAIL (and prints the message)
+*  WITHOUT driving the trap, so eval() leaves &ERRTYPE null.  Therefore every
+*  error case here executes the failing primitive DIRECTLY (not via eval):
+*    - constructions go through acode(), which calls array(proto) directly;
+*    - references are inline ( x = sa<3> ), so the error reaches the handler.
+*  The shared handler 'caught' saves &ERRTYPE, sets a flag, RE-ARMS setexit
+*  (it is one-shot), then :(continue)s to the per-case check.
+*
+*    acode(tag,proto,code)  PASS iff array(proto) errors with &ERRTYPE = code
+*    aprobe(tag,proto)      prints the code array(proto) produces (no pass/fail)
+*    errchk(tag,code)       per the last DIRECT op: PASS iff it errored with code
+*    errprobe(tag)          prints the code the last DIRECT op produced
+*    refok / reffail        in-range reference succeeds / out-of-range fails
+*    vchk(tag,obs,exp)      value equality
+*
+*  Pass acode/aprobe the BARE PROTOTYPE STRING ('-5:10,b:5,20'), not array(...).
+*  Quoting reminder: array(-a:10,...) WITHOUT quotes is a COMPILE-time syntax
+*  error (no &ERRTYPE) -- test those in golden mode, not here.
+
+        define('vchk(tag,obs,exp)')
+        define('acode(tag,proto,code)acv')
+        define('aprobe(tag,proto)apv')
+        define('errchk(tag,code)')
+        define('errprobe(tag)')
+        define('refok(tag,expr)rokval')
+        define('reffail(tag,expr)rfval')               :(over)
+
+vchk    ident(obs,exp)                                  :s(vchk_p)f(vchk_f)
+vchk_p  output = ' pass: ' tag ' = [' obs ']'           :(return)
+vchk_f  output = '*FAIL: ' tag '  obs[' obs ']  exp[' exp ']'           :(return)
+
+*  ---- error capture: shared one-shot-safe handler + checkers ---------------
+caught  savedet = &errtype
+        caughtf = 1
+        setexit(.caught)                                :(continue)
+
+errchk  ident(caughtf,1)                                :f(errchk_nf)
+        eq(savedet,code)                                :s(errchk_p)f(errchk_w)
+errchk_p output = ' pass: ' tag ' errtype=' savedet     :(return)
+errchk_w output = '*FAIL: ' tag ' errtype=[' savedet '] expected [' code ']'  :(return)
+errchk_nf output = '*FAIL: ' tag ' rejected by FAILURE not error (no &errtype)'  :(return)
+
+errprobe ident(caughtf,1)                               :f(errprobe_nf)
+        output = ' info: ' tag ' errtype=' savedet      :(return)
+errprobe_nf output = ' info: ' tag ' FAILED (no error)' :(return)
+
+acode   caughtf =
+        acv = array(proto)                              :s(acode_win)
+        errchk(tag,code)                                :(return)
+acode_win output = '*FAIL: ' tag ' unexpectedly built an ' datatype(acv)       :(return)
+
+aprobe  caughtf =
+        apv = array(proto)                              :s(aprobe_win)
+        errprobe(tag)                                   :(return)
+aprobe_win output = ' info: ' tag ' SUCCEEDED -> ' datatype(apv)               :(return)
+
+refok   rokval = eval(expr)                             :s(refok_p)f(refok_f)
+refok_p output = ' pass: ' tag ' succeeds'              :(return)
+refok_f output = '*FAIL: ' tag ' should succeed'        :(return)
+
+reffail rfval = eval(expr)                              :s(reffail_no)f(reffail_p)
+reffail_p output = ' pass: ' tag ' fails as expected'   :(return)
+reffail_no output = '*FAIL: ' tag ' should fail -> got [' rfval ']'    :(return)
+over
+        setexit(.caught)
+        &errlimit = 1000000
+
+*  =====  valid prototypes : datatype must be ARRAY  =========================
+        vchk('001 array(-5:10,3:5,20)', datatype(array('-5:10,3:5,20')), 'array')
+        vchk('002 array(20)',           datatype(array(20)),             'array')
+        vchk('00a array(string 10)',    datatype(array('10')),           'array')
+        vchk('00b array(-4:4)',         datatype(array('-4:4')),         'array')
+        vchk('00c array(10,999)',       datatype(array(10,999)),         'array')
+
+*  =====  element values  ====================================================
+        tmp = array(10)
+        vchk('val default array(10)<3> is null', tmp<3>, '')
+        tmp = array(10,999)
+        vchk('val array(10,999)<3> is 999',      tmp<3>, 999)
+        ma = array('3,3')
+        ma<2,2> = 42
+        vchk('val multi-dim ma<2,2> stored',     ma<2,2>, 42)
+
+*  =====  references on array(10): in range succeeds, out of range FAILS  ====
+        a = array(10)
+        refok('023 a<1> in range',          'a<1>')
+        refok('024 a<10> in range',         'a<10>')
+        reffail('014 a<-1> out of range',   'a<-1>')
+        reffail('022 a<0> out of range',    'a<0>')
+        reffail('025 a<11> out of range',   'a<11>')
+
+*  =====  invalid prototypes : assert exact &ERRTYPE (direct call)  =========
+        acode("003 '-a:10,3:5,20' non-int lower",  "-a:10,3:5,20",  65)
+        acode("004 '-5:10,b:5,20' non-int lower",  "-5:10,b:5,20",  65)
+        acode("005 '-5:a,3:5,20' non-int upper",   "-5:a,3:5,20",   66)
+        acode("008 '-5:10,3:5,c' non-int dim",     "-5:10,3:5,c",   66)
+        acode("009 '-5:5,5:3,5' lower>upper",      "-5:5,5:3,5",    67)
+        acode("017 '0,3:5,20' zero dimension",     "0,3:5,20",      67)
+        acode("018 '3:5,0,20' zero dimension",     "3:5,0,20",      67)
+        acode("019 '3:5,20,0' zero dimension",     "3:5,20,0",      67)
+        acode("020 '0' zero dimension",            "0",             67)
+
+*  =====  bad references : inline direct execution, assert exact &ERRTYPE  ===
+        sa = 'abc'
+        caughtf =
+        rr = sa<3>                                      :s(w010)
+        errchk("010 subscripting a string sa<3>", 235)  :(n010)
+w010    output = '*FAIL: 010 sa<3> unexpectedly succeeded'
+n010    ia = array(20)
+        caughtf =
+        rr = ia<'abc'>                                  :s(w011)
+        errchk("011 non-integer subscript ia<'abc'>", 238)  :(n011)
+w011    output = "*FAIL: 011 ia<'abc'> unexpectedly succeeded"
+n011    ta = array('20,10,5')
+        caughtf =
+        rr = ta<30,1>                                   :s(w012)
+        errchk("012 wrong subscript count ta<30,1>", 236)   :(n012)
+w012    output = '*FAIL: 012 ta<30,1> unexpectedly succeeded'
+n012    sq = array('3,3')
+        caughtf =
+        rr = sq<1>                                      :s(w016)
+        errchk("016 too few subscripts sq<1>", 236)         :(n016)
+w016    output = '*FAIL: 016 sq<1> unexpectedly succeeded'
+n016    caughtf =
+        rr = ta<6,1,5,2>                                :s(w021)
+        errchk("021 too many subscripts ta<6,1,5,2>", 236)  :(n021)
+w021    output = '*FAIL: 021 ta<6,1,5,2> unexpectedly succeeded'
+n021
+END

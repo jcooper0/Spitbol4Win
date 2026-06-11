@@ -1,0 +1,32 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Negation (~).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Negation_001 =====
+        clear()
+        caughtf =
+	    ~integer('a')   :f(m1_n)
+	    result = 'succeed' :(m1_z)
+m1_n	    result = 'failure'
+m1_z    okchk('TEST_Negation_001')
+        vchk('TEST_Negation_001 result', $'result', 'succeed')
+
+* ===== TEST_Negation_002 =====
+        clear()
+        caughtf =
+	    ~integer('3')   :f(m2_n)
+	    result = 'succeed' :(m2_z)
+m2_n	    result = 'failure'
+m2_z    okchk('TEST_Negation_002')
+        vchk('TEST_Negation_002 result', $'result', 'failure')
+
+* ===== TEST_Negation_003 =====
+        clear()
+        caughtf =
+	    ~integer(5)   :f(m3_n)
+	    result = 'succeed' :(m3_z)
+m3_n	    result = 'failure'
+m3_z    okchk('TEST_Negation_003')
+        vchk('TEST_Negation_003 result', $'result', 'failure')
+
+END

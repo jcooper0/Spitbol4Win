@@ -1,0 +1,91 @@
+        &ANCHOR   = 0
+        &TRIM     = 0
+        &ERRLIMIT = 100000
+        NTOT  = 0
+        NPASS = 0
+        NFAIL = 0
+        NSKIP = 0
+        NULLV = ''
+        DEFINE('PASS(W)')                                   :(H_PE)
+PASS    NPASS = NPASS + 1
+        NTOT  = NTOT + 1                                    :(RETURN)
+H_PE    DEFINE('FAILED(W)')                                 :(H_FE)
+FAILED  NFAIL = NFAIL + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'FAIL: ' W                               :(RETURN)
+H_FE    DEFINE('SKIPPED(W)')                                :(H_SE)
+SKIPPED NSKIP = NSKIP + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'SKIP: ' W                               :(RETURN)
+H_SE    DEFINE('EQS(W,G,X)')                                :(H_QE)
+EQS     EQS = IDENT(G,X)                                    :S(H_QOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_QOK   PASS(W)                                             :(RETURN)
+H_QE    DEFINE('EQN(W,G,X)')                                :(H_NE)
+EQN     EQN = EQ(G,X)                                       :S(H_NOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_NOK   PASS(W)                                             :(RETURN)
+*       CHK(NAME, EXPECTSET, STRICT)  --  inspect a trapped &ERRTYPE.
+*       EXPECTSET is a space-free or space-separated string of one or
+*       more acceptable codes; ECAUGHT holds the trapped code (0 = none).
+H_NE    DEFINE('CHK(NAME,EXPECTSET,STRICT)')                :(H_CE)
+CHK     EQ(ECAUGHT, 0)                                      :F(H_CFIRED)
+        EQ(STRICT, 1)                                       :S(H_CNF) F(H_CSK)
+H_CNF   FAILED(NAME ' | expected err ' EXPECTSET ', none raised') :(RETURN)
+H_CSK   SKIPPED(NAME ' | err ' EXPECTSET ' not triggerable here') :(RETURN)
+H_CFIRED (' ' EXPECTSET ' ') (' ' ECAUGHT ' ')             :S(H_COK) F(H_CWR)
+H_COK   PASS(NAME ' -> &ERRTYPE ' ECAUGHT)                  :(RETURN)
+H_CWR   FAILED(NAME ' | expected ' EXPECTSET ', got ' ECAUGHT) :(RETURN)
+H_CE
+*-----------------------------------------------------------------------
+*  output.sbl -- OUTPUT(name, channel, s) conformance tests.
+*  Behaviour per Emmer & Quillen SPITBOL Manual (pp. 43-44, 224-230).
+*  Error codes per sbl.min / ERR.ASM:  157 158 159 160 161 206 207 290.
+*-----------------------------------------------------------------------
+
+*--- functional: write records, read them back; -a appends ---
+        OUTPUT(.W, 1, 'io_t_out.tmp')                       :F(OU_SET)
+        W = 'aaa'
+        ENDFILE(1)
+        OUTPUT(.W, 1, 'io_t_out.tmp[-a]')                   :F(OU_SET)
+        W = 'bbb'
+        ENDFILE(1)
+        INPUT(.R, 1, 'io_t_out.tmp')                        :F(OU_SET)
+        EQS('OUTPUT: first record written', R, 'aaa')
+        EQS('OUTPUT: -a appended record', R, 'bbb')
+        ENDFILE(1)                                          :(OU_ERR)
+OU_SET  FAILED('output functional setup')
+
+*--- errors ---
+OU_ERR  SETEXIT(.ETRAP)
+        ECAUGHT = 0
+        OUTPUT(.V, 50, LEN(1))                              :S(o157) F(o157)
+o157    CHK('OUTPUT 157 third argument is not a string', '157', 1)
+        ECAUGHT = 0
+        OUTPUT(.V, LEN(1), 'io_t_o.tmp')                    :S(o158) F(o158)
+o158    CHK('OUTPUT 158 inappropriate second argument', '158', 1)
+        ECAUGHT = 0
+        OUTPUT(LEN(1), 50, 'io_t_o.tmp')                    :S(o159) F(o159)
+o159    CHK('OUTPUT 159 inappropriate first argument', '159', 1)
+        ECAUGHT = 0
+        OUTPUT(.V, 50, 'io_t_o.tmp[-l')                     :S(o160) F(o160)
+o160    CHK('OUTPUT 160 inappropriate file specification', '160', 0)
+*       290: a filename on an already-open channel is invalid
+        OUTPUT(.U1, 8, 'io_t_o1.tmp')                       :F(OU_90S)
+        ECAUGHT = 0
+        OUTPUT(.U2, 8, 'io_t_o2.tmp')                       :S(o290) F(o290)
+o290    CHK('OUTPUT 290 channel currently in use', '290', 0)
+        ENDFILE(8)                                          :(OU_61)
+OU_90S  SKIPPED('OUTPUT 290 setup (open channel)')
+OU_61   SKIPPED('OUTPUT 161 file cannot be written to (needs write-protected target)')
+        SKIPPED('OUTPUT 206 caused file overflow (needs full device)')
+        SKIPPED('OUTPUT 207 caused non-recoverable error (needs I/O fault)')
+        :(REPORT)
+
+*------------------------------- summary -------------------------------
+REPORT  OUTPUT =
+        OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
+        OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
+        OUTPUT = 'RESULT: FAIL'                             :(END)
+ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+END

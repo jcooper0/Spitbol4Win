@@ -1,0 +1,119 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Deferred Evaluation (Star).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_STAR003 =====
+        clear()
+        &anchor = 0
+        &errlimit = 1000000
+        caughtf =
+        &anchor = 1;
+        line1 = 'two strings for testing'
+        line2 = 'abcdefghijklmnopqrstuvwxyz'
+        char = len(1) . ch
+        findch = break(*ch)
+        string1 = line1
+        string2 = line2
+m3_loop    string1 char =                          :f(m3_out)
+        string2 findch                          :f(m3_loop)
+        list = list ch                          :(m3_loop)
+m3_out     list
+m3_z    okchk('TEST_STAR003')
+        vchk('TEST_STAR003 list', $'list', 'twostringsfortesting')
+
+* ===== TEST_Pair =====
+        clear()
+        &anchor = 0
+        &errlimit = 1000000
+        caughtf =
+        pair = (len(1) $ x *x) $ double
+        'cook' pair
+        list = list double
+        'arron' pair
+        list = list double
+        'chickadee' pair
+        list = list double
+m4_z    okchk('TEST_Pair')
+        vchk('TEST_Pair list', $'list', 'oorree')
+
+* ===== TEST_Superbowl =====
+        clear()
+        &anchor = 0
+        &errlimit = 1000000
+        caughtf =
+        bigp = (*p $ try *gt(size(try),size(big))) $ big fail
+        str = 'IN 1964 NFL ATTENDANCE JUMPED TO 4,807,884; AN INCREASE OF 401,810'
+        p = span('ABCDEFGHIJKLMNOPQRSTUVWXYZ,')
+        big = ''
+        str bigp
+        result = 'The largest word is: ' big '. '
+        p = span('0123456789,')
+        big = ''
+        str bigp
+        result = result 'The largest number is: ' big '.'
+m5_z    okchk('TEST_Superbowl')
+        vchk('TEST_Superbowl result', $'result', 'The largest word is: ATTENDANCE. The largest number is: 4,807,884.')
+
+* ===== TEST_Recursive001 =====
+        clear()
+        &anchor = 0
+        &errlimit = 1000000
+        caughtf =
+        &anchor = 1;
+        p = 'a' | ('b' *p)
+        'bbba' p . match
+m6_z    okchk('TEST_Recursive001')
+        vchk('TEST_Recursive001 match', $'match', 'bbba')
+
+* ===== TEST_Recursive002 =====
+        clear()
+        &anchor = 0
+        &errlimit = 1000000
+        caughtf =
+        &anchor = 1;
+        p = 'a' | ('b' **p)
+        'bbba' p . match
+m7_z    okchk('TEST_Recursive002')
+        vchk('TEST_Recursive002 match', $'match', 'bbba')
+
+* ===== TEST_Error046 =====
+        clear()
+        &anchor = 0
+        &errlimit = 1000000
+        caughtf =
+        &anchor = 1;
+        p = 'a' | ('b' *r)
+        r = table(1)
+        'bbba' p . match
+m8_z    errchk('TEST_Error046', 46)
+
+* ===== TEST_Convert_001 =====
+        clear()
+        &anchor = 0
+        &errlimit = 1000000
+        caughtf =
+        a = 'this is a test'
+        b = eval(a)
+        x = b
+        y = datatype(b)
+m9_z    okchk('TEST_Convert_001')
+        vchk('TEST_Convert_001 a', $'a', 'this is a test')
+        vchk('TEST_Convert_001 b', $'b', 'this is a test')
+        vchk('TEST_Convert_001 x', $'x', 'this is a test')
+        vchk('TEST_Convert_001 y', $'y', 'string')
+
+* ===== TEST_Convert_002 =====
+        clear()
+        &anchor = 0
+        &errlimit = 1000000
+        caughtf =
+        a = convert('3.14 * 2.0', 'expression')
+        b = datatype(a);
+        c = eval(a)
+        d = datatype(c)
+m10_z   okchk('TEST_Convert_002')
+        vchk('TEST_Convert_002 b', $'b', 'expression')
+        vchk('TEST_Convert_002 c', $'c', '6.28')
+        vchk('TEST_Convert_002 d', $'d', 'real')
+
+END

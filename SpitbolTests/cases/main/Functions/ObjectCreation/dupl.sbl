@@ -1,0 +1,25 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Dupl.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Dupl_001 =====
+        clear()
+        caughtf =
+        R = DUPL('123', 3)
+m1_z    okchk('TEST_Dupl_001')
+        vchk('TEST_Dupl_001 R', $'R', '123123123')
+
+* ===== TEST_Dupl_002 =====
+        clear()
+        caughtf =
+        P = 'A' | '1'
+        R = DUPL(P, 5)
+        '11111' R . R1
+        '1A1A1' R . R2
+        'AAAAA' R . R3
+m2_z    okchk('TEST_Dupl_002')
+        vchk('TEST_Dupl_002 R1', $'R1', '11111')
+        vchk('TEST_Dupl_002 R2', $'R2', '1A1A1')
+        vchk('TEST_Dupl_002 R3', $'R3', 'AAAAA')
+
+END

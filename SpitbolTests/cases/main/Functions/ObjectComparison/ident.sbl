@@ -1,0 +1,401 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Ident.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_NotIdent_AnyPattern =====
+        clear()
+        caughtf =
+        a = any('abc')
+        b = any('abc')
+        ident(a,b)    :s(m1_equ)
+        out = 'not identical'    :(m1_z)
+m1_equ     out = 'identical'
+m1_z    okchk('TEST_NotIdent_AnyPattern')
+        vchk('TEST_NotIdent_AnyPattern out', $'out', 'not identical')
+
+* ===== TEST_Ident_AnyPattern =====
+        clear()
+        caughtf =
+        a = any('abc')
+        b = a
+        ident(a,b)    :s(m2_equ)
+        out = 'not identical'    :(m2_z)
+m2_equ     out = 'identical'
+m2_z    okchk('TEST_Ident_AnyPattern')
+        vchk('TEST_Ident_AnyPattern out', $'out', 'identical')
+
+* ===== TEST_NotIdent_ArbNoPattern =====
+        clear()
+        caughtf =
+        a = arbno(any('abc'))
+        b = arbno(any('abc'))
+        ident(a,b)    :s(m3_equ)
+        out = 'not identical'    :(m3_z)
+m3_equ     out = 'identical'
+m3_z    okchk('TEST_NotIdent_ArbNoPattern')
+        vchk('TEST_NotIdent_ArbNoPattern out', $'out', 'not identical')
+
+* ===== TEST_Ident_ArbNoPattern =====
+        clear()
+        caughtf =
+        a = arbno(any('abc'))
+        b = a
+        ident(a,b)    :s(m4_equ)
+        out = 'not identical'    :(m4_z)
+m4_equ     out = 'identical'
+m4_z    okchk('TEST_Ident_ArbNoPattern')
+        vchk('TEST_Ident_ArbNoPattern out', $'out', 'identical')
+
+* ===== TEST_NotIdent_ArbNoAnyPattern =====
+        clear()
+        caughtf =
+        a = arbno(any('abc'))
+        b = arbno(notany('abc'))
+        ident(a,b)    :s(m5_equ)
+        out = 'not identical'    :(m5_z)
+m5_equ     out = 'identical'
+m5_z    okchk('TEST_NotIdent_ArbNoAnyPattern')
+        vchk('TEST_NotIdent_ArbNoAnyPattern out', $'out', 'not identical')
+
+* ===== TEST_NotIdent_AtPattern =====
+        clear()
+        caughtf =
+        a = any('abc') @n break('xyz')
+        b = any('abc') @n break('xyz')
+        ident(a,b)    :s(m6_equ)
+        out = 'not identical'    :(m6_z)
+m6_equ     out = 'identical'
+m6_z    okchk('TEST_NotIdent_AtPattern')
+        vchk('TEST_NotIdent_AtPattern out', $'out', 'not identical')
+
+* ===== TEST_NotIdent_BalPattern =====
+        clear()
+        caughtf =
+        a = any('abc') bal len(10)
+        b = any('abc') bal len(10)
+        ident(a,b)    :s(m7_equ)
+        out = 'not identical'    :(m7_z)
+m7_equ     out = 'identical'
+m7_z    okchk('TEST_NotIdent_BalPattern')
+        vchk('TEST_NotIdent_BalPattern out', $'out', 'not identical')
+
+* ===== TEST_Ident_BalPattern_Non =====
+        clear()
+        caughtf =
+        a = any('abc') bal len(10)
+        b = any('abc') bal len(12)
+        ident(a,b)    :s(m8_equ)
+        out = 'not identical'    :(m8_z)
+m8_equ     out = 'identical'
+m8_z    okchk('TEST_Ident_BalPattern_Non')
+        vchk('TEST_Ident_BalPattern_Non out', $'out', 'not identical')
+
+* ===== TEST_NotIdent_FencePattern =====
+        clear()
+        caughtf =
+        a = fence 'abc' pos(10)
+        b = fence 'abc' pos(10)
+        ident(a,b)    :s(m9_equ)
+        out = 'not identical'    :(m9_z)
+m9_equ     out = 'identical'
+m9_z    okchk('TEST_NotIdent_FencePattern')
+        vchk('TEST_NotIdent_FencePattern out', $'out', 'not identical')
+
+* ===== TEST_NotIdent_ComplexPattern =====
+        clear()
+        caughtf =
+        a = snoExpr7 ('#' 2) | epsilon
+        b = snoExpr7 ('#' 2) | epsilon
+        ident(a,b)    :s(m10_equ)
+        out = 'not identical'    :(m10_z)
+m10_equ     out = 'identical'
+m10_z   okchk('TEST_NotIdent_ComplexPattern')
+        vchk('TEST_NotIdent_ComplexPattern out', $'out', 'not identical')
+
+* ===== TEST_NotIdent_Array_Array =====
+        clear()
+        caughtf =
+        a = array(10)
+        b = array(10)
+        ident(a,b)    :s(m11_equ)
+        out = 'not identical'    :(m11_z)
+m11_equ     out = 'identical'
+m11_z   okchk('TEST_NotIdent_Array_Array')
+        vchk('TEST_NotIdent_Array_Array out', $'out', 'not identical')
+
+* ===== TEST_NotIdent_Table_Table =====
+        clear()
+        caughtf =
+        a = table()
+        b = table()
+        ident(a,b)    :s(m12_equ)
+        out = 'not identical'    :(m12_z)
+m12_equ     out = 'identical'
+m12_z   okchk('TEST_NotIdent_Table_Table')
+        vchk('TEST_NotIdent_Table_Table out', $'out', 'not identical')
+
+* ===== TEST_Ident_Array_Array =====
+        clear()
+        caughtf =
+        a = array(10)
+        b = a
+        ident(a,b)    :s(m13_equ)
+        out = 'not identical'    :(m13_z)
+m13_equ     out = 'identical'
+m13_z   okchk('TEST_Ident_Array_Array')
+        vchk('TEST_Ident_Array_Array out', $'out', 'identical')
+
+* ===== TEST_Ident_Table_Table =====
+        clear()
+        caughtf =
+        a = table()
+        b = a
+        ident(a,b)    :s(m14_equ)
+        out = 'not identical'    :(m14_z)
+m14_equ     out = 'identical'
+m14_z   okchk('TEST_Ident_Table_Table')
+        vchk('TEST_Ident_Table_Table out', $'out', 'identical')
+
+* ===== TEST_Ident_Integer_Array =====
+        clear()
+        caughtf =
+        a = 2
+        b = array(10)
+        ident(a,b)    :s(m15_equ)
+        out = 'not identical'    :(m15_z)
+m15_equ     out = 'identical'
+m15_z   okchk('TEST_Ident_Integer_Array')
+        vchk('TEST_Ident_Integer_Array out', $'out', 'not identical')
+
+* ===== TEST_Ident_Integer_Code =====
+        clear()
+        caughtf =
+        a = 2
+        b = code(' b = 1.0')
+        ident(a,b)    :s(m16_equ)
+        out = 'not identical'    :(m16_z)
+m16_equ     out = 'identical'
+m16_z   okchk('TEST_Ident_Integer_Code')
+        vchk('TEST_Ident_Integer_Code out', $'out', 'not identical')
+
+* ===== TEST_Ident_Integer_Integer =====
+        clear()
+        caughtf =
+        a = 2
+        b = 2
+        ident(a,b)    :s(m17_equ)
+        out = 'not identical'    :(m17_z)
+m17_equ     out = 'identical'
+m17_z   okchk('TEST_Ident_Integer_Integer')
+        vchk('TEST_Ident_Integer_Integer out', $'out', 'identical')
+
+* ===== TEST_Ident_Integer_Integer_Diff =====
+        clear()
+        caughtf =
+        a = 2
+        b = 1
+        ident(a,b)    :s(m18_equ)
+        out = 'not identical'    :(m18_z)
+m18_equ     out = 'identical'
+m18_z   okchk('TEST_Ident_Integer_Integer_Diff')
+        vchk('TEST_Ident_Integer_Integer_Diff out', $'out', 'not identical')
+
+* ===== TEST_Ident_Integer_Pattern =====
+        clear()
+        caughtf =
+        a = 2
+        b = any('1.0')
+        ident(a,b)    :s(m19_equ)
+        out = 'not identical'    :(m19_z)
+m19_equ     out = 'identical'
+m19_z   okchk('TEST_Ident_Integer_Pattern')
+        vchk('TEST_Ident_Integer_Pattern out', $'out', 'not identical')
+
+* ===== TEST_Ident_Integer_Real =====
+        clear()
+        caughtf =
+        a = 2
+        b = 1.0
+        ident(a,b)    :s(m20_equ)
+        out = 'not identical'    :(m20_z)
+m20_equ     out = 'identical'
+m20_z   okchk('TEST_Ident_Integer_Real')
+        vchk('TEST_Ident_Integer_Real out', $'out', 'not identical')
+
+* ===== TEST_Ident_Integer_String =====
+        clear()
+        caughtf =
+        a = 2
+        b = '1.0'
+        ident(a,b)    :s(m21_equ)
+        out = 'not identical'    :(m21_z)
+m21_equ     out = 'identical'
+m21_z   okchk('TEST_Ident_Integer_String')
+        vchk('TEST_Ident_Integer_String out', $'out', 'not identical')
+
+* ===== TEST_Ident_Integer_Table =====
+        clear()
+        caughtf =
+        a = 2
+        b = table()
+        ident(a,b)    :s(m22_equ)
+        out = 'not identical'    :(m22_z)
+m22_equ     out = 'identical'
+m22_z   okchk('TEST_Ident_Integer_Table')
+        vchk('TEST_Ident_Integer_Table out', $'out', 'not identical')
+
+* ===== TEST_Ident_Real_Array =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = array(10)
+        ident(a,b)    :s(m23_equ)
+        out = 'not identical'    :(m23_z)
+m23_equ     out = 'identical'
+m23_z   okchk('TEST_Ident_Real_Array')
+        vchk('TEST_Ident_Real_Array out', $'out', 'not identical')
+
+* ===== TEST_Ident_Real_Code =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = code(' b = 1.0')
+        ident(a,b)    :s(m24_equ)
+        out = 'not identical'    :(m24_z)
+m24_equ     out = 'identical'
+m24_z   okchk('TEST_Ident_Real_Code')
+        vchk('TEST_Ident_Real_Code out', $'out', 'not identical')
+
+* ===== TEST_Ident_Real_Integer =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = 1
+        ident(a,b)    :s(m25_equ)
+        out = 'not identical'    :(m25_z)
+m25_equ     out = 'identical'
+m25_z   okchk('TEST_Ident_Real_Integer')
+        vchk('TEST_Ident_Real_Integer out', $'out', 'not identical')
+
+* ===== TEST_Ident_Real_Pattern =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = any('1.0')
+        ident(a,b)    :s(m26_equ)
+        out = 'not identical'    :(m26_z)
+m26_equ     out = 'identical'
+m26_z   okchk('TEST_Ident_Real_Pattern')
+        vchk('TEST_Ident_Real_Pattern out', $'out', 'not identical')
+
+* ===== TEST_Ident_Real_Real =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = 1.0
+        ident(a,b)    :s(m27_equ)
+        out = 'not identical'    :(m27_z)
+m27_equ     out = 'identical'
+m27_z   okchk('TEST_Ident_Real_Real')
+        vchk('TEST_Ident_Real_Real out', $'out', 'identical')
+
+* ===== TEST_Ident_Real_String =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = '1.0'
+        ident(a,b)    :s(m28_equ)
+        out = 'not identical'    :(m28_z)
+m28_equ     out = 'identical'
+m28_z   okchk('TEST_Ident_Real_String')
+        vchk('TEST_Ident_Real_String out', $'out', 'not identical')
+
+* ===== TEST_Ident_Real_Table =====
+        clear()
+        caughtf =
+        a = 1.0
+        b = table()
+        ident(a,b)    :s(m29_equ)
+        out = 'not identical'    :(m29_z)
+m29_equ     out = 'identical'
+m29_z   okchk('TEST_Ident_Real_Table')
+        vchk('TEST_Ident_Real_Table out', $'out', 'not identical')
+
+* ===== TEST_Ident_String_Array =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = array(10)
+        ident(a,b)    :s(m30_equ)
+        out = 'not identical'    :(m30_z)
+m30_equ     out = 'identical'
+m30_z   okchk('TEST_Ident_String_Array')
+        vchk('TEST_Ident_String_Array out', $'out', 'not identical')
+
+* ===== TEST_Ident_String_Code =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = code(' b = 1.0')
+        ident(a,b)    :s(m31_equ)
+        out = 'not identical'    :(m31_z)
+m31_equ     out = 'identical'
+m31_z   okchk('TEST_Ident_String_Code')
+        vchk('TEST_Ident_String_Code out', $'out', 'not identical')
+
+* ===== TEST_Ident_String_Integer =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = 1
+        ident(a,b)    :s(m32_equ)
+        out = 'not identical'    :(m32_z)
+m32_equ     out = 'identical'
+m32_z   okchk('TEST_Ident_String_Integer')
+        vchk('TEST_Ident_String_Integer out', $'out', 'not identical')
+
+* ===== TEST_Ident_String_Pattern =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = any('1.0')
+        ident(a,b)    :s(m33_equ)
+        out = 'not identical'    :(m33_z)
+m33_equ     out = 'identical'
+m33_z   okchk('TEST_Ident_String_Pattern')
+        vchk('TEST_Ident_String_Pattern out', $'out', 'not identical')
+
+* ===== TEST_Ident_String_Real =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = 1.0
+        ident(a,b)    :s(m34_equ)
+        out = 'not identical'    :(m34_z)
+m34_equ     out = 'identical'
+m34_z   okchk('TEST_Ident_String_Real')
+        vchk('TEST_Ident_String_Real out', $'out', 'not identical')
+
+* ===== TEST_Ident_String_String =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = '1.0'
+        ident(a,b)    :s(m35_equ)
+        out = 'not identical'    :(m35_z)
+m35_equ     out = 'identical'
+m35_z   okchk('TEST_Ident_String_String')
+        vchk('TEST_Ident_String_String out', $'out', 'identical')
+
+* ===== TEST_Ident_String_Table =====
+        clear()
+        caughtf =
+        a = '1.0'
+        b = table()
+        ident(a,b)    :s(m36_equ)
+        out = 'not identical'    :(m36_z)
+m36_equ     out = 'identical'
+m36_z   okchk('TEST_Ident_String_Table')
+        vchk('TEST_Ident_String_Table out', $'out', 'not identical')
+
+END

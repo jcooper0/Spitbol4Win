@@ -1,0 +1,85 @@
+        &ANCHOR   = 0
+        &TRIM     = 0
+        &ERRLIMIT = 100000
+        NTOT  = 0
+        NPASS = 0
+        NFAIL = 0
+        NSKIP = 0
+        NULLV = ''
+        DEFINE('PASS(W)')                                   :(H_PE)
+PASS    NPASS = NPASS + 1
+        NTOT  = NTOT + 1                                    :(RETURN)
+H_PE    DEFINE('FAILED(W)')                                 :(H_FE)
+FAILED  NFAIL = NFAIL + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'FAIL: ' W                               :(RETURN)
+H_FE    DEFINE('SKIPPED(W)')                                :(H_SE)
+SKIPPED NSKIP = NSKIP + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'SKIP: ' W                               :(RETURN)
+H_SE    DEFINE('EQS(W,G,X)')                                :(H_QE)
+EQS     EQS = IDENT(G,X)                                    :S(H_QOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_QOK   PASS(W)                                             :(RETURN)
+H_QE    DEFINE('EQN(W,G,X)')                                :(H_NE)
+EQN     EQN = EQ(G,X)                                       :S(H_NOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_NOK   PASS(W)                                             :(RETURN)
+*       CHK(NAME, EXPECTSET, STRICT)  --  inspect a trapped &ERRTYPE.
+*       EXPECTSET is a space-free or space-separated string of one or
+*       more acceptable codes; ECAUGHT holds the trapped code (0 = none).
+H_NE    DEFINE('CHK(NAME,EXPECTSET,STRICT)')                :(H_CE)
+CHK     EQ(ECAUGHT, 0)                                      :F(H_CFIRED)
+        EQ(STRICT, 1)                                       :S(H_CNF) F(H_CSK)
+H_CNF   FAILED(NAME ' | expected err ' EXPECTSET ', none raised') :(RETURN)
+H_CSK   SKIPPED(NAME ' | err ' EXPECTSET ' not triggerable here') :(RETURN)
+H_CFIRED (' ' EXPECTSET ' ') (' ' ECAUGHT ' ')             :S(H_COK) F(H_CWR)
+H_COK   PASS(NAME ' -> &ERRTYPE ' ECAUGHT)                  :(RETURN)
+H_CWR   FAILED(NAME ' | expected ' EXPECTSET ', got ' ECAUGHT) :(RETURN)
+H_CE
+*-----------------------------------------------------------------------
+*  eject.sbl -- EJECT(channel) conformance tests.
+*  Behaviour per Emmer & Quillen SPITBOL Manual (p. 218):
+*  EJECT sends an ASCII form-feed (decimal 12) to the channel.
+*  Error codes per sbl.min / ERR.ASM:  092 093 094 095.
+*-----------------------------------------------------------------------
+
+*--- functional: EJECT writes a form-feed to the channel ---
+        OUTPUT(.W, 1, 'io_t_ej.tmp')                        :F(EJ_SET)
+        W = 'before'
+        EJECT(1)
+        W = 'after'
+        ENDFILE(1)
+        INPUT(.R, 1, 'io_t_ej.tmp[-r10000]')                :F(EJ_SET)
+        BLOB = R
+        ENDFILE(1)
+        BLOB CHAR(12)                                       :S(EJ_OK) F(EJ_NO)
+EJ_OK   PASS('EJECT: form-feed (CHAR(12)) present in stream') :(EJ_ERR)
+EJ_NO   FAILED('EJECT: no form-feed found in stream')       :(EJ_ERR)
+EJ_SET  FAILED('eject functional setup')
+
+*--- errors ---
+EJ_ERR  SETEXIT(.ETRAP)
+        ECAUGHT = 0
+        EJECT(LEN(1))                                       :S(e92) F(e92)
+e92     CHK('EJECT 092 argument is not a suitable name', '92', 1)
+        ECAUGHT = 0
+        EJECT(77)                                           :S(e93) F(e93)
+e93     CHK('EJECT 093 file does not exist (channel not open)', '93', 1)
+*       094: page eject not permitted -- attempt on an input-only channel
+        INPUT(.IN, 9, 'io_t_ej.tmp')                        :F(EJ_94S)
+        ECAUGHT = 0
+        EJECT(9)                                            :S(e94) F(e94)
+e94     CHK('EJECT 094 file does not permit page eject', '94', 0)
+        ENDFILE(9)                                          :(EJ_95)
+EJ_94S  SKIPPED('EJECT 094 setup (open input channel)')
+EJ_95   SKIPPED('EJECT 095 caused non-recoverable output error (needs I/O fault)')
+        :(REPORT)
+
+*------------------------------- summary -------------------------------
+REPORT  OUTPUT =
+        OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
+        OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
+        OUTPUT = 'RESULT: FAIL'                             :(END)
+ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+END

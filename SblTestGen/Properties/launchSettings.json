@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "SblTestGen": {
+      "commandName": "Project",
+      "commandLineArgs": "convert \"C:\\Users\\jcooper\\source\\repos\\snobol4ever\\snobol4dotnet\\TestSnobol4\\Function\\Pattern\\IN\" \"C:\\Users\\jcooper\\source\\repos\\snobol4ever\\snobol4dotnet\\TestSnobol4\\Function\\Pattern\\OUT\" \"C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SpitbolExe\\x64\\Debug\\Spitbol.exe\""
+    }
+  }
+}

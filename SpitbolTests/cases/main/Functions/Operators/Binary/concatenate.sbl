@@ -1,0 +1,34 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Concatenate.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Concatenate_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        ss = 'PLEASEHELPMEOUT'
+        p1 = 'PLEASE'
+        p2 = 'HELP'
+        p3 = 'ME'
+        p4 = 'OUT'
+        p = p2 p3
+m1_z    vchk('TEST_Concatenate_001 p', $'p', 'HELPME')
+
+* ===== TEST_Concatenate_002 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        ss = 'PLEASEHELPMEOUT'
+        p1 = 'PLEASE'
+        p2 = 'HELP'
+        p3 = 'ME'
+        p4 = 'OUT'
+        p = p2 p3
+        ss p		:f(m2_n)
+        r = 'success' :(m2_z)
+m2_n		r = 'fail'  :(m2_z)
+
+m2_z    vchk('TEST_Concatenate_002 p', $'p', 'HELPME')
+        vchk('TEST_Concatenate_002 r', $'r', 'success')
+
+END

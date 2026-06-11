@@ -1,0 +1,54 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from LLt.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_LLt_001 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is a test'
+        llt(a,b) :s(m1_z)
+        r = 'failure'
+m1_z    okchk('TEST_LLt_001')
+        vchk('TEST_LLt_001 r', $'r', 'failure')
+
+* ===== TEST_LLt_002 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is not a test'
+        llt(a,b) :s(m2_z)
+        r = 'failure'
+m2_z    okchk('TEST_LLt_002')
+        vchk('TEST_LLt_002 r', $'r', 'success')
+
+* ===== TEST_LLt_003 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is not a test'
+        llt(b,a) :s(m3_z)
+        r = 'failure'
+m3_z    okchk('TEST_LLt_003')
+        vchk('TEST_LLt_003 r', $'r', 'failure')
+
+* ===== TEST_LLt_004 =====
+        clear()
+        caughtf =
+        a = any('this is a test')
+        b = 'this is a test'
+        llt(a,b)
+m4_z    errchk('TEST_LLt_004', 130)
+
+* ===== TEST_LLt_005 =====
+        clear()
+        caughtf =
+        a = 'this is a test'
+        b = any('this is a test')
+        llt(a,b)
+m5_z    errchk('TEST_LLt_005', 131)
+
+END

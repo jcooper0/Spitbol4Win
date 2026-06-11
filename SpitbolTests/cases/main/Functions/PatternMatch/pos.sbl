@@ -1,0 +1,72 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Pos.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Pos_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'ABCDA'
+        pattern = pos(0) . test 'b'
+        subject pattern      :s(m1_y)f(m1_n)
+m1_y       result = 'success'   :(m1_z)
+m1_n       result = 'fail' 
+m1_z    vchk('TEST_Pos_001 result', $'result', 'fail')
+        vchk('TEST_Pos_001 test', $'test', '')
+
+* ===== TEST_Pos_002 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'ABCDA'
+        pattern = len(3) . test pos(3)
+        subject pattern      :s(m2_y)f(m2_n)
+m2_y       result = 'success'   :(m2_z)
+m2_n       result = 'fail' 
+m2_z    vchk('TEST_Pos_002 result', $'result', 'success')
+        vchk('TEST_Pos_002 test', $'test', 'ABC')
+
+* ===== TEST_Pos_003 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'ABCDA'
+        pattern = pos(3) len(1) . test
+        subject pattern      :s(m3_y)f(m3_n)
+m3_y       result = 'success'   :(m3_z)
+m3_n       result = 'fail' 
+m3_z    vchk('TEST_Pos_003 result', $'result', 'success')
+        vchk('TEST_Pos_003 test', $'test', 'D')
+
+* ===== TEST_Pos_004 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'ABCDA'
+        pattern = pos(0) 'ABCD' rpos(0)
+        subject pattern      :s(m4_y)f(m4_n)
+m4_y       result = 'success'   :(m4_z)
+m4_n       result = 'fail' 
+m4_z    vchk('TEST_Pos_004 result', $'result', 'fail')
+
+* ===== TEST_Pos_007 =====
+        clear()
+        caughtf =
+        pattern = pos(3.14) 
+m7_z    okchk('TEST_Pos_007')
+
+* ===== TEST_Pos_009 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'ABCDA'
+        pattern = pos(*A) len(*B) . test
+        A = 3
+        B = 1
+        subject pattern      :s(m9_y)f(m9_n)
+m9_y       result = 'success'   :(m9_z)
+m9_n       result = 'fail' 
+m9_z    vchk('TEST_Pos_009 result', $'result', 'success')
+        vchk('TEST_Pos_009 test', $'test', 'D')
+
+END

@@ -1,0 +1,15 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Define_002 =====
+        caughtf =
+        DEFINE('SHIFT(S,N)FRONT,REST')
+        SHIFT_PAT = LEN(*N) . FRONT REM . REST :(SHIFT_END)
+SHIFT   S ? SHIFT_PAT :F(FRETURN)
+        SHIFT = REST FRONT :(RETURN)
+SHIFT_END
+        r = SHIFT('OAK',4) :S(qzdone)
+        s = 'FAILURE'
+qzdone  okchk('TEST_Define_002')
+        vchk('TEST_Define_002 s', $'s', 'FAILURE')
+END

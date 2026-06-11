@@ -1,0 +1,57 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from ProgramDefinedData.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Data_001 =====
+        clear()
+        caughtf =
+        data('complex(real,imag)')
+        x = complex(3.2, -2.0)
+        i = imag(x)
+        r = real(x)
+m1_z    okchk('TEST_Data_001')
+
+* ===== TEST_Data_002 =====
+        clear()
+        caughtf =
+        DATA('COMPLEX(REAL,IMAG)')
+        X = COMPLEX('AAA', 'BBB')
+        I = IMAG(X)
+        R = REAL(X)
+m2_z    okchk('TEST_Data_002')
+
+* ===== TEST_Data_003 =====
+        clear()
+        caughtf =
+        DATA('COMPLEX(REAL,IMAG)')
+        X = COMPLEX(ANY('ABC'),SPAN('123'))
+        I = IMAG(X)
+        R = REAL(X)
+m3_z    okchk('TEST_Data_003')
+
+* ===== TEST_Data_004 =====
+        clear()
+        caughtf =
+        DATA('COMPLEX(REAL,IMAG)')
+        X1 = COMPLEX(3.2, -2.0)
+        I1 = IMAG(X1)
+        R1 = REAL(X1)
+        X2 = COMPLEX('AAA', 'BBB')
+        IMAG(X2) = 45
+        REAL(X2) = -5
+        I2 = IMAG(X2)
+        R2 = REAL(X2)
+m4_z    okchk('TEST_Data_004')
+
+* ===== TEST_Data_005 =====
+        clear()
+        caughtf =
+        DATA('PRO+DUCT(NAME,1PRICE,QUANTITY,MFG)')    :S(m5_Y)F(m5_N)
+m5_Y       ITEM1 = APPLY(.$'PRO+DUCT', 'CAPERS', 2.39, 48, 'BRINE BROTHERS')
+        R1 = DATATYPE(ITEM1)
+        R2 = APPLY(.$'1PRICE', ITEM1)
+        R3 = FIELD(.$'PRO+DUCT',2)                         :(m5_z)
+m5_N       R4 = 'FAILURE'
+m5_z    okchk('TEST_Data_005')
+
+END

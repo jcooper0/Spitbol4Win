@@ -1,0 +1,156 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Span.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Span_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        word = span(letters) 
+        subject = ':= one,,, two,..  three';
+        subject word . temp1  :s(m1_y)f(m1_n)
+m1_y       result = 'success'   :(m1_z)
+m1_n       result = 'fail' 
+m1_z    vchk('TEST_Span_001 result', $'result', 'success')
+        vchk('TEST_Span_001 temp1', $'temp1', 'one')
+
+* ===== TEST_Span_002 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        word = span(letters) 
+        subject = 'one,,, two,..  three';
+        subject word . temp1  :s(m2_y)f(m2_n)
+m2_y       result = 'success'   :(m2_z)
+m2_n       result = 'fail' 
+m2_z    vchk('TEST_Span_002 result', $'result', 'success')
+        vchk('TEST_Span_002 temp1', $'temp1', 'one')
+
+* ===== TEST_Span_003 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        word = span(letters) 
+        subject = '86%^';
+        subject word . temp1  :s(m3_y)f(m3_n)
+m3_y       result = 'success'   :(m3_z)
+m3_n       result = 'fail' 
+m3_z    vchk('TEST_Span_003 result', $'result', 'fail')
+        vchk('TEST_Span_003 temp1', $'temp1', '')
+
+* ===== TEST_Span_004 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = ''
+        gap = span(letters) 
+        subject = 'one,,, two,..  three';
+        subject gap . temp1  :s(m4_y)f(m4_n)
+m4_y       result = 'success'   :(m4_z)
+m4_n       result = 'fail' 
+m4_z    errchk('TEST_Span_004', 188)
+
+* ===== TEST_Span_005 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'c'
+        pattern = span('c')
+        subject pattern = '****'   :f(m5_n)
+        temp1 = '[' subject ']'   
+m5_y       result = 'success'   :(m5_z)
+m5_n       result = 'fail' 
+m5_z    vchk('TEST_Span_005 result', $'result', 'success')
+        vchk('TEST_Span_005 temp1', $'temp1', '[****]')
+
+* ===== TEST_Span_006 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        gap = span(letters) 
+        subject = '5675765()*)(*)';
+        subject gap . temp1  :s(m6_y)f(m6_n)
+m6_y       result = 'success'   :(m6_z)
+m6_n       result = 'fail' 
+m6_z    vchk('TEST_Span_006 result', $'result', 'fail')
+        vchk('TEST_Span_006 temp1', $'temp1', '')
+
+* ===== TEST_Span_007 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        word = span(letters) 
+        subject = 'one';
+        subject word . temp1  :s(m7_y)f(m7_n)
+m7_y       result = 'success'   :(m7_z)
+m7_n       result = 'fail' 
+m7_z    vchk('TEST_Span_007 result', $'result', 'success')
+        vchk('TEST_Span_007 temp1', $'temp1', 'one')
+
+* ===== TEST_Span_008 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        letters = 'abcdefghijklmnopqrstuvwxyz'
+        word = span(letters)
+        gap = break(letters)
+        subject = 'sample line'
+        subject word . word1  :f(m8_n)
+        subject = 'plus ten degrees'
+        subject word . word2  :f(m8_n)
+m8_y       result = 'success'   :(m8_z)
+m8_n       result = 'fail' 
+m8_z    vchk('TEST_Span_008 result', $'result', 'success')
+        vchk('TEST_Span_008 word1', $'word1', 'sample')
+        vchk('TEST_Span_008 word2', $'word2', 'plus')
+
+* ===== TEST_Span_009 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        digits = '0123456789'
+        integer = (any('+-') | '') span(digits)
+        subject = 'set -43 volts'
+        subject integer . integer1  :f(m9_n)
+        subject = 'set -43.625 volts'
+        subject integer . integer2  :f(m9_n)
+m9_y       result = 'success'   :(m9_z)
+m9_n       result = 'fail' 
+m9_z    vchk('TEST_Span_009 result', $'result', 'success')
+        vchk('TEST_Span_009 integer1', $'integer1', '-43')
+        vchk('TEST_Span_009 integer2', $'integer2', '-43')
+
+* ===== TEST_Span_010 =====
+        clear()
+        caughtf =
+        A = SPAN(*B)
+        B = '123'
+        '333' A
+        '333' A . R1
+        B = 'ABC'
+        'CCC' A . R2
+m10_z   vchk('TEST_Span_010 R1', $'R1', '333')
+        vchk('TEST_Span_010 R2', $'R2', 'CCC')
+
+* ===== TEST_Span_011 =====
+        clear()
+        caughtf =
+        A = SPAN(*B)
+        B = '123' | 'ABC'
+        'ABCD3FG' A . R1
+m11_z   errchk('TEST_Span_011', 56)
+
+* ===== TEST_Span_012 =====
+        clear()
+        caughtf =
+        A = SPAN('123456')
+        'ABCDEF' A . R1 :S(m12_z)
+        R1 = 'fail'
+m12_z   vchk('TEST_Span_012 R1', $'R1', 'fail')
+
+END

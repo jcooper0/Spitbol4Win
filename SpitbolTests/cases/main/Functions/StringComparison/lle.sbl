@@ -1,0 +1,54 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from LLe.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_LLe_001 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is a test'
+        lle(a,b) :s(m1_z)
+        r = 'failure'
+m1_z    okchk('TEST_LLe_001')
+        vchk('TEST_LLe_001 r', $'r', 'success')
+
+* ===== TEST_LLe_002 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is not a test'
+        lle(a,b) :s(m2_z)
+        r = 'failure'
+m2_z    okchk('TEST_LLe_002')
+        vchk('TEST_LLe_002 r', $'r', 'success')
+
+* ===== TEST_LLe_003 =====
+        clear()
+        caughtf =
+        r = 'success'        
+        a = 'this is a test'
+        b = 'this is not a test'
+        lle(b,a) :s(m3_z)
+        r = 'failure'
+m3_z    okchk('TEST_LLe_003')
+        vchk('TEST_LLe_003 r', $'r', 'failure')
+
+* ===== TEST_LLe_004 =====
+        clear()
+        caughtf =
+        a = any('this is a test')
+        b = 'this is a test'
+        lle(a,b)
+m4_z    errchk('TEST_LLe_004', 128)
+
+* ===== TEST_LLe_005 =====
+        clear()
+        caughtf =
+        a = 'this is a test'
+        b = any('this is a test')
+        lle(a,b)
+m5_z    errchk('TEST_LLe_005', 129)
+
+END

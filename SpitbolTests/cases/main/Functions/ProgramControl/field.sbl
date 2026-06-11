@@ -1,0 +1,14 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from FIeld.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Field_001 =====
+        clear()
+        caughtf =
+        DATA('COMPLEX(REAL,IMAG)')
+        X = COMPLEX(3.2, -2.0)
+        R = FIELD('COMPLEX',1)
+        I = FIELD('COMPLEX',2)
+m1_z    okchk('TEST_Field_001')
+
+END

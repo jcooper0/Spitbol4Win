@@ -1,0 +1,70 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Arb.cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Arb_001 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'programmer'
+        pattern = 'p' arb . test 'er'
+        subject pattern      :s(m1_y)f(m1_n)
+m1_y       result = 'success'   :(m1_z)
+m1_n       result = 'fail' 
+m1_z    vchk('TEST_Arb_001 result', $'result', 'success')
+        vchk('TEST_Arb_001 test', $'test', 'rogramm')
+
+* ===== TEST_Arb_002 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'MOUNTAIN'
+        pattern = 'O' arb . test 'A'
+        subject pattern      :s(m2_y)f(m2_n)
+m2_y       result = 'success'   :(m2_z)
+m2_n       result = 'fail' 
+m2_z    vchk('TEST_Arb_002 result', $'result', 'success')
+        vchk('TEST_Arb_002 test', $'test', 'UNT')
+
+* ===== TEST_Arb_003 =====
+        clear()
+        caughtf =
+        &anchor = 0
+        subject = 'MOUNTAIN'
+        pattern = 'O' arb . test 'U'
+        subject pattern      :s(m3_y)f(m3_n)
+m3_y       result = 'success'   :(m3_z)
+m3_n       result = 'fail' 
+m3_z    vchk('TEST_Arb_003 result', $'result', 'success')
+        vchk('TEST_Arb_003 test', $'test', '')
+
+* ===== TEST_Arb_004 =====
+        clear()
+        caughtf =
+		CATANDDOG = 'CAT' ARB 'DOG' | 'DOG' ARB 'CAT'
+		'CATALOG FOR SEADOGS' CATANDDOG $ R1
+		'DOGS HATE POLECATS' CATANDDOG $ R2
+		'CATDOG' CATANDDOG $ R3
+m4_z    vchk('TEST_Arb_004 R1', $'R1', 'CATALOG FOR SEADOG')
+        vchk('TEST_Arb_004 R2', $'R2', 'DOGS HATE POLECAT')
+        vchk('TEST_Arb_004 R3', $'R3', 'CATDOG')
+
+* ===== TEST_Arb_005 =====
+        clear()
+        caughtf =
+    	'MOUNTAIN' 'O' (ARB $ R1) 'A'
+	    'MOUNTAIN' 'O' (ARB $ R2) 'U'
+m5_z    vchk('TEST_Arb_005 R1', $'R1', 'UNT')
+        vchk('TEST_Arb_005 R2', $'R2', '')
+
+* ===== TEST_Arb_006 =====
+        clear()
+        caughtf =
+	    'AXXXBXXX' ('A' arb $ r1 'B' arb $ r2 'C') :f(m6_n)
+	    r3 = 'success' :(m6_z)
+m6_n	    r3 = 'failure'
+m6_z    vchk('TEST_Arb_006 r1', $'r1', 'XXXBXXX')
+        vchk('TEST_Arb_006 r2', $'r2', 'XXX')
+        vchk('TEST_Arb_006 r3', $'r3', 'failure')
+
+END

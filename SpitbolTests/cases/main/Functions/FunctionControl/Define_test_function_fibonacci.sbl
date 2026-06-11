@@ -1,0 +1,17 @@
+-INCLUDE 'assert.inc'
+
+
+* ===== TEST_Function_Fibonacci =====
+        caughtf =
+                    define('fibonacci(n)')  :(fibonacci_end)
+fibonacci           output = n '  (' &fnclevel ')'
+                    le(n,1)  :s(next)
+                    fibonacci = fibonacci(n - 1) 
+                    fibonacci = fibonacci + fibonacci(n - 2)  
+                         :(return)
+next                fibonacci = n  :(return)    
+fibonacci_end       f = fibonacci(12)
+                    output = f
+qzdone  okchk('TEST_Function_Fibonacci')
+        vchk('TEST_Function_Fibonacci', $'f', '144')
+END

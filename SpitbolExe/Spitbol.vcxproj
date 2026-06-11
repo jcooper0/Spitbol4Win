@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!-- ============================================================
+       Spitbol.vcxproj: native build: compiles osint/*.c, assembles
+       the three generated runtime/*_masm.asm, and links spitbol.exe.
+       Pair this (same VS solution) with the C# SpitbolBuild project,
+       which generates the .asm files. x64 only.
+
+       Adjust these two paths if your layout differs. They assume this
+       project sits in a folder beside SpitbolBuild\.
+       ============================================================ -->
+  <PropertyGroup Label="UserPaths">
+    <OsintDir>..\SpitbolBuild\osint</OsintDir>
+    <RuntimeDir>..\SpitbolBuild\runtime</RuntimeDir>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>17.0</VCProjectVersion>
+    <ProjectGuid>{8994FCCE-ED77-4FF1-B2D2-6DE9A6B993FC}</ProjectGuid>
+    <RootNamespace>Spitbol</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)'=='Release'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>$(DefaultPlatformToolset)</PlatformToolset>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <!-- MASM build customization: lets .asm files assemble with ml64 -->
+  <ImportGroup Label="ExtensionSettings">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <OutDir>$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(Platform)\$(Configuration)\obj\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- m64 selects 64-bit words; the CRT macros silence POSIX-name and
+           secure-fn deprecation warnings (write/open/strcpy/...). -->
+      <PreprocessorDefinitions>m64;_CRT_SECURE_NO_WARNINGS;_CRT_NONSTDC_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(OsintDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsC</CompileAs>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <WarningLevel>Level1</WarningLevel>
+      <Optimization Condition="'$(Configuration)'=='Debug'">Disabled</Optimization>
+      <Optimization Condition="'$(Configuration)'=='Release'">MaxSpeed</Optimization>
+    </ClCompile>
+    <MASM>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </MASM>
+    <Link>
+      <SubSystem>Console</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <!-- The MINIMAL code uses 32-bit absolute addressing, so the image must
+           load at a fixed low base with ASLR off (else ADDR32 reloc overflow). -->
+      <BaseAddress>0x10000</BaseAddress>
+      <FixedBaseAddress>true</FixedBaseAddress>
+      <!-- /FIXED -->
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <!-- /DYNAMICBASE:NO -->
+      <LargeAddressAware>false</LargeAddressAware>
+      <!-- /LARGEADDRESSAWARE:NO -->
+      <AdditionalOptions>/HIGHENTROPYVA:NO %(AdditionalOptions)</AdditionalOptions>
+      <CETCompat Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</CETCompat>
+    </Link>
+  </ItemDefinitionGroup>
+  <!-- osint C sources (the Windows port files must be copied INTO osint\) -->
+  <ItemGroup>
+    <ClCompile Include="$(OsintDir)\*.c" />
+  </ItemGroup>
+  <!-- the three generated MASM files -->
+  <ItemGroup>
+    <MASM Include="$(RuntimeDir)\sbl_masm.asm" />
+    <MASM Include="$(RuntimeDir)\err_masm.asm" />
+    <MASM Include="$(RuntimeDir)\int_masm.asm" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="hello.sbl" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+    <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
+  </ImportGroup>
+</Project>

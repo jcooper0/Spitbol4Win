@@ -1,0 +1,89 @@
+        &ANCHOR   = 0
+        &TRIM     = 0
+        &ERRLIMIT = 100000
+        NTOT  = 0
+        NPASS = 0
+        NFAIL = 0
+        NSKIP = 0
+        NULLV = ''
+        DEFINE('PASS(W)')                                   :(H_PE)
+PASS    NPASS = NPASS + 1
+        NTOT  = NTOT + 1                                    :(RETURN)
+H_PE    DEFINE('FAILED(W)')                                 :(H_FE)
+FAILED  NFAIL = NFAIL + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'FAIL: ' W                               :(RETURN)
+H_FE    DEFINE('SKIPPED(W)')                                :(H_SE)
+SKIPPED NSKIP = NSKIP + 1
+        NTOT  = NTOT + 1
+        TERMINAL = 'SKIP: ' W                               :(RETURN)
+H_SE    DEFINE('EQS(W,G,X)')                                :(H_QE)
+EQS     EQS = IDENT(G,X)                                    :S(H_QOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_QOK   PASS(W)                                             :(RETURN)
+H_QE    DEFINE('EQN(W,G,X)')                                :(H_NE)
+EQN     EQN = EQ(G,X)                                       :S(H_NOK)
+        FAILED(W ' | got=<' G '> want=<' X '>')             :(RETURN)
+H_NOK   PASS(W)                                             :(RETURN)
+*       CHK(NAME, EXPECTSET, STRICT)  --  inspect a trapped &ERRTYPE.
+*       EXPECTSET is a space-free or space-separated string of one or
+*       more acceptable codes; ECAUGHT holds the trapped code (0 = none).
+H_NE    DEFINE('CHK(NAME,EXPECTSET,STRICT)')                :(H_CE)
+CHK     EQ(ECAUGHT, 0)                                      :F(H_CFIRED)
+        EQ(STRICT, 1)                                       :S(H_CNF) F(H_CSK)
+H_CNF   FAILED(NAME ' | expected err ' EXPECTSET ', none raised') :(RETURN)
+H_CSK   SKIPPED(NAME ' | err ' EXPECTSET ' not triggerable here') :(RETURN)
+H_CFIRED (' ' EXPECTSET ' ') (' ' ECAUGHT ' ')             :S(H_COK) F(H_CWR)
+H_COK   PASS(NAME ' -> &ERRTYPE ' ECAUGHT)                  :(RETURN)
+H_CWR   FAILED(NAME ' | expected ' EXPECTSET ', got ' ECAUGHT) :(RETURN)
+H_CE
+*-----------------------------------------------------------------------
+*  backspace.sbl -- BACKSPACE(channel) conformance tests.
+*  Behaviour per Emmer & Quillen SPITBOL Manual (p. 219):
+*  positions the file back one record; returns null on success.
+*  Error codes per sbl.min / ERR.ASM:  316 317 318 319.
+*  (Note: the manual's Appendix D lists 270-273; the Minimal source
+*   sbl.min/ERR.ASM uses 316-319 -- the source numbering is authoritative.)
+*-----------------------------------------------------------------------
+
+*--- functional: BACKSPACE steps back one line-mode record ---
+        OUTPUT(.W, 1, 'io_t_bs.tmp')                        :F(BS_SET)
+        W = 'r1'
+        W = 'r2'
+        W = 'r3'
+        ENDFILE(1)
+        INPUT(.R, 1, 'io_t_bs.tmp')                         :F(BS_SET)
+        B1 = R
+        B2 = R
+        BACKSPACE(1)                                        :F(BS_BF)
+        EQS('BACKSPACE: re-reads previous record', R, 'r2')
+        ENDFILE(1)                                          :(BS_ERR)
+BS_BF   FAILED('BACKSPACE failed on a disk file')
+        ENDFILE(1)                                          :(BS_ERR)
+BS_SET  FAILED('backspace functional setup')
+
+*--- errors ---
+BS_ERR  SETEXIT(.ETRAP)
+        ECAUGHT = 0
+        BACKSPACE(LEN(1))                                   :S(e316) F(e316)
+e316    CHK('BACKSPACE 316 argument is not a suitable name', '316', 1)
+        ECAUGHT = 0
+        BACKSPACE(77)                                       :S(e317) F(e317)
+e317    CHK('BACKSPACE 317 file does not exist (channel not open)', '317', 1)
+*       318: backspace not permitted -- attempt on an output-only channel
+        OUTPUT(.OUT, 9, 'io_t_bs2.tmp')                     :F(BS_18S)
+        ECAUGHT = 0
+        BACKSPACE(9)                                        :S(e318) F(e318)
+e318    CHK('BACKSPACE 318 file does not permit backspace', '318', 0)
+        ENDFILE(9)                                          :(BS_19)
+BS_18S  SKIPPED('BACKSPACE 318 setup (open output channel)')
+BS_19   SKIPPED('BACKSPACE 319 caused non-recoverable error (needs I/O fault)')
+        :(REPORT)
+
+*------------------------------- summary -------------------------------
+REPORT  OUTPUT =
+        OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
+        OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
+        OUTPUT = 'RESULT: FAIL'                             :(END)
+ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+END

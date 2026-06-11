@@ -1,0 +1,24 @@
+-INCLUDE 'assert.inc'
+
+*  Ported from Minus (-).cs (Snobol4.Net C# test suite).
+
+* ===== TEST_Minus_001 =====
+        clear()
+        caughtf =
+        a = -3.3
+        vchk('TEST_Minus_001 result', $'a', '-3.3')
+
+* ===== TEST_Minus_002 =====
+        clear()
+        caughtf =
+        a = -3
+        vchk('TEST_Minus_002 result', $'a', '-3')
+
+* ===== TEST_Minus_003 =====
+        clear()
+        caughtf =
+	    b = -3.4 
+        a = -b
+        vchk('TEST_Minus_003 result', $'a', '3.4')
+
+END
