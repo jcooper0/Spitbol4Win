@@ -69,4 +69,35 @@ m9_n       result = 'fail'
 m9_z    vchk('TEST_RPos_009 result', $'result', 'success')
         vchk('TEST_RPos_009 test', $'test', 'ABC')
 
+
+* ===== TEST_RPos_185 (argument is not integer or expression) =====
+        clear()
+        caughtf =
+        p = rpos(array(2))
+erposa   errchk('TEST_RPos_185', 185)
+
+* ===== TEST_RPos_186 (argument is negative or too large) =====
+        clear()
+        caughtf =
+        c = 2 - 3
+        p = rpos(c)
+erposb   errchk('TEST_RPos_186', 186)
+
+* ===== TEST_RPos_052 (evaluated argument is not integer) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        p = rpos(*nrpos)
+        nrpos = 'abc'
+        'subject' p
+erposc   errchk('TEST_RPos_052', 52)
+
+* ===== TEST_RPos_053 (evaluated argument negative or too large) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        p = rpos(*nrpos2)
+        nrpos2 = -1
+        'subject' p
+erposd   errchk('TEST_RPos_053', 53)
 END

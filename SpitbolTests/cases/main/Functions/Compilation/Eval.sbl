@@ -90,4 +90,10 @@ m13_z   okchk('TEST_Eval013')
         a = eval(e)
 m14_z   okchk('TEST_Eval014')
 
+
+* ===== TEST_Eval_103 (eval argument is not expression) =====
+        clear()
+        caughtf =
+        a = eval(array(2))
+m15_z   errchk('TEST_Eval_103', 103)
 END

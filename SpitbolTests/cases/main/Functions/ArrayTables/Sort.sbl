@@ -161,4 +161,15 @@ S003L   r = r ' ' b<i,4>
         b = sort(fa,-10)
         errchk('Sort258c field negative', 258)
 
+
+*  --- error case: 257 (erroneous 2nd arg in sort of vector) ------------------
+        caughtf =
+        va = array(5)
+        va<1> = 'e'
+        va<2> = 'd'
+        va<3> = 'c'
+        va<4> = 'b'
+        va<5> = 'a'
+        b = sort(va,rem)
+        errchk('Sort257 second arg given for vector of strings', 257)
 END

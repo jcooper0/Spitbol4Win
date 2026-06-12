@@ -11,4 +11,46 @@
         I = FIELD('COMPLEX',2)
 m1_z    okchk('TEST_Field_001')
 
+
+* ===== TEST_Field_107 (second argument is not integer) =====
+        caughtf =
+        F107 = FIELD('COMPLEX', 'a')
+ef107   errchk('TEST_Field_107', 107)
+
+* ===== TEST_Field_108 (first argument is not datatype name) =====
+        caughtf =
+        F108 = FIELD('NO_SUCH_TYPE_ZQ', 1)
+ef108   errchk('TEST_Field_108', 108)
+
+* ===== TEST_Field_041 (field function argument is wrong datatype) =====
+        caughtf =
+        X41 = COMPLEX(1.0, 2.0)
+        R41 = REAL('not a complex')
+ef41    errchk('TEST_Field_041', 41)
+
+* ===== DATA prototype errors (ErrorList 075-080), hosted here since
+* ===== FIELD operates on DATA-defined types =====
+        caughtf =
+        DATA(array(2))
+ed75    errchk('TEST_Data_075', 75)
+
+        caughtf =
+        DATA('')
+ed76    errchk('TEST_Data_076', 76)
+
+        caughtf =
+        DATA('noparen77')
+ed77    errchk('TEST_Data_077', 77)
+
+        caughtf =
+        DATA('(fx)')
+ed78    errchk('TEST_Data_078', 78)
+
+        caughtf =
+        DATA('rec79(fx')
+ed79    errchk('TEST_Data_079', 79)
+
+        caughtf =
+        DATA('rec80()')
+ed80    errchk('TEST_Data_080', 80)
 END

@@ -3601,6 +3601,12 @@
     chks('1.3730169573947802e+290 ** 1.5794186382406077e+280', 'exponentiation caused real overflow')
     chks('1.3730169573947802e+290 ** 1.8299918514476963e+290', 'exponentiation caused real overflow')
 
+    chks('"x" ** 2', 'exponentiation left operand is not numeric')
+    chks('2 ** "x"', 'exponentiation right operand is not numeric')
+    chks('10 ** 100', 'exponentiation caused integer overflow')
+    chks('0 ** 0', 'exponentiation result is undefined')
+    chks('(0.0 - 2.0) ** 0.5', 'exponentiation of negative base to non-integral power')
+
     report()
 
 end

@@ -33,4 +33,36 @@ m5_z    errchk('TEST_Unknown_251', 251)
         a = &abend
         &abend = '1'
 m6_z    vchk('TEST_Abend a', $'a', 1)
+
+* ===== TEST_Protected_209 (keyword in assignment is protected) =====
+        clear()
+        caughtf =
+        &alphabet = 5
+e209z   errchk('TEST_Protected_209', 209)
+
+* ===== TEST_Range_210 (keyword value negative or too large) =====
+        clear()
+        caughtf =
+        &dump = -1
+e210z   errchk('TEST_Range_210', 210)
+
+* ===== TEST_Errtext_211 (value assigned to ERRTEXT not a string) =====
+        clear()
+        caughtf =
+        &errtext = array(2)
+e211z   errchk('TEST_Errtext_211', 211)
+
+* ===== TEST_Maxlngth_287 (value assigned to MAXLNGTH too small) =====
+        clear()
+        caughtf =
+        &maxlngth = 1
+e287z   errchk('TEST_Maxlngth_287', 287)
+
+* ===== TEST_Maxlngth_205 (string length exceeds MAXLNGTH) =====
+        clear()
+        caughtf =
+        &maxlngth = 1024
+        s205 = dupl('a', 2000)
+e205z   errchk('TEST_Maxlngth_205', 205)
+        &maxlngth = 5000000
 END

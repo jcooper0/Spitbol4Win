@@ -204,4 +204,26 @@ m16_z   okchk('TEST_Indirection_016')
         vchk('TEST_Indirection_016 a', $'a', '53.1doublequotelong')
         vchk('TEST_Indirection_016 b', $'b', 5000)
 
+
+* ===== goto-family errors reached through indirection =====
+
+* ===== TEST_Goto_038 (goto undefined label) =====
+        clear()
+        caughtf =
+        :($('no_such_label_zq38'))
+e38z    errchk('TEST_Goto_038', 38)
+
+* ===== TEST_Goto_023 (goto operand is not a natural variable) =====
+        clear()
+        caughtf =
+        arr23 = array(3)
+        nmv23 = .arr23[1]
+        :($nmv23)
+e23z    errchk('TEST_Goto_023', 23)
+
+* ===== TEST_Goto_020 (goto evaluation failure) =====
+        clear()
+        caughtf =
+        :($(gt(1,2) 'lzq20'))
+e20z    errchk('TEST_Goto_020', 20)
 END

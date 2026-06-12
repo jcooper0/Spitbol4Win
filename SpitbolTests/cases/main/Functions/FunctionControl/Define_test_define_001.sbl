@@ -11,4 +11,53 @@ SHIFT_END
         r = SHIFT('COTTON',4)
 qzdone  okchk('TEST_Define_001')
         vchk('TEST_Define_001 r', $'r', 'ONCOTT')
+
+* ===== DEFINE argument errors (ErrorList 081-086) =====
+        caughtf =
+        define(array(2))
+ed81    errchk('TEST_Define_081', 81)
+
+        caughtf =
+        define('')
+ed82    errchk('TEST_Define_082', 82)
+
+        caughtf =
+        define('noparen83')
+ed83    errchk('TEST_Define_083', 83)
+
+        caughtf =
+        define('(x)')
+ed84    errchk('TEST_Define_084', 84)
+
+        caughtf =
+        define('f85(x')
+ed85    errchk('TEST_Define_085', 85)
+
+        caughtf =
+        c = 'no_such_label' '_zzq86'
+        define('zzq86(x)', *c)
+ed86    errchk('TEST_Define_086', 86)
+
+* ===== function-machinery errors hosted here =====
+* 242  function return from level zero
+        caughtf =
+        :(return)
+ed242   errchk('TEST_Return_242', 242)
+
+* 243  function result in nreturn is not name
+        define('g243z()')                               :(g243e)
+g243z   g243z = 7                                       :(nreturn)
+g243e   caughtf =
+        x243 = g243z()
+ed243   errchk('TEST_NReturn_243', 243)
+
+* 187  setexit argument is not label name or null
+        caughtf =
+        setexit(array(2))
+ed187   errchk('TEST_Setexit_187', 187)
+
+* 201  unload argument is not natural variable name
+        caughtf =
+        unload(array(2))
+ed201   errchk('TEST_Unload_201', 201)
 END

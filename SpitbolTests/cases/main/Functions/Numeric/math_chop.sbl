@@ -1233,6 +1233,8 @@
     chks('chop(1.1347203519375428e+307)',1.1347203519375428e+307)
     chks('chop(-1.1347203519375428e+307)',-1.1347203519375428e+307)
 
+    chks('chop("x")', 'chop argument not numeric')
+
     report()
 
 end

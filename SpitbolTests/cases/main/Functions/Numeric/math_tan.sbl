@@ -1849,6 +1849,8 @@
     TAN2 = sin(RADIANS) / cos(RADIANS)
     chks('tan(1.1347203519375428e+307)', TAN2)
 
+    chks('tan("x")', 'tan argument not numeric')
+
     report()
 
 end

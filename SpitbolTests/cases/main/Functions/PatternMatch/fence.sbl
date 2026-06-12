@@ -52,4 +52,10 @@ m6_Y	    R1 = 'SUCCESS' :(m6_z)
 m6_N	    R1 = 'FAILURE'
 m6_z    vchk('TEST_Abort_006 R1', $'R1', 'SUCCESS')
 
+
+* ===== TEST_Fence_259 (argument is not pattern) =====
+        clear()
+        caughtf =
+        P = FENCE(ARRAY(2))
+m7_z    errchk('TEST_Fence_259', 259)
 END

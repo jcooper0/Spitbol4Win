@@ -617,6 +617,8 @@
     chks('atan(1.3707415724975139e-01)',1.3622519744404124e-01)
     chks('atan(-1.3707415724975139e-01)',-1.3622519744404124e-01)
 
+    chks('atan("x")', 'atan argument not numeric')
+
     report()
 
 end

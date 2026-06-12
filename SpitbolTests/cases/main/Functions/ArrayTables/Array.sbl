@@ -145,4 +145,11 @@ n016    caughtf =
         errchk("021 too many subscripts ta<6,1,5,2>", 236)  :(n021)
 w021    output = '*FAIL: 021 ta<6,1,5,2> unexpectedly succeeded'
 n021
+
+*  =====  remaining ARRAY error codes (ErrorList/sbl.min)  ==================
+*  064  array first argument is not integer or string
+*  068  array size exceeds maximum permitted (total element count overflows)
+        acode("030 array(array) non-int/str first arg", array(2),        64)
+        acode("031 '100000,100000,100000,100000' size",
++ "100000,100000,100000,100000", 68)
 END

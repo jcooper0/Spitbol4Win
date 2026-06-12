@@ -15376,6 +15376,10 @@
     chks('1.5145554828924974e+303 / -1.2122420731319742e+303', '-1.2493836969207477e+00')
     chks('-1.5145554828924974e+303 / -1.2122420731319742e+303', '1.2493836969207477e+00')
 
+    chks('"x" / 2', 'division left operand is not numeric')
+    chks('2 / "x"', 'division right operand is not numeric')
+    chks('1 / 0', 'division caused integer overflow')
+
     report()
 
 end

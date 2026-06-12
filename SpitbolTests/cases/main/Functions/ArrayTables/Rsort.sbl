@@ -109,4 +109,39 @@ R003L   r = r ' ' b<i,4>
         vchk('ReverseSort003 order by col3', r,
 + ' 9 15 4 5 11 2 10 13 12 8 3 1 7 6 14')
 
+
+*  --- error cases: 256 (not sortable) ----------------------------------------
+        caughtf =
+        ea = array('15,4,2')
+        b = rsort(ea,1)
+        errchk('RSort256a rsort a 3-D array', 256)
+
+        caughtf =
+        b = rsort('123',1)
+        errchk('RSort256b rsort a string', 256)
+
+*  --- error case: 257 (erroneous 2nd arg in rsort of vector) -----------------
+        caughtf =
+        va = array(5)
+        va<1> = 'e'
+        va<2> = 'd'
+        va<3> = 'c'
+        va<4> = 'b'
+        va<5> = 'a'
+        b = rsort(va,rem)
+        errchk('RSort257 second arg given for vector of strings', 257)
+
+*  --- error cases: 258 (invalid sort field) ----------------------------------
+        caughtf =
+        fa = array('15,4')
+        b = rsort(fa,'b')
+        errchk('RSort258a field non-numeric', 258)
+
+        caughtf =
+        b = rsort(fa,10)
+        errchk('RSort258b field out of range', 258)
+
+        caughtf =
+        b = rsort(fa,-10)
+        errchk('RSort258c field negative', 258)
 END

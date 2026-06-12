@@ -31,4 +31,30 @@ AreaOfSquare_End
 		vchk('TEST_Opsyn_001 r3', $'r3', '63.6171975')
 		vchk('TEST_Opsyn_001 r4', $'r4', '252.81')
 		vchk('TEST_Opsyn_001 r5', $'r5', '6')
+
+* ===== OPSYN argument errors (ErrorList 152-156) =====
+		caughtf =
+		opsyn('oa152','ob152','x')
+eo152	errchk('TEST_Opsyn_152', 152)
+
+		caughtf =
+		opsyn('oa153','ob153',-1)
+eo153	errchk('TEST_Opsyn_153', 153)
+
+		caughtf =
+		opsyn('oa154', array(2))
+eo154	errchk('TEST_Opsyn_154', 154)
+
+		caughtf =
+		opsyn(array(2), 'ob155')
+eo155	errchk('TEST_Opsyn_155', 155)
+
+		caughtf =
+		opsyn('abc156', '+', 2)
+eo156	errchk('TEST_Opsyn_156', 156)
+
+* ===== 029 undefined operator referenced (binary # never opsyn'd) =====
+		caughtf =
+		r29 = 3 # 4
+eo29	errchk('TEST_UndefOp_029', 29)
 end

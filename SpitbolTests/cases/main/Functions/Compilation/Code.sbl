@@ -14,4 +14,11 @@ m1_DONE    a
 m1_z    okchk('TEST_CODE001')
         vchk('TEST_CODE001 a', $'a', '  1 2 3 4 5 6 7 8 9 10')
 
+
+* ===== TEST_CODE_024 (operand in direct goto is not code) =====
+        clear()
+        caughtf =
+        nc24 = 'notcode'
+        :<nc24>
+m2_z    errchk('TEST_CODE_024', 24)
 END

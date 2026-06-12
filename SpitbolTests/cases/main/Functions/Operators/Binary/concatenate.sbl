@@ -31,4 +31,18 @@ m2_n		r = 'fail'  :(m2_z)
 m2_z    vchk('TEST_Concatenate_002 p', $'p', 'HELPME')
         vchk('TEST_Concatenate_002 r', $'r', 'success')
 
+
+* ===== TEST_Concatenate_008 (left operand not string or pattern) =====
+        clear()
+        caughtf =
+        l8 = array(2)
+        p = l8 'x'
+e8z     errchk('TEST_Concatenate_008', 8)
+
+* ===== TEST_Concatenate_009 (right operand not string or pattern) =====
+        clear()
+        caughtf =
+        r9 = array(2)
+        p = 'x' r9
+e9z     errchk('TEST_Concatenate_009', 9)
 END

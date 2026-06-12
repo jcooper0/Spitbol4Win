@@ -67,4 +67,35 @@ m9_y       result = 'success'   :(m9_z)
 m9_n       result = 'fail' 
 m9_z    vchk('TEST_RTab_009 result', $'result', 'fail')
 
+
+* ===== TEST_RTab_181 (argument is not integer or expression) =====
+        clear()
+        caughtf =
+        p = rtab(array(2))
+ertaba   errchk('TEST_RTab_181', 181)
+
+* ===== TEST_RTab_182 (argument is negative or too large) =====
+        clear()
+        caughtf =
+        c = 2 - 3
+        p = rtab(c)
+ertabb   errchk('TEST_RTab_182', 182)
+
+* ===== TEST_RTab_054 (evaluated argument is not integer) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        p = rtab(*nrtab)
+        nrtab = 'abc'
+        'subject' p
+ertabc   errchk('TEST_RTab_054', 54)
+
+* ===== TEST_RTab_055 (evaluated argument negative or too large) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        p = rtab(*nrtab2)
+        nrtab2 = -1
+        'subject' p
+ertabd   errchk('TEST_RTab_055', 55)
 END

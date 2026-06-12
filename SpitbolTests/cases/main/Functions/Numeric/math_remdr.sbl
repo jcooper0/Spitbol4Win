@@ -4561,6 +4561,10 @@
     chks('1.9645735128928353e+290 * CHOP(-1.2951546468402453e+290 / 1.9645735128928353e+290) + REMDR(-1.2951546468402453e+290, 1.9645735128928353e+290)', '-1.2951546468402453e+290')
     chks('-1.9645735128928353e+290 * CHOP(-1.2951546468402453e+290 / -1.9645735128928353e+290) + REMDR(-1.2951546468402453e+290, -1.9645735128928353e+290)', '-1.2951546468402453e+290')
 
+    chks('remdr("x", 2)', 'remdr first argument is not numeric')
+    chks('remdr(2, "x")', 'remdr second argument is not numeric')
+    chks('remdr(1, 0)', 'remdr caused integer overflow')
+
     report()
 
 end

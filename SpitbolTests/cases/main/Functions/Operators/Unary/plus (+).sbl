@@ -25,4 +25,11 @@
         okchk('TEST_Plus_003')
         vchk('TEST_Plus_003 result', $'a', '3.4')
 
+
+* ===== TEST_Plus_004 (affirmation operand is not numeric) =====
+        clear()
+        caughtf =
+        s4 = 'abc'
+        a = +s4
+e4z     errchk('TEST_Plus_004', 4)
 END

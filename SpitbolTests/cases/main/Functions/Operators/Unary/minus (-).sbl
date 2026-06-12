@@ -21,4 +21,18 @@
         a = -b
         vchk('TEST_Minus_003 result', $'a', '3.4')
 
+
+* ===== TEST_Minus_010 (negation operand is not numeric) =====
+        clear()
+        caughtf =
+        s10 = 'abc'
+        a = -s10
+e10z    errchk('TEST_Minus_010', 10)
+
+* ===== TEST_Minus_011 (negation caused integer overflow) =====
+        clear()
+        caughtf =
+        minint = -9223372036854775807 - 1
+        a = -minint
+e11z    errchk('TEST_Minus_011', 11)
 END

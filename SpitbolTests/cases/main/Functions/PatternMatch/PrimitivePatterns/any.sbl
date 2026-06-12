@@ -65,4 +65,10 @@ m9_N       R1 = 'FAIL'
 m9_z    okchk('TEST_Any_009')
         vchk('TEST_Any_009 R1', $'R1', 'FAIL')
 
+
+* ===== TEST_Any_059 (argument is not a string or expression) =====
+        clear()
+        caughtf =
+        A = ANY(array(2))
+m10_z   errchk('TEST_Any_059', 59)
 END

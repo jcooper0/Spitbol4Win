@@ -73,4 +73,12 @@ m5_z    vchk('TEST_ConditionalVariableAssociation_003 temp1', $'temp1', '')
         vchk('TEST_ConditionalVariableAssociation_003 temp3', $'temp3', '')
         vchk('TEST_ConditionalVariableAssociation_003 temp4', $'temp4', '')
 
+
+* ===== TEST_ImmediateAssoc_025 (immediate assignment left operand
+* ===== is not pattern) =====
+        clear()
+        caughtf =
+        l25 = array(2)
+        p = l25 $ v25
+e25z    errchk('TEST_ImmediateAssoc_025', 25)
 END

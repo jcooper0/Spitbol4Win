@@ -1471,6 +1471,8 @@
     chks('exp(7.1827926185367596e+02)','exp produced real overflow')
     chks('exp(7.1931185066970613e+02)','exp produced real overflow')
 
+    chks('exp("x")', 'exp argument not numeric')
+
     report()
 
 end

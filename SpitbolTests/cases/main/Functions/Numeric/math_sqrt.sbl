@@ -1233,6 +1233,8 @@
     chks('sqrt(1.1347203519375428e+307)', '3.3685610458139879e+153')
     chks('sqrt(-1.1347203519375428e+307)', 'sqrt argument negative')
 
+    chks('sqrt("x")', 'sqrt argument not numeric')
+
     report()
 
 end

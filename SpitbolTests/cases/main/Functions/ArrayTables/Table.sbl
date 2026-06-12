@@ -71,4 +71,14 @@ T007    caughtf =
         b = a['abc']
         errchk('Table_007 subscript a string', 235)
 
+
+*  --- 195: table argument is not integer ------------------------------------
+T195    caughtf =
+        a = table('abc')
+        errchk('Table_195 non-integer argument', 195)
+
+*  --- 196: table argument is out of range -----------------------------------
+T196    caughtf =
+        a = table(-1)
+        errchk('Table_196 negative argument', 196)
 END

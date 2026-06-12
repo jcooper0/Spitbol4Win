@@ -8,4 +8,11 @@
         b = char(array(20))
 m1_z    errchk('TEST_Char_1', 281)
 
+
+* ===== TEST_Char_2 (argument not in range) =====
+        clear()
+        caughtf =
+        c  = 2 - 3
+        b = char(c)
+m2_z    errchk('TEST_Char_2', 282)
 END

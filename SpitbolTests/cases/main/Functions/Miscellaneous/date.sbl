@@ -9,5 +9,11 @@
 date_fail		result = 'failure' :(check)	
 date_succeed	result = 'success' :(check)
 check output = result
-		chk('TEST_Date result', $'result', 'success')
+		vchk('TEST_Date result', $'result', 'success')
+
+* ===== TEST_Date_330 (date argument is not integer; sbl.min code, absent
+* ===== from the manual-appendix list) =====
+	caughtf =
+	d330 = date(array(2))
+e330	errchk('TEST_Date_330', 330)
 end

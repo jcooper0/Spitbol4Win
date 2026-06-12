@@ -45,4 +45,12 @@ m3_z    vchk('TEST_ConditionalVariableAssociation_003 temp1', $'temp1', '')
         vchk('TEST_ConditionalVariableAssociation_003 temp3', $'temp3', '')
         vchk('TEST_ConditionalVariableAssociation_003 temp4', $'temp4', '')
 
+
+* ===== TEST_ConditionalAssoc_030 (pattern assignment left operand
+* ===== is not pattern) =====
+        clear()
+        caughtf =
+        l30 = array(2)
+        p = l30 . v30
+e30z    errchk('TEST_ConditionalAssoc_030', 30)
 END

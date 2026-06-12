@@ -313,4 +313,28 @@ m80_z   okchk('TEST_Assign_PIv')
 m81_z   okchk('TEST_Assign_NIv')
         vchk('TEST_Assign_NIv a', $'a', 'replacement')
 
+
+* ===== match-statement errors (ErrorList 031, 240, 241) =====
+
+* ===== TEST_Replace_031 (replacement right operand is not a string) =====
+        clear()
+        caughtf =
+        s31 = 'abc'
+        s31 'b' = array(2)
+er31z   errchk('TEST_Replace_031', 31)
+
+* ===== TEST_Match_240 (match right operand is not pattern) =====
+        clear()
+        caughtf =
+        s240 = 'abc'
+        p240 = array(2)
+        s240 p240
+er240z  errchk('TEST_Match_240', 240)
+
+* ===== TEST_Match_241 (match left operand is not a string) =====
+        clear()
+        caughtf =
+        s241 = array(2)
+        s241 'a'
+er241z  errchk('TEST_Match_241', 241)
 END

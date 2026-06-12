@@ -15377,6 +15377,11 @@
     chks('1.5145554828924974e+303 + -1.2122420731319742e+303', '3.0231340976052318e+302')
     chks('-1.5145554828924974e+303 + -1.2122420731319742e+303', '-2.7267975560244717e+303')
 
+    chks('"x" + 1', 'addition left operand is not numeric')
+    chks('1 + "x"', 'addition right operand is not numeric')
+    chks('9223372036854775807 + 1', 'addition caused integer overflow')
+    chks('1.0e308 + 1.0e308', 'addition caused real overflow')
+
     report()
 
 end

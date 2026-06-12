@@ -22,4 +22,16 @@ m2_z    okchk('TEST_Dupl_002')
         vchk('TEST_Dupl_002 R2', $'R2', '1A1A1')
         vchk('TEST_Dupl_002 R3', $'R3', 'AAAAA')
 
+
+* ===== TEST_Dupl_090 (second argument is not integer) =====
+        clear()
+        caughtf =
+        R = DUPL('a', array(2))
+m3_z    errchk('TEST_Dupl_090', 90)
+
+* ===== TEST_Dupl_091 (first argument is not a string or pattern) =====
+        clear()
+        caughtf =
+        R = DUPL(array(2), 3)
+m4_z    errchk('TEST_Dupl_091', 91)
 END

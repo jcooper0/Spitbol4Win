@@ -628,6 +628,8 @@
     chks('ln(-1.3222480017470629e+04)','ln argument negative')
     chks('ln(-1.0220105465190372e+05)','ln argument negative')
 
+    chks('ln("x")', 'ln argument not numeric')
+
     report()
 
 end

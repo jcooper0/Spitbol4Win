@@ -14401,6 +14401,10 @@
     chks('-1.3730169573947802e+290 * 1.8299918514476963e+290', 'multiplication caused real overflow')
     chks('-1.3730169573947802e+290 * -1.8299918514476963e+290', 'multiplication caused real overflow')
 
+    chks('"x" * 2', 'multiplication left operand is not numeric')
+    chks('2 * "x"', 'multiplication right operand is not numeric')
+    chks('9223372036854775807 * 2', 'multiplication caused integer overflow')
+
     report()
 
 end

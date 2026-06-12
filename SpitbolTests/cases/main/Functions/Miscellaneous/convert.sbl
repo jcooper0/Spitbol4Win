@@ -1193,4 +1193,10 @@ m90_z   okchk('TEST_Convert_Code_Expression')
 m91_z   okchk('TEST_Convert_Code_Code')
         vchk('TEST_Convert_Code_Code d', $'d', 'success')
 
+
+* ===== TEST_Convert_074 (second argument is not a string) =====
+        clear()
+        caughtf =
+        b = convert('x', array(2))
+m92_z   errchk('TEST_Convert_074', 74)
 END

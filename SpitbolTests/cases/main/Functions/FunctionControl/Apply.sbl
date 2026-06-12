@@ -60,4 +60,10 @@ m5_z    okchk('TEST_Apply_005')
         vchk('TEST_Apply_005 r1', $'r1', 'success')
         vchk('TEST_Apply_005 r2', $'r2', 'success')
 
+
+* ===== TEST_Undefined_022 (undefined function called) =====
+        clear()
+        caughtf =
+        r = undefined_function_zq22(1)
+m6_z    errchk('TEST_Undefined_022', 22)
 END

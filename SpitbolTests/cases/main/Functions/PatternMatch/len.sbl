@@ -68,4 +68,35 @@ m9_n       result = 'fail'
 m9_z    vchk('TEST_Len_009 result', $'result', 'success')
         vchk('TEST_Len_009 test', $'test', 'CD')
 
+
+* ===== TEST_Len_120 (argument is not integer or expression) =====
+        clear()
+        caughtf =
+        p = len(array(2))
+elena   errchk('TEST_Len_120', 120)
+
+* ===== TEST_Len_121 (argument is negative or too large) =====
+        clear()
+        caughtf =
+        c = 2 - 3
+        p = len(c)
+elenb   errchk('TEST_Len_121', 121)
+
+* ===== TEST_Len_047 (evaluated argument is not integer) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        p = len(*nlen)
+        nlen = 'abc'
+        'subject' p
+elenc   errchk('TEST_Len_047', 47)
+
+* ===== TEST_Len_048 (evaluated argument negative or too large) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        p = len(*nlen2)
+        nlen2 = -1
+        'subject' p
+elend   errchk('TEST_Len_048', 48)
 END

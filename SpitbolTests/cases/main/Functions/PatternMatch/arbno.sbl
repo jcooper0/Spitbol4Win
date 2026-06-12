@@ -26,4 +26,10 @@ m2_y       result = 'success'   :(m2_z)
 m2_n       result = 'fail' 
 m2_z    vchk('TEST_ArbNo_002 result', $'result', 'fail')
 
+
+* ===== TEST_ArbNo_061 (argument is not pattern) =====
+        clear()
+        caughtf =
+        p = arbno(array(2))
+m3_z    errchk('TEST_ArbNo_061', 61)
 END

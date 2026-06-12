@@ -15377,6 +15377,11 @@
     chks('1.5145554828924973e+300 - -1.2122420731319742e+300', '2.7267975560244717e+300')
     chks('-1.5145554828924973e+300 - -1.2122420731319742e+300', '-3.0231340976052309e+299')
 
+    chks('"x" - 1', 'subtraction left operand is not numeric')
+    chks('1 - "x"', 'subtraction right operand is not numeric')
+    chks('0 - 9223372036854775807 - 2', 'subtraction caused integer overflow')
+    chks('0.0 - 1.0e308 - 1.0e308', 'subtraction caused real overflow')
+
     report()
 
 end
