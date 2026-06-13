@@ -68,7 +68,7 @@ o158    CHK('OUTPUT 158 inappropriate second argument', '158', 1)
         OUTPUT(LEN(1), 50, 'io_t_o.tmp')                    :S(o159) F(o159)
 o159    CHK('OUTPUT 159 inappropriate first argument', '159', 1)
         ECAUGHT = 0
-        OUTPUT(.V, 50, 'io_t_o.tmp[-l')                     :S(o160) F(o160)
+        OUTPUT(.V, 53, 'io_t_o.tmp[-l')                     :S(o160) F(o160)
 o160    CHK('OUTPUT 160 inappropriate file specification', '160', 0)
 *       290: a filename on an already-open channel is invalid
         OUTPUT(.U1, 8, 'io_t_o1.tmp')                       :F(OU_90S)
@@ -77,9 +77,26 @@ o160    CHK('OUTPUT 160 inappropriate file specification', '160', 0)
 o290    CHK('OUTPUT 290 channel currently in use', '290', 0)
         ENDFILE(8)                                          :(OU_61)
 OU_90S  SKIPPED('OUTPUT 290 setup (open channel)')
-OU_61   SKIPPED('OUTPUT 161 file cannot be written to (needs write-protected target)')
-        SKIPPED('OUTPUT 206 caused file overflow (needs full device)')
-        SKIPPED('OUTPUT 207 caused non-recoverable error (needs I/O fault)')
+*       161: the osint maps every failed open (write-protected target,
+*       directory, etc.) to the 'file does not exist' exit => statement
+*       FAILURE, never error 161.  Untriggerable by construction.
+OU_61   SKIPPED('OUTPUT 161 file cannot be written to (osint maps unwritable open to failure)')
+        SKIPPED('OUTPUT 206 caused file overflow (zysou EXIT_1 only fires on unopened iob)')
+*       207: the runner supplies an always-ENOSPC device (/dev/full on
+*       Linux) in io_t_full.cfg.  Opened with [-u] (unbuffered) so the
+*       write hits the device immediately; zysou EXIT_2 -> error 207.
+*       Verified against the reference Linux sbl.  Absent cfg => skip.
+        INPUT(.CF, 19, 'io_t_full.cfg')                     :F(OU_07S)
+        FULLDEV = CF                                        :F(OU_07C)
+        ENDFILE(19)
+        DIFFER(FULLDEV)                                     :F(OU_07S)
+        ECAUGHT = 0
+        OUTPUT(.WX, 6, FULLDEV '[-u]')                      :F(OU_07S)
+        WX = 'overflow probe'
+o207    CHK('OUTPUT 207 caused non-recoverable error', '207', 0)
+        ENDFILE(6)                                          :(REPORT)
+OU_07C  ENDFILE(19)
+OU_07S  SKIPPED('OUTPUT 207 caused non-recoverable error (no failing device configured)')
         :(REPORT)
 
 *------------------------------- summary -------------------------------
@@ -87,5 +104,6 @@ REPORT  OUTPUT =
         OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
         OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
         OUTPUT = 'RESULT: FAIL'                             :(END)
-ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+ETRAP   ECAUGHT = &ERRTYPE
+        SETEXIT(.ETRAP)                                     :(CONTINUE)
 END

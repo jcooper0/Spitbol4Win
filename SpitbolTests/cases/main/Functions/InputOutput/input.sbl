@@ -74,7 +74,7 @@ i114    CHK('INPUT 114 inappropriate second argument', '114', 1)
         INPUT(LEN(1), 50, 'io_t_in.tmp')                    :S(i115) F(i115)
 i115    CHK('INPUT 115 inappropriate first argument', '115', 1)
         ECAUGHT = 0
-        INPUT(.V, 50, 'io_t_in.tmp[-l')                     :S(i116) F(i116)
+        INPUT(.V, 53, 'io_t_in.tmp[-l')                     :S(i116) F(i116)
 i116    CHK('INPUT 116 inappropriate file specification', '116', 0)
 *       289: a filename on an already-open channel is invalid
         INPUT(.U1, 8, 'io_t_in.tmp')                        :F(IN_89S)
@@ -83,7 +83,16 @@ i116    CHK('INPUT 116 inappropriate file specification', '116', 0)
 i289    CHK('INPUT 289 channel currently in use', '289', 0)
         ENDFILE(8)                                          :(IN_117)
 IN_89S  SKIPPED('INPUT 289 setup (open channel)')
-IN_117  SKIPPED('INPUT 117 file cannot be read (needs unreadable file/permissions)')
+*       117: associating INPUT (no filename) on a channel already open
+*       for OUTPUT is an illegal association (osint IO_ILL -> zysio
+*       EXIT_2) and raises 117 'input file cannot be read'.
+*       Verified against the reference Linux sbl (spitbol/x64).
+IN_117  OUTPUT(.W7, 6, 'io_t_in2.tmp')                      :F(IN_17S)
+        ECAUGHT = 0
+        INPUT(.R7, 6)                                       :S(i117) F(i117)
+i117    CHK('INPUT 117 file cannot be read (illegal assoc)', '117', 1)
+        ENDFILE(6)                                          :(REPORT)
+IN_17S  SKIPPED('INPUT 117 setup (open output channel)')
         :(REPORT)
 
 *------------------------------- summary -------------------------------
@@ -91,5 +100,6 @@ REPORT  OUTPUT =
         OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
         OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
         OUTPUT = 'RESULT: FAIL'                             :(END)
-ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+ETRAP   ECAUGHT = &ERRTYPE
+        SETEXIT(.ETRAP)                                     :(CONTINUE)
 END

@@ -71,9 +71,29 @@ e93     CHK('EJECT 093 file does not exist (channel not open)', '93', 1)
         ECAUGHT = 0
         EJECT(9)                                            :S(e94) F(e94)
 e94     CHK('EJECT 094 file does not permit page eject', '94', 0)
-        ENDFILE(9)                                          :(EJ_95)
-EJ_94S  SKIPPED('EJECT 094 setup (open input channel)')
-EJ_95   SKIPPED('EJECT 095 caused non-recoverable output error (needs I/O fault)')
+        ENDFILE(9)                                          :(EJ_94F)
+EJ_94S  SKIPPED('EJECT 094 input-channel setup (open input channel)')
+*       094 (deterministic variant): EJECT writes a form-feed; on an
+*       always-ENOSPC device (io_t_full.cfg, /dev/full on Linux) the
+*       oswrite fails and zysef takes EXIT_2 -> error 94.  This variant
+*       runs regardless of the input-channel attempt above, since some
+*       builds permit eject on an input channel (-> no error there).
+*       Verified against the reference Linux sbl.  Absent cfg => skip.
+EJ_94F  INPUT(.CF, 19, 'io_t_full.cfg')                     :F(EJ_4FS)
+        FULLDEV = CF                                        :F(EJ_4FC)
+        ENDFILE(19)
+        DIFFER(FULLDEV)                                     :F(EJ_4FS)
+        OUTPUT(.WX, 6, FULLDEV '[-u]')                      :F(EJ_4FS)
+        ECAUGHT = 0
+        EJECT(6)                                            :S(e94f) F(e94f)
+e94f    CHK('EJECT 094 page eject fails on full device', '94', 0)
+        ENDFILE(6)                                          :(EJ_95)
+EJ_4FC  ENDFILE(19)
+EJ_4FS  SKIPPED('EJECT 094 full-device variant (no failing device configured)')
+*       095: zysef defines an EXIT_3 'i/o error' in its interface but the
+*       implementation never returns it (write failures map to EXIT_2 ->
+*       error 94), so 95 is unreachable through this osint.
+EJ_95   SKIPPED('EJECT 095 caused non-recoverable output error (osint never takes the 95 exit)')
         :(REPORT)
 
 *------------------------------- summary -------------------------------
@@ -81,5 +101,6 @@ REPORT  OUTPUT =
         OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
         OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
         OUTPUT = 'RESULT: FAIL'                             :(END)
-ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+ETRAP   ECAUGHT = &ERRTYPE
+        SETEXIT(.ETRAP)                                     :(CONTINUE)
 END

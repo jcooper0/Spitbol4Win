@@ -85,5 +85,6 @@ REPORT  OUTPUT =
         OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
         OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
         OUTPUT = 'RESULT: FAIL'                             :(END)
-ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+ETRAP   ECAUGHT = &ERRTYPE
+        SETEXIT(.ETRAP)                                     :(CONTINUE)
 END

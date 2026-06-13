@@ -67,8 +67,23 @@ e173    CHK('REWIND 173 argument is null', '173', 1)
         ECAUGHT = 0
         REWIND(77)                                          :S(e174) F(e174)
 e174    CHK('REWIND 174 file does not exist (channel not open)', '174', 1)
-        SKIPPED('REWIND 175 file does not permit rewind (needs non-seekable device)')
-        SKIPPED('REWIND 176 caused non-recoverable error (needs I/O fault)')
+*       175: requires a non-seekable device.  The test runner supplies a
+*       device path in io_t_dev.cfg (a FIFO on Unix, CON on Windows);
+*       lseek fails on it, so zysrw takes EXIT_2 -> error 175.
+*       Verified against the reference Linux sbl using a FIFO.
+*       Absent or empty cfg => skip.
+        INPUT(.CF, 19, 'io_t_dev.cfg')                      :F(RW_75S)
+        DEVPATH = CF                                        :F(RW_75C)
+        ENDFILE(19)
+        DIFFER(DEVPATH)                                     :F(RW_75S)
+        INPUT(.DV, 6, DEVPATH)                              :F(RW_75S)
+        ECAUGHT = 0
+        REWIND(6)                                           :S(e175) F(e175)
+e175    CHK('REWIND 175 file does not permit rewind', '175', 0)
+        ENDFILE(6)                                          :(RW_76)
+RW_75C  ENDFILE(19)
+RW_75S  SKIPPED('REWIND 175 file does not permit rewind (no non-seekable device configured)')
+RW_76   SKIPPED('REWIND 176 caused non-recoverable error (needs I/O fault)')
         :(REPORT)
 
 *------------------------------- summary -------------------------------
@@ -76,5 +91,6 @@ REPORT  OUTPUT =
         OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
         OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
         OUTPUT = 'RESULT: FAIL'                             :(END)
-ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+ETRAP   ECAUGHT = &ERRTYPE
+        SETEXIT(.ETRAP)                                     :(CONTINUE)
 END

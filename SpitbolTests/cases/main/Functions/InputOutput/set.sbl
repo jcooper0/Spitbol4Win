@@ -86,8 +86,24 @@ e2nd    CHK('SET 324/293 second argument not numeric/inappropriate', '324 293', 
 e294    CHK('SET 294 inappropriate third argument (bad whence)', '294', 0)
         ENDFILE(9)                                          :(ST_96)
 ST_AS   SKIPPED('SET 324/293/294 setup (open channel)')
-ST_96   SKIPPED('SET 296 file does not permit setting pointer (needs non-seekable device)')
-        SKIPPED('SET 297 caused non-recoverable I/O error (needs I/O fault)')
+*       296: requires a non-seekable device.  The test runner supplies a
+*       device path in io_t_dev.cfg (a FIFO on Unix, CON on Windows).
+*       NOTE: not verifiable on the public spitbol/x64 prebuilt binary,
+*       which is built without .cust and has no SET at all (calling it
+*       raises 22 'undefined function called').  Strict=0 so builds where
+*       the seek merely FAILS (no error) record a skip.
+ST_96   INPUT(.CF, 19, 'io_t_dev.cfg')                      :F(ST_96S)
+        DEVPATH = CF                                        :F(ST_96C)
+        ENDFILE(19)
+        DIFFER(DEVPATH)                                     :F(ST_96S)
+        INPUT(.DV, 6, DEVPATH)                              :F(ST_96S)
+        ECAUGHT = 0
+        SET(6, 5, 0)                                        :S(e296) F(e296)
+e296    CHK('SET 296 file does not permit setting pointer', '296', 0)
+        ENDFILE(6)                                          :(ST_97)
+ST_96C  ENDFILE(19)
+ST_96S  SKIPPED('SET 296 file does not permit setting pointer (no non-seekable device configured)')
+ST_97   SKIPPED('SET 297 caused non-recoverable I/O error (needs I/O fault)')
         :(REPORT)
 
 *------------------------------- summary -------------------------------
@@ -95,5 +111,6 @@ REPORT  OUTPUT =
         OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
         OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
         OUTPUT = 'RESULT: FAIL'                             :(END)
-ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+ETRAP   ECAUGHT = &ERRTYPE
+        SETEXIT(.ETRAP)                                     :(CONTINUE)
 END

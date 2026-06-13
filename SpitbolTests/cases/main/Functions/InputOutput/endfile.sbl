@@ -66,9 +66,12 @@ e97     CHK('ENDFILE 097 argument is null', '97', 1)
         ECAUGHT = 0
         ENDFILE(77)                                         :S(e98) F(e98)
 e98     CHK('ENDFILE 098 file does not exist (channel not open)', '98', 1)
-*       099/100 require a device that denies close / an I/O fault:
-        SKIPPED('ENDFILE 099 file does not permit endfile (needs special device)')
-        SKIPPED('ENDFILE 100 caused non-recoverable output error (needs I/O fault)')
+*       099: zysen only ever exits 'file does not exist' (-> 98) or
+*       'i/o error' from a failed close; it has no path that returns the
+*       'does not permit endfile' exit, so 99 is unreachable through
+*       this osint.  100 needs the close itself to fail (I/O fault).
+        SKIPPED('ENDFILE 099 file does not permit endfile (osint never takes the 99 exit)')
+        SKIPPED('ENDFILE 100 caused non-recoverable output error (needs close-time I/O fault)')
         :(REPORT)
 
 *------------------------------- summary -------------------------------
@@ -76,5 +79,6 @@ REPORT  OUTPUT =
         OUTPUT = NPASS ' passed, ' NFAIL ' failed, ' NSKIP ' skipped, ' NTOT ' total'
         OUTPUT = EQ(NFAIL, 0) 'RESULT: PASS'                :S(END)
         OUTPUT = 'RESULT: FAIL'                             :(END)
-ETRAP   ECAUGHT = &ERRTYPE                                  :(CONTINUE)
+ETRAP   ECAUGHT = &ERRTYPE
+        SETEXIT(.ETRAP)                                     :(CONTINUE)
 END
