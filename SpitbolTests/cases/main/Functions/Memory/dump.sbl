@@ -1,0 +1,16 @@
+-INCLUDE 'assert.inc'
+
+*  dump.sbl -- DUMP(n) argument errors.
+*  088  DUMP argument is not integer
+*  089  DUMP argument is negative or too large
+
+* ===== 088 : non-integer argument =====
+        clear(); caughtf = ; &anchor = 0
+        dump('x')
+m088    errchk('TEST_Dump_088 argument not integer', 88)
+
+* ===== 089 : negative argument =====
+        clear(); caughtf = ; &anchor = 0
+        dump(-1)
+m089    errchk('TEST_Dump_089 argument negative or too large', 89)
+end

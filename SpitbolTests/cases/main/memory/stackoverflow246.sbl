@@ -1,0 +1,4 @@
+        define('rec(n)')                     :(main)
+rec     rec(n + 1)                           :(return)
+main    rec(1)
+end

@@ -1,0 +1,3 @@
+-NOFAIL
+        x = ident('a','b')
+end

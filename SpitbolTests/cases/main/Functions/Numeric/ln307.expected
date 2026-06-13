@@ -1,0 +1,15 @@
+
+
+
+
+
+
+
+1               z = ln(0.0)
+
+ln307.sbl(1) : error 307 -- ln produced real overflow
+
+
+1               z = ln(0.0)
+
+ln307.sbl(1) : error 307 -- ln produced real overflow

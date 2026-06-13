@@ -1,0 +1,18 @@
+-INCLUDE 'assert.inc'
+
+*  trace.sbl -- TRACE / STOPTR trace-type errors.
+*  191  STOPTR second argument is not a trace type
+*  199  TRACE  second argument is not a trace type
+*  (The first-argument-name checks 190/198 are not reachable on this
+*  build: a numeric first argument is accepted, so they are omitted.)
+
+* ===== 199 : TRACE with an invalid trace type =====
+        clear(); caughtf = ; &anchor = 0
+        trace('X', 'BOGUS')
+m199    errchk('TEST_Trace_199 second arg not trace type', 199)
+
+* ===== 191 : STOPTR with an invalid trace type =====
+        clear(); caughtf = ; &anchor = 0
+        stoptr('X', 'BOGUS')
+m191    errchk('TEST_Stoptr_191 second arg not trace type', 191)
+end

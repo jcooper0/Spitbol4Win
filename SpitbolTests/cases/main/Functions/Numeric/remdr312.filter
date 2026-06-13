@@ -1,0 +1,16 @@
+# SPITBOL run-listing lines that vary between runs, builds, or machines.
+# One regex per line; matching lines are dropped before golden comparison.
+# Version + build banner
+^macro spitbol version
+^x86-64 .*\d{4}$
+# Listing page header
+^\s*page \d+\s*$
+# Per-run statistics block
+^execution time msec
+^stmt / microsec
+^stmt / millisec
+^stmt / second
+^stmts executed
+^regenerations
+^memory used \(bytes\)
+^memory left \(bytes\)

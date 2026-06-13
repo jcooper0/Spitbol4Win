@@ -1,0 +1,10 @@
+-INCLUDE 'assert.inc'
+
+*  exit.sbl -- EXIT(n) / EXIT(n,s) argument error.
+*  104  EXIT first argument is not a suitable integer or string
+
+* ===== 104 : unsuitable first argument (unconvertible aggregate) =====
+        clear(); caughtf = ; &anchor = 0
+        exit(array(3))
+m104    errchk('TEST_Exit_104 first arg not suitable', 104)
+end

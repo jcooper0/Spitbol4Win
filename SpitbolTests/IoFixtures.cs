@@ -122,7 +122,7 @@ namespace SpitbolTests
             // unwritten so output.sbl / eject.sbl SKIP those codes. To enable
             // them, mount a tiny full volume and set SPITBOL_FULL_DEVICE to its
             // path; we honor that override if present.
-            string fullOverride = Environment.GetEnvironmentVariable("SPITBOL_FULL_DEVICE");
+            string? fullOverride = Environment.GetEnvironmentVariable("SPITBOL_FULL_DEVICE");
             if (!string.IsNullOrWhiteSpace(fullOverride))
                 scope.WriteCfg(FullCfgName, fullOverride);
 
@@ -135,7 +135,7 @@ namespace SpitbolTests
         {
             private readonly string _dir;
             public int UnixFd = -1;
-            public IDisposable WinPipe;
+            public IDisposable? WinPipe;
             private bool _disposed;
 
             public FixtureScope(string dir) => _dir = dir;

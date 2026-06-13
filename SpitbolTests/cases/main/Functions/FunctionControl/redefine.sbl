@@ -1,0 +1,20 @@
+-INCLUDE 'assert.inc'
+
+*  redefine.sbl -- redefining a system function is an error.
+*  248  attempted redefinition of system function
+*
+*  OPSYN'ing a user name ONTO a system function is fine; the error is
+*  triggered by OPSYN'ing something ONTO an existing system function
+*  name (i.e. attempting to redefine SPAN itself).  Per sbl.min the
+*  check is on the target's svblk btfnc bit.
+
+* ===== 248 : redefine a system function (SPAN) =====
+        clear(); caughtf = ; &anchor = 0
+        opsyn('span', 'len')
+m248    errchk('TEST_Opsyn_248 redefine system function', 248)
+
+* ===== positive control : aliasing a NEW name onto a system fn is OK =====
+        clear(); caughtf = ; &anchor = 0
+        opsyn('myspan', 'span')
+        okchk('TEST_Opsyn_alias_ok')
+end

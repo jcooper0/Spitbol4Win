@@ -1,0 +1,20 @@
+
+
+
+abort036.sbl(1) : error 036 -- goto abort with no preceding error
+
+
+
+
+
+in file              abort036.sbl
+in line              1
+in statement         1
+
+
+abort036.sbl(1) : error 036 -- goto abort with no preceding error
+
+
+in file              abort036.sbl
+in line              1
+in statement         1

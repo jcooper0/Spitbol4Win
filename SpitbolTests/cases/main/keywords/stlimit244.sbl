@@ -1,0 +1,4 @@
+        &stlimit = 100
+        n = 0
+loop    n = n + 1                            :(loop)
+end

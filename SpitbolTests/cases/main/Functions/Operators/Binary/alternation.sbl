@@ -1,0 +1,39 @@
+-INCLUDE 'assert.inc'
+
+*  alternation.sbl -- binary  |  (alternation) operand-type errors.
+*  Behaviour per Emmer & Quillen SPITBOL Manual and sbl.min (o_alt):
+*  the operator pops the RIGHT operand first (gtpat -> err 005) and the
+*  LEFT operand second (gtpat -> err 006).  A string converts to a
+*  literal pattern, so only the array operand fails -- its POSITION,
+*  not its order in the source, selects the code.
+*
+*  005  alternation right operand is not pattern
+*  006  alternation left  operand is not pattern
+
+* ===== TEST_Alternation_006 (bad operand on the LEFT) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        a006 = array(10)
+        b006 = a006 | span('ABC')
+m006    errchk('TEST_Alternation_006 left operand not pattern', 6)
+
+* ===== TEST_Alternation_005 (bad operand on the RIGHT) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        a005 = array(10)
+        b005 = span('ABC') | a005
+m005    errchk('TEST_Alternation_005 right operand not pattern', 5)
+
+* ===== TEST_Alternation_ok (two valid pattern operands -- no error) =====
+        clear()
+        caughtf =
+        &anchor = 0
+        pok = span('ABC') | len(2)
+        'XY' pok                                        :s(aok_m)f(aok_n)
+aok_m   okok = 'matched'                                :(aok_c)
+aok_n   okok = 'nomatch'
+aok_c   okchk('TEST_Alternation_ok')
+        vchk('TEST_Alternation_ok matched', okok, 'matched')
+end

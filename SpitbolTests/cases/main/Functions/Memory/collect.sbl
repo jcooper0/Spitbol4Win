@@ -1,0 +1,15 @@
+-INCLUDE 'assert.inc'
+
+*  collect.sbl -- COLLECT(n) argument error.
+*  073  COLLECT argument is not integer
+
+* ===== 073 : non-integer argument =====
+        clear(); caughtf = ; &anchor = 0
+        collect('x')
+m073    errchk('TEST_Collect_073 argument not integer', 73)
+
+* ===== positive control : a valid COLLECT returns free space, no error =====
+        clear(); caughtf = ; &anchor = 0
+        n = collect(0)
+        okchk('TEST_Collect_ok')
+end

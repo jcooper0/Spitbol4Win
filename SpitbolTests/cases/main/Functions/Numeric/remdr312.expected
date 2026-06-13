@@ -1,0 +1,15 @@
+
+
+
+
+
+
+
+1               z = remdr(1.0e300, 1.0e-300)
+
+remdr312.sbl(1) : error 312 -- remdr caused real overflow
+
+
+1               z = remdr(1.0e300, 1.0e-300)
+
+remdr312.sbl(1) : error 312 -- remdr caused real overflow

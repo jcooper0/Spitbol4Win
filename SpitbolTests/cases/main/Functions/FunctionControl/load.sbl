@@ -1,0 +1,46 @@
+-INCLUDE 'assert.inc'
+
+*  load.sbl -- LOAD(prototype, library) argument-validation errors.
+*  Per sbl.min (s_lod): the library name (2nd arg) is converted first
+*  via gtstg (-> 136), then the prototype (1st arg) is scanned for a
+*  string (137), non-null (138), '(' (139), function name (140), and
+*  ')' (141).  142 fires when a well-formed prototype names a function
+*  that cannot be resolved at load time.  String-convertible scalars do
+*  NOT trip 136/137 (an integer converts to its digits), so the bad
+*  operand must be an unconvertible aggregate (array).
+
+* ===== 136 : second argument not a string (unconvertible) =====
+        clear(); caughtf = ; &anchor = 0
+        load('FOO()', array(3))
+m136    errchk('TEST_Load_136 second arg not string', 136)
+
+* ===== 137 : first argument not a string (unconvertible) =====
+        clear(); caughtf = ; &anchor = 0
+        load(array(3), 'lib')
+m137    errchk('TEST_Load_137 first arg not string', 137)
+
+* ===== 138 : first argument is null =====
+        clear(); caughtf = ; &anchor = 0
+        load('')
+m138    errchk('TEST_Load_138 first arg null', 138)
+
+* ===== 139 : prototype missing left paren =====
+        clear(); caughtf = ; &anchor = 0
+        load('FOO')
+m139    errchk('TEST_Load_139 missing left paren', 139)
+
+* ===== 140 : prototype has null function name =====
+        clear(); caughtf = ; &anchor = 0
+        load('()')
+m140    errchk('TEST_Load_140 null function name', 140)
+
+* ===== 141 : prototype missing right paren =====
+        clear(); caughtf = ; &anchor = 0
+        load('FOO(')
+m141    errchk('TEST_Load_141 missing right paren', 141)
+
+* ===== 142 : well-formed prototype, function cannot be resolved =====
+        clear(); caughtf = ; &anchor = 0
+        load('NOSUCHFN()')
+m142    errchk('TEST_Load_142 function does not exist', 142)
+end
