@@ -3,9 +3,6 @@
     <Platform Name="Any CPU" />
     <Platform Name="x64" />
   </Configurations>
-  <Project Path="MinimalCodeGen/MinimalCodeGen.csproj" Id="19c37541-98cd-4431-86f1-289c281251ad" />
-  <Project Path="MinimalLexer/MinimalLexer.csproj" />
-  <Project Path="Nasm2Masm/Nasm2Masm.csproj" />
   <Project Path="SblTestGen/SblTestGen.csproj" />
   <Project Path="SpitbolBuild/SpitbolBuild.csproj" />
   <Project Path="SpitbolExe/Spitbol.vcxproj" Id="8994fcce-ed77-4ff1-b2d2-6de9a6b993fc">
