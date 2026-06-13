@@ -2,7 +2,8 @@ using System.Diagnostics;
 
 namespace SblTestGen;
 
-// Entry point. Two subcommands mirroring the original convert.py / snapshot.py.
+// Entry point. Subcommands mirroring the original convert.py / snapshot.py,
+// plus a coverage report over the test corpus.
 static class Program
 {
     static int Main(string[] args)
@@ -21,6 +22,12 @@ static class Program
                 case "snapshot":
                     if (args.Length < 3) { Usage(); return 1; }
                     Snapshotter.Run(args[1], args[2]);
+                    return 0;
+
+                case "coverage":
+                    if (args.Length < 3) { Usage(); return 1; }
+                    Coverage.Run(args[1], args[2],
+                                 args.Length > 3 ? args[3] : null);
                     return 0;
 
                 default:
@@ -47,7 +54,13 @@ usage:
   SblTestGen snapshot <outDir> <spitbolExe>
       Run every generated .sbl in <outDir>; wherever it reports *FAIL, rewrite
       the assertion to the observed native value and record the C#/native
-      divergence in <outDir>\DIVERGENCES.md.");
+      divergence in <outDir>\DIVERGENCES.md.
+
+  SblTestGen coverage <sbl.min> <casesRoot> [reportMd]
+      Cross-reference the error codes DEFINED by <sbl.min> against the codes
+      ASSERTED by the test corpus under <casesRoot>, and report which are
+      elicited, which are not, and (where known) why. Writes Markdown to
+      [reportMd] if given, and always echoes it to stdout.");
 }
 
 // Helpers shared by both subcommands.
