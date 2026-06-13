@@ -34,22 +34,39 @@ public class SpitbolTests
     // One node per program. Golden cases diff against <name>.expected;
     // self-check cases require exit 0 and no "*FAIL" line.
 
+    // Cases whose device-dependent error codes (117/175/207/094, +296 on .cust)
+    // the fixtures elicit. All other cases are untouched.
+    private static readonly HashSet<string> IoFixtureCases =
+        new(StringComparer.OrdinalIgnoreCase) { "input", "rewind", "output", "eject", "set" };
+
     [Theory]
     [MemberData(nameof(TestCorpus.CaseNames), MemberType = typeof(TestCorpus))]
     public async Task Corpus(string caseName)
     {
         var exe = RequireExe();
         var c = TestCorpus.Resolve(caseName);
-        var result = await SpitbolRunner.RunAsync(exe, c.SourceFile, c.StdinFile, SpitbolPaths.Timeout());
 
-        Assert.False(result.TimedOut,
-            $"'{caseName}' exceeded the {SpitbolPaths.Timeout().TotalSeconds:0}s timeout.\n" +
-            Tail(result.StdErr));
+        IDisposable? fixtures = null;
+        if (IoFixtureCases.Contains(Path.GetFileNameWithoutExtension(c.SourceFile)))
+            fixtures = IoFixtures.Prepare(Path.GetDirectoryName(Path.GetFullPath(c.SourceFile))!);
 
-        if (c.Mode == CaseMode.SelfCheck)
-            AssertSelfCheck(caseName, result);
-        else
-            AssertGolden(c, result);
+        try
+        {
+            var result = await SpitbolRunner.RunAsync(exe, c.SourceFile, c.StdinFile, SpitbolPaths.Timeout());
+
+            Assert.False(result.TimedOut,
+                $"'{caseName}' exceeded the {SpitbolPaths.Timeout().TotalSeconds:0}s timeout.\n" +
+                Tail(result.StdErr));
+
+            if (c.Mode == CaseMode.SelfCheck)
+                AssertSelfCheck(caseName, result);
+            else
+                AssertGolden(c, result);
+        }
+        finally
+        {
+            fixtures?.Dispose();   // closes the FIFO/pipe handle, deletes the .cfg files
+        }
     }
 
     private static void AssertSelfCheck(string caseName, RunResult result)
