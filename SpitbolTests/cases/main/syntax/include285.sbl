@@ -1,0 +1,4 @@
+* err 285: include file cannot be opened
+-include "this_file_does_not_exist_zzz.inc"
+start	output = 1
+end

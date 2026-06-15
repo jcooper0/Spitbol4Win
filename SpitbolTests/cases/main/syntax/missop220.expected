@@ -1,0 +1,16 @@
+
+
+
+
+
+
+                                                                                                                page 1
+
+1       start	output = (1)(2)
+             	            !
+missop220.sbl(3,19) : error 220 -- syntax error: missing operator
+
+
+1       start	output = (1)(2)
+             	            !
+missop220.sbl(3,19) : error 220 -- syntax error: missing operator

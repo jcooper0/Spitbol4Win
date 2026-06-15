@@ -1,0 +1,5 @@
+* err 247: invalid control statement
+* recognised control card (-line) given a non-integer argument.
+-line abc
+start	output = 1
+end

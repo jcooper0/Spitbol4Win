@@ -1,0 +1,6 @@
+* err 218: syntax error: duplicated goto field
+* two success-goto fields on one statement.
+start	output = 1	:S(a)S(b)
+a	output = 2
+b	output = 3
+end

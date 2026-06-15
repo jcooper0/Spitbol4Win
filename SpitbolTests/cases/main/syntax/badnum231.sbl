@@ -1,0 +1,3 @@
+* err 231: syntax error: invalid numeric item
+start	output = 1.2.3
+end

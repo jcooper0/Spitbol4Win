@@ -1,0 +1,4 @@
+* err 221: syntax error: missing operand
+* binary + with no right operand.
+start	output = 1 +
+end

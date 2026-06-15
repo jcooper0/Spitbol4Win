@@ -1,0 +1,4 @@
+* err 234: syntax error: goto field incorrect
+* token after : is neither a label-paren nor S/F.
+start	output = 1	:5
+end

@@ -1,0 +1,16 @@
+
+
+
+
+
+
+                                                                                                                page 1
+
+1       start	output = 1	:S(a)S(b)
+             	          	        !
+dupgoto218.sbl(3,26) : error 218 -- syntax error: duplicated goto field
+
+
+1       start	output = 1	:S(a)S(b)
+             	          	        !
+dupgoto218.sbl(3,26) : error 218 -- syntax error: duplicated goto field

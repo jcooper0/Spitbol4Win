@@ -1,0 +1,3 @@
+* err 226: syntax error: missing right paren
+start	output = (1
+end

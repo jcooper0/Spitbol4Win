@@ -1,0 +1,4 @@
+* err 212: syntax error: value used where name is required
+* . (name operator) applied to a literal value, not a name.
+start	output = .3
+end

@@ -1,0 +1,4 @@
+* err 233: syntax error: invalid use of operator
+* two binary operators abutting (// = slash followed by slash).
+start	output = 1 // 2
+end

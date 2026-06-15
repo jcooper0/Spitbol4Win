@@ -1,0 +1,4 @@
+* err 227: syntax error: right paren missing from goto
+start	output = 1	:(lab
+lab	output = 3
+end

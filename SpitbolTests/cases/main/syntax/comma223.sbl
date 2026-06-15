@@ -1,0 +1,4 @@
+* err 223: syntax error: invalid use of comma
+* comma outside subscript / argument list.
+start	output = 1,2
+end

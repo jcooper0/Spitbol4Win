@@ -1,0 +1,4 @@
+* err 230: syntax error: illegal character
+* a control character (0x01) in the source.
+start	output = \x01bad
+end

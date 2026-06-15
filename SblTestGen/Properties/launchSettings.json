@@ -2,7 +2,7 @@
   "profiles": {
     "SblTestGen": {
       "commandName": "Project",
-      "commandLineArgs": "coverage \"C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SpitbolBuild\\sbl.min\" \"C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SpitbolTests\\cases\\main\" --md \"C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SpitbolTests\\SBLcoverage.md\" > coverage.md\r\n"
+      "commandLineArgs": "coverage \"C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SpitbolBuild\\sbl.min\" \"C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SpitbolTests\\cases\\main\" --md \"C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SpitbolTests\\SBLcoverage.md\" > C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\SblTestGen\\Coverage.md\r\n"
     }
   }
 }

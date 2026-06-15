@@ -1,0 +1,16 @@
+
+
+
+
+
+
+                                                                                                                page 1
+
+1       start	output = [1]
+             	         !
+lbracket222.sbl(2,16) : error 222 -- syntax error: invalid use of left bracket
+
+
+1       start	output = [1]
+             	         !
+lbracket222.sbl(2,16) : error 222 -- syntax error: invalid use of left bracket

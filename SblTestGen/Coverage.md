@@ -1,0 +1,341 @@
+# SPITBOL error-code coverage
+
+- Codes defined by sbl.min : 329
+- Codes elicited by tests  : 263
+- Codes NOT elicited       : 66
+
+## Unelicited codes
+
+- 7: compilation error encountered during execution  [compile-time]
+- 19: exponentiation right operand is negative  [auto-promotes to real; never fires]
+- 39: external function argument is not a string
+- 40: external function argument is not integer
+- 42: attempt to change value of protected variable
+- 95: eject caused non-recoverable output error  [fault-injection]
+- 99: endfile file does not permit endfile  [fault-injection]
+- 100: endfile caused non-recoverable output error  [fault-injection]
+- 105: exit action not available in this implementation
+- 106: exit action caused irrecoverable error
+- 143: load function caused input error during load  [needs external DLL]
+- 161: output file cannot be written to  [fault-injection (open failure maps to statement failure)]
+- 176: rewind caused non-recoverable error  [fault-injection]
+- 190: stoptr first argument is not appropriate name  [numeric first arg accepted; never fires]
+- 197: trace fourth arg is not function name or null  [never fires on this build]
+- 198: trace first argument is not appropriate name  [numeric first arg accepted; never fires]
+- 202: input from file caused non-recoverable error  [fault-injection]
+- 203: input file record has incorrect format
+- 204: memory overflow  [fault-injection]
+- 206: output caused file overflow  [fault-injection]
+- 213: syntax error: statement is too complicated.  [compile-time]
+- 215: syntax error: undefined or erroneous entry label  [compile-time]
+- 216: syntax error: missing end line  [compile-time]
+- 219: syntax error: empty goto field  [compile-time]
+- 233: syntax error: invalid use of operator  [compile-time]
+- 245: translation/execution time expired
+- 247: invalid control statement  [compile-time]
+- 249: expression evaluated by name returned value
+- 250: insufficient memory to complete dump  [fault-injection]
+- 252: error on printing to interactive channel  [fault-injection]
+- 253: print limit exceeded on standard output channel
+- 254: erroneous argument for host  [HOST platform-dependent]
+- 255: error during execution of host  [HOST platform-dependent]
+- 260: conversion array size exceeds maximum permitted
+- 265: external function argument is not real  [needs external DLL]
+- 267: exponentiation right operand is real not integer  [real exponent accepted; never fires]
+- 268: inconsistent value assigned to keyword profile
+- 269: buffer first argument is not integer  [BUFFER not callable]
+- 270: buffer second argument is not a string or buffer  [BUFFER not callable]
+- 271: buffer initial value too big for allocation  [BUFFER not callable]
+- 272: buffer first argument is not positive  [BUFFER not callable]
+- 273: buffer size exceeds value of maxlngth keyword  [BUFFER not callable]
+- 274: value assigned to keyword fullscan is zero
+- 275: append first argument is not a buffer  [APPEND not callable]
+- 276: append second argument is not a string  [APPEND not callable]
+- 277: insert third argument not integer  [INSERT not callable]
+- 278: insert second argument not integer  [INSERT not callable]
+- 279: insert first argument is not a buffer  [INSERT not callable]
+- 280: insert fourth argument is not a string  [INSERT not callable]
+- 283: string length exceeded for generalized lexical comparison  [long strings accepted; never fires]
+- 284: excessively nested include files  [compile-time (INCLUDE nesting)]
+- 288: exit second argument is not a string
+- 297: set caused non-recoverable i/o error  [fault-injection]
+- 298: external function argument is not file  [needs external DLL]
+- 310: tan produced real overflow or argument is out of range  [tan returns finite; never fires]
+- 319: backspace caused non-recoverable error
+- 320: user interrupt  [user interrupt (SIGINT)]
+- 321: goto scontinue with no preceding error
+- 322: cos argument is out of range  [cos reduces via libc; never fires]
+- 323: sin argument is out of range  [sin reduces via libc; never fires]
+- 326: calling external function - bad argument type  [needs external DLL]
+- 327: calling external function - not found  [needs external DLL]
+- 328: load function - insufficient memory  [needs external DLL]
+- 329: requested maxlngth too large
+- 331: goto scontinue with no user interrupt
+- 332: goto continue with error in failure goto
+
+## Elicited codes
+
+- 1: addition left operand is not numeric
+- 2: addition right operand is not numeric
+- 3: addition caused integer overflow
+- 4: affirmation operand is not numeric
+- 5: alternation right operand is not pattern
+- 6: alternation left operand is not pattern
+- 8: concatenation left operand is not a string or pattern
+- 9: concatenation right operand is not a string or pattern
+- 10: negation operand is not numeric
+- 11: negation caused integer overflow
+- 12: division left operand is not numeric
+- 13: division right operand is not numeric
+- 14: division caused integer overflow
+- 15: exponentiation right operand is not numeric
+- 16: exponentiation left operand is not numeric
+- 17: exponentiation caused integer overflow
+- 18: exponentiation result is undefined
+- 20: goto evaluation failure
+- 21: function called by name returned a value
+- 22: undefined function called
+- 23: goto operand is not a natural variable
+- 24: goto operand in direct goto is not code
+- 25: immediate assignment left operand is not pattern
+- 26: multiplication left operand is not numeric
+- 27: multiplication right operand is not numeric
+- 28: multiplication caused integer overflow
+- 29: undefined operator referenced
+- 30: pattern assignment left operand is not pattern
+- 31: pattern replacement right operand is not a string
+- 32: subtraction left operand is not numeric
+- 33: subtraction right operand is not numeric
+- 34: subtraction caused integer overflow
+- 35: unexpected failure in -nofail mode
+- 36: goto abort with no preceding error
+- 37: goto continue with no preceding error
+- 38: goto undefined label
+- 41: field function argument is wrong datatype
+- 43: any evaluated argument is not a string
+- 44: break evaluated argument is not a string
+- 45: breakx evaluated argument is not a string
+- 46: expression does not evaluate to pattern
+- 47: len evaluated argument is not integer
+- 48: len evaluated argument is negative or too large
+- 49: notany evaluated argument is not a string
+- 50: pos evaluated argument is not integer
+- 51: pos evaluated argument is negative or too large
+- 52: rpos evaluated argument is not integer
+- 53: rpos evaluated argument is negative or too large
+- 54: rtab evaluated argument is not integer
+- 55: rtab evaluated argument is negative or too large
+- 56: span evaluated argument is not a string
+- 57: tab evaluated argument is not integer
+- 58: tab evaluated argument is negative or too large
+- 59: any argument is not a string or expression
+- 60: apply first arg is not natural variable name
+- 61: arbno argument is not pattern
+- 62: arg second argument is not integer
+- 63: arg first argument is not program function name
+- 64: array first argument is not integer or string
+- 65: array first argument lower bound is not integer
+- 66: array first argument upper bound is not integer
+- 67: array dimension is zero, negative or out of range
+- 68: array size exceeds maximum permitted
+- 69: break argument is not a string or expression
+- 70: breakx argument is not a string or expression
+- 71: clear argument is not a string
+- 72: clear argument has null variable name
+- 73: collect argument is not integer
+- 74: convert second argument is not a string
+- 75: data argument is not a string
+- 76: data argument is null
+- 77: data argument is missing a left paren
+- 78: data argument has null datatype name
+- 79: data argument is missing a right paren
+- 80: data argument has null field name
+- 81: define first argument is not a string
+- 82: define first argument is null
+- 83: define first argument is missing a left paren
+- 84: define first argument has null function name
+- 85: null arg name or missing ) in define first arg.
+- 86: define function entry point is not defined label
+- 87: detach argument is not appropriate name
+- 88: dump argument is not integer
+- 89: dump argument is negative or too large
+- 90: dupl second argument is not integer
+- 91: dupl first argument is not a string or pattern
+- 92: eject argument is not a suitable name
+- 93: eject file does not exist
+- 94: eject file does not permit page eject
+- 96: endfile argument is not a suitable name
+- 97: endfile argument is null
+- 98: endfile file does not exist
+- 101: eq first argument is not numeric
+- 102: eq second argument is not numeric
+- 103: eval argument is not expression
+- 104: exit first argument is not suitable integer or string
+- 107: field second argument is not integer
+- 108: field first argument is not datatype name
+- 109: ge first argument is not numeric
+- 110: ge second argument is not numeric
+- 111: gt first argument is not numeric
+- 112: gt second argument is not numeric
+- 113: input third argument is not a string
+- 114: inappropriate second argument for input
+- 115: inappropriate first argument for input
+- 116: inappropriate file specification for input
+- 117: input file cannot be read
+- 118: le first argument is not numeric
+- 119: le second argument is not numeric
+- 120: len argument is not integer or expression
+- 121: len argument is negative or too large
+- 122: leq first argument is not a string
+- 123: leq second argument is not a string
+- 124: lge first argument is not a string
+- 125: lge second argument is not a string
+- 126: lgt first argument is not a string
+- 127: lgt second argument is not a string
+- 128: lle first argument is not a string
+- 129: lle second argument is not a string
+- 130: llt first argument is not a string
+- 131: llt second argument is not a string
+- 132: lne first argument is not a string
+- 133: lne second argument is not a string
+- 134: local second argument is not integer
+- 135: local first arg is not a program function name
+- 136: load second argument is not a string
+- 137: load first argument is not a string
+- 138: load first argument is null
+- 139: load first argument is missing a left paren
+- 140: load first argument has null function name
+- 141: load first argument is missing a right paren
+- 142: load function does not exist
+- 144: lpad third argument is not a string
+- 145: lpad second argument is not integer
+- 146: lpad first argument is not a string
+- 147: lt first argument is not numeric
+- 148: lt second argument is not numeric
+- 149: ne first argument is not numeric
+- 150: ne second argument is not numeric
+- 151: notany argument is not a string or expression
+- 152: opsyn third argument is not integer
+- 153: opsyn third argument is negative or too large
+- 154: opsyn second arg is not natural variable name
+- 155: opsyn first arg is not natural variable name
+- 156: opsyn first arg is not correct operator name
+- 157: output third argument is not a string
+- 158: inappropriate second argument for output
+- 159: inappropriate first argument for output
+- 160: inappropriate file specification for output
+- 162: pos argument is not integer or expression
+- 163: pos argument is negative or too large
+- 164: prototype argument is not valid object
+- 165: remdr second argument is not numeric
+- 166: remdr first argument is not numeric
+- 167: remdr caused integer overflow
+- 168: replace third argument is not a string
+- 169: replace second argument is not a string
+- 170: replace first argument is not a string
+- 171: null or unequally long 2nd, 3rd args to replace
+- 172: rewind argument is not a suitable name
+- 173: rewind argument is null
+- 174: rewind file does not exist
+- 175: rewind file does not permit rewind
+- 177: reverse argument is not a string
+- 178: rpad third argument is not a string
+- 179: rpad second argument is not integer
+- 180: rpad first argument is not a string
+- 181: rtab argument is not integer or expression
+- 182: rtab argument is negative or too large
+- 183: tab argument is not integer or expression
+- 184: tab argument is negative or too large
+- 185: rpos argument is not integer or expression
+- 186: rpos argument is negative or too large
+- 187: setexit argument is not label name or null
+- 188: span argument is not a string or expression
+- 189: size argument is not a string
+- 191: stoptr second argument is not trace type
+- 192: substr third argument is not integer
+- 193: substr second argument is not integer
+- 194: substr first argument is not a string
+- 195: table argument is not integer
+- 196: table argument is out of range
+- 199: trace second argument is not trace type
+- 200: trim argument is not a string
+- 201: unload argument is not natural variable name
+- 205: string length exceeds value of maxlngth keyword
+- 207: output caused non-recoverable error
+- 208: keyword value assigned is not integer
+- 209: keyword in assignment is protected
+- 210: keyword value assigned is negative or too large
+- 211: value assigned to keyword errtext not a string
+- 212: syntax error: value used where name is required
+- 214: bad label or misplaced continuation line
+- 217: syntax error: duplicate label
+- 218: syntax error: duplicated goto field
+- 220: syntax error: missing operator
+- 221: syntax error: missing operand
+- 222: syntax error: invalid use of left bracket
+- 223: syntax error: invalid use of comma
+- 224: syntax error: unbalanced right parenthesis
+- 225: syntax error: unbalanced right bracket
+- 226: syntax error: missing right paren
+- 227: syntax error: right paren missing from goto
+- 228: syntax error: right bracket missing from goto
+- 229: syntax error: missing right array bracket
+- 230: syntax error: illegal character
+- 231: syntax error: invalid numeric item
+- 232: syntax error: unmatched string quote
+- 234: syntax error: goto field incorrect
+- 235: subscripted operand is not table or array
+- 236: array referenced with wrong number of subscripts
+- 237: table referenced with more than one subscript
+- 238: array subscript is not integer
+- 239: indirection operand is not name
+- 240: pattern match right operand is not pattern
+- 241: pattern match left operand is not a string
+- 242: function return from level zero
+- 243: function result in nreturn is not name
+- 244: statement count exceeds value of stlimit keyword
+- 246: stack overflow
+- 248: attempted redefinition of system function
+- 251: keyword operand is not name of defined keyword
+- 256: sort/rsort 1st arg not suitable array or table
+- 257: erroneous 2nd arg in sort/rsort of vector
+- 258: sort/rsort 2nd arg out of range or non-integer
+- 259: fence argument is not pattern
+- 261: addition caused real overflow
+- 262: division caused real overflow
+- 263: multiplication caused real overflow
+- 264: subtraction caused real overflow
+- 266: exponentiation caused real overflow
+- 281: char argument not integer
+- 282: char argument not in range
+- 285: include file cannot be opened
+- 286: function call to undefined entry label
+- 287: value assigned to keyword maxlngth is too small
+- 289: input channel currently in use
+- 290: output channel currently in use
+- 291: set first argument is not a suitable name
+- 292: set first argument is null
+- 293: inappropriate second argument to set
+- 294: inappropriate third argument to set
+- 295: set file does not exist
+- 296: set file does not permit setting file pointer
+- 301: atan argument not numeric
+- 302: chop argument not numeric
+- 303: cos argument not numeric
+- 304: exp argument not numeric
+- 305: exp produced real overflow
+- 306: ln argument not numeric
+- 307: ln produced real overflow
+- 308: sin argument not numeric
+- 309: tan argument not numeric
+- 311: exponentiation of negative base to non-integral power
+- 312: remdr caused real overflow
+- 313: sqrt argument not numeric
+- 314: sqrt argument negative
+- 315: ln argument negative
+- 316: backspace argument is not a suitable name
+- 317: backspace file does not exist
+- 318: backspace file does not permit backspace
+- 324: set second argument not numeric
+- 330: date argument is not integer
+

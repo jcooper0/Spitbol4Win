@@ -1,0 +1,3 @@
+* err 229: syntax error: missing right array bracket
+start	x = a[1
+end

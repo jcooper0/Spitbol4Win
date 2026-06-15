@@ -1,0 +1,4 @@
+* err 219: syntax error: empty goto field
+* a goto introducer ":" with no success/failure field after it.
+start	output = 1	:
+end

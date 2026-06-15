@@ -1,0 +1,4 @@
+* err 220: syntax error: missing operator
+* two parenthesised operands with no operator between them.
+start	output = (1)(2)
+end

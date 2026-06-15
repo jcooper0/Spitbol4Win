@@ -1,0 +1,4 @@
+* err 214: bad label or misplaced continuation line
+* continuation line (+ in column 1) with no statement to continue.
++	output = 1
+end

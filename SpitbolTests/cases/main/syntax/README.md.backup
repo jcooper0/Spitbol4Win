@@ -1,0 +1,98 @@
+# syntax/ — compile-time / syntax-error golden batch
+
+One self-contained `.sbl` per compile-time error code. Each program is the
+minimal source that makes Macro SPITBOL raise exactly that error during
+**compilation** (not execution), so these are **Golden** cases, never SelfCheck:
+a syntax error aborts the compile, the program never runs, and the process exits
+non-zero (231 on the reference build). The discriminating signal is the
+`... : error NNN -- ...` line in the compiler's output, which is why each case
+needs a captured `.expected` rather than an in-program assertion.
+
+Every trigger here was validated against the reference `sbl` binary built from
+the same `spitbol/x64` source as the Windows port — all 20 fire the intended
+code with zero mismatches.
+
+## Codes covered (20)
+
+| file                 | code | message                                      |
+|----------------------|------|----------------------------------------------|
+| namereq212.sbl       | 212  | value used where name is required            |
+| badcont214.sbl       | 214  | bad label or misplaced continuation line     |
+| duplabel217.sbl      | 217  | duplicate label                              |
+| dupgoto218.sbl       | 218  | duplicated goto field                        |
+| missop220.sbl        | 220  | missing operator                             |
+| missopnd221.sbl      | 221  | missing operand                              |
+| lbracket222.sbl      | 222  | invalid use of left bracket                  |
+| comma223.sbl         | 223  | invalid use of comma                         |
+| rparen224.sbl        | 224  | unbalanced right parenthesis                 |
+| rbracket225.sbl      | 225  | unbalanced right bracket                     |
+| norparen226.sbl      | 226  | missing right paren                          |
+| gotorparen227.sbl    | 227  | right paren missing from goto                |
+| gotorbrkt228.sbl     | 228  | right bracket missing from goto (direct goto)|
+| arrbracket229.sbl    | 229  | missing right array bracket                  |
+| illchar230.sbl       | 230  | illegal character (0x01 in source)           |
+| badnum231.sbl        | 231  | invalid numeric item                         |
+| strquote232.sbl      | 232  | unmatched string quote                       |
+| gotofield234.sbl     | 234  | goto field incorrect                         |
+| include285.sbl       | 285  | include file cannot be opened                |
+| undeflabel286.sbl    | 286  | function call to undefined entry label       |
+
+## Minting the goldens (Windows, as usual)
+
+These need `.expected` files captured on the target build. Same procedure as the
+goto/trap goldens — from inside the test project, never the solution root:
+
+```powershell
+cd SpitbolTests
+$env:SPITBOL_UPDATE_GOLDEN = "1"
+dotnet test --filter "DisplayName~syntax"
+Remove-Item Env:\SPITBOL_UPDATE_GOLDEN
+```
+
+Then re-run without the env var to confirm green. Place `syntax.filter` so the
+harness picks it up for these cases (per-directory, like `assert.inc` is copied).
+
+## Two things to confirm on first capture
+
+1. **Filename in the error line.** The captured line reads
+   `<file>(line,col) : error NNN -- ...`. On the reference binary, invoking with a
+   bare filename (cwd = case dir, the same working-dir rule the I/O fixtures use)
+   yields just `strquote232.sbl(2,16) : ...` — no absolute path — so the golden is
+   portable. If your runner passes an absolute path instead, the path gets baked
+   into `.expected` and the case becomes machine-specific. If so, either switch the
+   runner to a relative name for these, or add a path-stripping substitution (see
+   note 2).
+
+2. **The `(line,col)` position is baked in.** Whole-line-drop filtering can't strip
+   it, so the position lives in the golden. That's fine for frozen files (it's
+   deterministic), but it's the reason the deferred **OutputNormalizer substitution
+   filter** matters: once it lands, a substitution like
+   `s/\([0-9]+,[0-9]+\)/(L,C)/` (and an optional leading-path strip) lets you
+   re-capture position-independent goldens. Until then, don't edit these `.sbl`
+   files after capture — adding a line shifts every position and invalidates the
+   golden.
+
+## Reference: raw report shape (strquote232.sbl)
+
+```
+macro spitbol version 4.0f              <- dropped (version)
+x86-64  Mon Jun 15 18:47:49 2026        <- dropped (volatile timestamp)
+                              page 1    <- dropped (page header)
+1       start   output = "open          <- kept (source listing)
+             	         !               <- kept (caret)
+strquote232.sbl(2,16) : error 232 -- syntax error: unmatched string quote   <- kept (the assertion)
+```
+
+## Still unresolved (carried over, NOT in this batch)
+
+Triggers I could not pin to a simple, reliable source program:
+
+- **215** undefined or erroneous entry label
+- **216** missing end line
+- **233** invalid use of operator — note: this is the build's *catch-all* for many
+  malformed goto/operator constructs, so a clean isolated trigger is awkward (most
+  "obvious" malformed gotos resolve to 233 rather than the specific goto codes).
+- **247** invalid control statement
+- **219** empty goto field — on this build `:()` resolves to **212**
+  (name-required) rather than 219, so 219 appears unreachable here; worth a source
+  dive next session to confirm.

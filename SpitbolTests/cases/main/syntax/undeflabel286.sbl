@@ -1,0 +1,4 @@
+* err 286: function call to undefined entry label
+start	define("f()","nolabel")
+	output = f()
+end

@@ -1,0 +1,16 @@
+
+
+
+
+
+
+                                                                                                                page 1
+
+1       start	output = "open
+             	         !
+strquote232.sbl(2,16) : error 232 -- syntax error: unmatched string quote
+
+
+1       start	output = "open
+             	         !
+strquote232.sbl(2,16) : error 232 -- syntax error: unmatched string quote

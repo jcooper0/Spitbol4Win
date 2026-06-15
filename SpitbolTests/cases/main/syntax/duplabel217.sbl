@@ -1,0 +1,4 @@
+* err 217: syntax error: duplicate label
+dup	output = 1
+dup	output = 2
+end

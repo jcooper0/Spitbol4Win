@@ -1,0 +1,5 @@
+* err 228: syntax error: right bracket missing from goto
+* direct goto opened with [ and not closed.
+start	output = 1	:[lab
+lab	output = 3
+end

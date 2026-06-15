@@ -1,0 +1,16 @@
+
+
+
+
+
+
+                                                                                                                page 1
+
+1       start	output = 1.2.3
+             	         !
+badnum231.sbl(2,16) : error 231 -- syntax error: invalid numeric item
+
+
+1       start	output = 1.2.3
+             	         !
+badnum231.sbl(2,16) : error 231 -- syntax error: invalid numeric item

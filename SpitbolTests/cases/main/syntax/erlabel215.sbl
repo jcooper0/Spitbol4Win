@@ -1,0 +1,4 @@
+* err 215: syntax error: undefined or erroneous entry label
+* END names a transfer label that was never defined.
+start	output = 1
+end	nosuchlabel

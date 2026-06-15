@@ -1,0 +1,12 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  KeywordErrors.sbl    (SelfCheck)
+*  Keyword-assignment error codes not covered elsewhere:
+*  274 value assigned to keyword fullscan is zero.
+*  ===========================================================================
+
+        caughtf =
+        &fullscan = 0
+        errchk('Keyword274 fullscan assigned zero', 274)
+END
