@@ -15,7 +15,7 @@ copy
 
 loop
 
-    line = input                                     :f(end)
+    line = input                                    :f(end)
 
 *   Copy blank and comment lines as it.
 
