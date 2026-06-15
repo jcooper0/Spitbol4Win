@@ -1,0 +1,5 @@
+start	output = 'before load'
+	load('efint(integer)integer', 'C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll')
+	output = 'after load'
+	output = efint(41)
+end
