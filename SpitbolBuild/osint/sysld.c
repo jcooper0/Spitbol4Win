@@ -42,58 +42,47 @@ Copyright 2012-2017 David Shields
 #endif
 #include <fcntl.h>
 
-#if EXTFUN
-static void *openloadfile(char *namebuf);
-static void closeloadfile(void *fd);
-#endif /* EXTFUN */
-
 int
 zysld()
 {
 #if EXTFUN
-    void *fd; /* keep stack word-aligned */
-    void *result = 0;
-
-    fd = openloadfile(ptscblk->str);
-    if(fd != -1) {                         /* If file opened OK */
-        result = loadef(fd, ptscblk->str); /* Invoke loader */
-        closeloadfile(fd);
-        switch((word)result) {
-        case(word)0:
-            return EXIT_2; /* I/O error */
-        case(word)-1:
-            return EXIT_1; /* doesn't exist */
-        case(word)-2:
-            return EXIT_3; /* insufficient memory */
-        default:
-            SET_XR(result);
-            return NORMAL_RETURN; /* Success, return pointer to stuff in EFBLK */
-        }
-    } else
-        return EXIT_1;
-}
-
-static void
-closeloadfile(word fd)
-{}
-
-static void *
-openloadfile(char *file)
-{
-
-    struct scblk *lnscb = XL(struct scblk *);
+    /* Per the asm contract:  XR = SCBLK with function name,
+                              XL = SCBLK with library name.   */
     struct scblk *fnscb = XR(struct scblk *);
-    char *savecp;
-    char savechar;
-    void *handle;
-    handle = dlopen(file, RTLD_LAZY);
-    if(handle == NULL)
-        return EXIT_1;
-    else {
-        /* todo ... */
-        return EXIT_NORMAL
+    struct scblk *lnscb = XL(struct scblk *);
+    char  fnName[256];
+    char  libName[260];
+    PFN   pfn = 0;
+    mword handle;
+    void *node;
+    word  i, n;
+
+    /* SCBLKs are not NUL-terminated: copy len bytes, then terminate. */
+    n = fnscb->len;
+    if(n > (word)(sizeof(fnName) - 1)) n = sizeof(fnName) - 1;
+    for(i = 0; i < n; i++) fnName[i] = fnscb->str[i];
+    fnName[n] = '\0';
+
+    n = lnscb->len;
+    if(n > (word)(sizeof(libName) - 1)) n = sizeof(libName) - 1;
+    for(i = 0; i < n; i++) libName[i] = lnscb->str[i];
+    libName[n] = '\0';
+
+    handle = loadDll(libName, fnName, &pfn);
+    if(handle == (mword)-1)
+        return EXIT_1;                   /* library/function not found -> err 142 */
+
+    node = loadef(handle, (char *)&pfn); /* loadef reads pfn = *(PFN *)arg */
+    switch((word)node) {
+    case(word)0:
+        return EXIT_2;                   /* I/O error */
+    case(word)-2:
+        return EXIT_3;                   /* insufficient memory */
+    default:
+        SET_XR(node);
+        return NORMAL_RETURN;            /* success: XR = node stored in EFBLK->efcod */
     }
 #else  /* EXTFUN */
     return EXIT_1;
-}
 #endif /* EXTFUN */
+}

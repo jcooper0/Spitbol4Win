@@ -1,0 +1,40 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  ExternalFnErrors.sbl    (SelfCheck)  -- REQUIRES a load-enabled build.
+*
+*  Covers the external-function argument-type errors that fire during
+*  SPITBOL-side conversion of a loaded function's arguments:
+*     039 argument is not a string   065 -- n/a
+*     040 argument is not integer
+*     265 argument is not real
+*     298 argument is not file
+*
+*  PREREQUISITES (else every LOAD fails with 142 and these never fire):
+*    1. Spitbol4Win built with external-function support enabled
+*       (the Windows equivalent of EXTFUN=1 in osint/port.h).
+*    2. eflib.dll (from eflib.c) reachable by LOAD's search -- next to the
+*       test exe, on PATH, or via an absolute path in the 2nd LOAD argument.
+*  ===========================================================================
+
+        load('efint(integer)integer', "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+        load('efstr(string)string',   "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+        load('efreal(real)real',      "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+        load('effile(file)integer',   "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+
+        caughtf =
+        x = efint('abc')
+        errchk('ExtFn040 integer arg not numeric', 40)
+
+        caughtf =
+        x = efreal('abc')
+        errchk('ExtFn265 real arg not numeric', 265)
+
+        caughtf =
+        x = efstr(len(1))
+        errchk('ExtFn039 string arg not convertible', 39)
+
+        caughtf =
+        x = effile(5)
+        errchk('ExtFn298 file arg is not a file', 298)
+END

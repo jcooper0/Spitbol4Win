@@ -25,10 +25,15 @@ Copyright 2012-2017 David Shields
 #define FIELDOFFSET(str, fld) ((unsigned long)(char *)&(((str *)0)->fld))
 
 #if EXTFUN
-# include <dlfcn.h>
+/* Win32 dynamic loading. We declare the three kernel32 entry points directly
+   rather than pulling in <windows.h>, which would clash with osint macros
+   (e.g. `far`, used by xnblk in blocks32.h). kernel32.lib is auto-linked. */
+extern void *__stdcall LoadLibraryA(const char *lpLibFileName);
+extern void *__stdcall GetProcAddress(void *hModule, const char *lpProcName);
+extern int   __stdcall FreeLibrary(void *hModule);
 
 typedef struct xnblk XFNode, *pXFNode;
-typedef mword (*PFN)(); /* pointer to function */
+/* PFN is declared in sproto.h (via port.h) under #if EXTFUN. */
 
 static union block *scanp;          /* used by scanef/nextef */
 static pXFNode xnfree = (pXFNode)0; /* list of freed blocks */
@@ -284,21 +289,15 @@ mword
 loadDll(char *dllName, char *fcnName, PFN *ppfnProcAddress)
 {
     void *handle;
-    PFN pfn;
 
-# ifdef RTLD_NOW
-    handle = dlopen(dllName, RTLD_NOW);
-# else
-    handle = dlopen(dllName, RTLD_LAZY);
-# endif
+    handle = LoadLibraryA(dllName);
     if(!handle) {
-        fcnName = dlerror();
         return -1;
     }
 
-    *ppfnProcAddress = (PFN)dlsym(handle, fcnName);
+    *ppfnProcAddress = (PFN)GetProcAddress(handle, fcnName);
     if(!*ppfnProcAddress) {
-        dlclose(handle);
+        FreeLibrary(handle);
         return -1;
     }
 
@@ -478,7 +477,7 @@ unldef(struct efblk *efb)
         }
 
     efb->efcod = 0;                /* remove pointer to XNBLK */
-    dlclose(pnode->xnu.ef.xnhand); /* close use of handle */
+    FreeLibrary(pnode->xnu.ef.xnhand); /* close use of handle */
 
     pnode->xnu.ef.xnpfn = (PFN)xnfree; /* put back on free list */
     xnfree = pnode;
