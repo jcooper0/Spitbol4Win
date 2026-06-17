@@ -32,79 +32,58 @@ extern void *__stdcall LoadLibraryA(const char *lpLibFileName);
 extern void *__stdcall GetProcAddress(void *hModule, const char *lpProcName);
 extern int   __stdcall FreeLibrary(void *hModule);
 
+/* This port file predates the current osint.h naming: it uses uppercase
+   MINIMAL selector/symbol names, whereas osint.h now exposes them in lower
+   case (enum CALLS members and the extern data/code symbols). Map them here
+   rather than editing every use site. */
+#define TYPET          typet         /* MINIMAL data symbol (type table) */
+#define B_EFC          b_efc         /* MINIMAL code symbol (efblk routine) */
+#define MINIMAL_ALLOC  minimal_alloc
+#define MINIMAL_ALOCS  minimal_alocs
+#define MINIMAL_ALOST  minimal_alost
+#define MINIMAL_BLKLN  minimal_blkln
+
+/* C-side stack-frame minimums used to size the argument area handed to
+   callextfun. The real x64 call trampoline is not yet implemented (see the
+   callextfun stub at the end of this #if EXTFUN block), so these only need to
+   be defined; their values become significant once that trampoline lands. */
+#ifndef MINFRAME
+# define MINFRAME 0
+#endif
+#ifndef ARGPUSHSIZE
+# define ARGPUSHSIZE 0
+#endif
+/* Round a byte count up to the x64 16-byte stack alignment. */
+#ifndef SA
+# define SA(n) (((n) + 15) & ~(mword)15)
+#endif
+
 typedef struct xnblk XFNode, *pXFNode;
 /* PFN is declared in sproto.h (via port.h) under #if EXTFUN. */
 
 static union block *scanp;          /* used by scanef/nextef */
 static pXFNode xnfree = (pXFNode)0; /* list of freed blocks */
 
-extern long f_2_i(double ra);
-extern double i_2_f(long ia);
-extern double f_add(double arg, double ra);
-extern double f_sub(double arg, double ra);
-extern double f_mul(double arg, double ra);
-extern double f_div(double arg, double ra);
-extern double f_neg(double ra);
-extern double f_atn(double ra);
-extern double f_chp(double ra);
-extern double f_cos(double ra);
-extern double f_etx(double ra);
-extern double f_lnf(double ra);
-extern double f_sin(double ra);
-extern double f_sqr(double ra);
-extern double f_tan(double ra);
-
-static APDF flttab = {
-    (double (*)())f_2_i, /* float to integer */
-    i_2_f,               /* integer to float */
-    f_add,               /* floating add */
-    f_sub,               /* floating subtract */
-    f_mul,               /* floating multiply */
-    f_div,               /* floating divide */
-    f_neg,               /* floating negage */
-    f_atn,               /* arc tangent */
-    f_chp,               /* chop */
-    f_cos,               /* cosine */
-    f_etx,               /* exponential */
-    f_lnf,               /* natural log */
-    f_sin,               /* sine */
-    f_sqr,               /* square root */
-    f_tan                /* tangent */
-};
-
-misc miscinfo = {
-    0x105,                          /* internal version number */
-    GCCi32 ? t_lnx8632 : t_lnx8664, /* environment */
-    0,                              /* spare */
-    0,                              /* number of arguments */
-    0,                              /* pointer to type table */
-    0,                              /* pointer to XNBLK */
-    0,                              /* pointer to EFBLK */
-    (APDF *)flttab,                 /* pointer to flttab */
-};
-
-/* Assembly-language helper needed for final linkage to function:
+/* ---------------------------------------------------------------------------
+ * Windows port note (Spitbol4Win):
+ *
+ * The Linux external-call machinery that formerly lived here -- the
+ * float-helper table (flttab/miscinfo, referencing the Linux assembly
+ * helpers f_2_i/i_2_f/f_add/f_sub/f_mul/f_div/f_neg) plus callef() and the
+ * callextfun() trampoline -- has been removed.  callef() is now provided by
+ * the dedicated Windows stub in callef.c (Milestone B: the real x64 call
+ * trampoline is not yet implemented), and the f_* helpers it referenced do
+ * not exist on this build.  Keeping the old definitions here produced a
+ * duplicate-symbol clash (callef defined twice) and unresolved externals
+ * (f_add/f_sub/f_mul/f_div/f_neg/i_2_f/f_2_i).
+ *
+ * This file still owns the external-function *loader* (loadDll/loadef/
+ * nextef/scanef/unldef) plus spit_open/sbrkx/brkx/makeexec/uppercase, all of
+ * which are used elsewhere in the port and are retained below.
+ * ---------------------------------------------------------------------------
  */
-extern mword callextfun(struct efblk *efb, union block **sp, mword nargs,
-                        mword nbytes);
 
-/*
- * callef - procedure to call external function.
- *
- *    result = callef(efptr, xsp, nargs)
- *
- *       efptr    pointer to efblk
- *       xsp        pointer to arguments+4 (artifact of machines with return link on stack)
- *       nargs    number of arguments
- *       result     0 - function should fail
- *                -1 - insufficient memory to convert arg (not used)
- *                     or function not found.
- *                -2 - improper argument type (not used)
- *                other - block pointer to function result
- *
- * Called from sysex.c.
- *
- */
+#if 0 /* superseded by callef.c -- retained for reference only */
 union block *
 callef(struct efblk *efb, union block **sp, mword nargs)
 {
@@ -272,6 +251,7 @@ callef(struct efblk *efb, union block **sp, mword nargs)
     }
     return result;
 }
+#endif /* superseded callef */
 
 /* Attempt to load a DLL into memory using the name provided.
  *
@@ -340,10 +320,10 @@ loadef(mword fd, char *filename)
     pnode->xntyp = TYPE_XNT;       /* B_XNT type word */
     pnode->xnlen = sizeof(XFNode); /* length of this block */
     pnode->xnu.ef.xnhand = handle; /* record DLL handle */
-    pnode->xnu.ef.xnpfn = pfn;     /* record function entry address */
+    pnode->xnu.ef.xnpfn = (void *)pfn; /* record function entry address */
     pnode->xnu.ef.xn1st = 2;       /* flag first call to function */
     pnode->xnu.ef.xnsave = 0;      /* not reload from save file */
-    pnode->xnu.ef.xncbp = (void far (*)())0; /* no callback  declared */
+    pnode->xnu.ef.xncbp = (void (*)(void))0; /* no callback  declared */
     return (void *)pnode; /* Return node to store in EFBLK */
 }
 
@@ -389,14 +369,16 @@ loadef(mword fd, char *filename)
 void *
 nextef(unsigned char **bufp, int io)
 {
-    union block *dnamp;
+    union block *dynend; /* end of dynamic region (MINIMAL global 'dnamp');
+                            a distinct name avoids shadowing that global so
+                            GET_MIN_VALUE(dnamp,...) reads it, not this local */
     mword ef_type = GET_CODE_OFFSET(B_EFC, mword);
     void *result = 0;
     mword type, blksize;
     pXFNode pnode;
 
     MINSAVE();
-    for(dnamp = GET_MIN_VALUE(dnamp, union block *); scanp < dnamp;
+    for(dynend = GET_MIN_VALUE(dnamp, union block *); scanp < dynend;
         scanp = ((union block *)(MP_OFF(scanp, muword) + blksize))) {
         type = scanp->scb.sctyp; /* any block type lets us access type word */
         SET_WA(type);
@@ -437,15 +419,21 @@ nextef(unsigned char **bufp, int io)
     return result;
 }
 
-/* Rename a file.  Return 0 if OK */
+/* Rename a file.  Return 0 if OK.
+ *
+ * Windows has no POSIX link()/unlink() rename idiom; MoveFileExA performs the
+ * rename atomically. MOVEFILE_REPLACE_EXISTING (1) is passed so an existing
+ * target is overwritten, matching the net effect of the old link()+unlink()
+ * sequence. kernel32.lib is auto-linked (see LoadLibraryA et al. above). */
+extern int __stdcall MoveFileExA(const char *lpExistingFileName,
+                                 const char *lpNewFileName,
+                                 unsigned long dwFlags);
+#define MOVEFILE_REPLACE_EXISTING 0x1u
+
 int
 renames(char *oldname, char *newname)
 {
-    if(link(oldname, newname) == 0) {
-        unlink(oldname);
-        return 0;
-    } else
-        return -1;
+    return MoveFileExA(oldname, newname, MOVEFILE_REPLACE_EXISTING) ? 0 : -1;
 }
 
 /*
@@ -479,8 +467,32 @@ unldef(struct efblk *efb)
     efb->efcod = 0;                /* remove pointer to XNBLK */
     FreeLibrary(pnode->xnu.ef.xnhand); /* close use of handle */
 
-    pnode->xnu.ef.xnpfn = (PFN)xnfree; /* put back on free list */
+    pnode->xnu.ef.xnpfn = (void *)xnfree; /* put back on free list */
     xnfree = pnode;
+}
+
+/*
+ * callextfun - perform the actual native call to a loaded function.
+ *
+ * TODO(LOAD): real x64 implementation. Must marshal the already-converted
+ * arguments (laid out by b_efc) into the Win64 calling convention, invoke the
+ * loaded entry point via efb's xnblk (xnu.ef.xnpfn), and box the typed result,
+ * returning the result block type (BL_xx) or FAIL.
+ *
+ * Until that trampoline exists, this stub lets the image link and lets the
+ * argument-type-error conformance tests pass: those errors (039/040/265/298)
+ * are raised during SPITBOL-side argument conversion in b_efc, BEFORE sysex ->
+ * callef -> callextfun is ever reached. A *successful* external call currently
+ * returns failure.
+ */
+mword
+callextfun(struct efblk *efb, union block **sp, mword nargs, mword nbytes)
+{
+    (void)efb;
+    (void)sp;
+    (void)nargs;
+    (void)nbytes;
+    return FAIL;
 }
 
 #endif /* EXTFUN */

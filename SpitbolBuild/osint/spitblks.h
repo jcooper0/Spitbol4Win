@@ -1,3 +1,5 @@
+#ifndef OSINT_SPITBLKS_H_INCLUDED
+#define OSINT_SPITBLKS_H_INCLUDED
 
 /*
 Copyright 1987-2012 Robert B. K. Dewar and Mark Emmer.
@@ -167,3 +169,4 @@ union block {
     struct scblk scb;
     struct vrblk vrb;
 };
+#endif /* OSINT_SPITBLKS_H_INCLUDED */

@@ -1,4 +1,0 @@
-		c = 2 - 3
-		b = char(c) :f(end)
-		output = b
-end

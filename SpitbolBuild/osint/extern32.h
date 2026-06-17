@@ -25,8 +25,8 @@ Copyright 2012-2017 David Shields
  */
 
 # include "system.h"
-typedef int mword;           /* MINIMAL word */
-typedef unsigned int muword; /* MINIMAL unsigned word */
+typedef word  mword;         /* MINIMAL word (word-width; 64-bit on Win64, was int) */
+typedef uword muword;        /* MINIMAL unsigned word (word-width; was unsigned int) */
 # ifndef far
 #  define far
 # endif

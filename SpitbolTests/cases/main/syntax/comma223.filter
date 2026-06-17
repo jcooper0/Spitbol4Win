@@ -1,2 +1,17 @@
+# Shared output filter for syntax / compile-error golden cases.
+# Each non-blank, non-'#' line is one rule:
+#
+#   <regex>                       drop rule: matching output lines are removed
+#   drop:<regex>                  explicit drop (identical effect)
+#   sub:<d><regex><d><repl><d>    substitution on surviving lines. <d> is any
+#                                 delimiter not used in the body; $1,$2,... are
+#                                 captured groups (.NET Regex.Replace).
+#
+# 1) Drop the volatile version / build banner.
 macro spitbol version
 x86-64
+# 2) Collapse the volatile source position -- "(line)" or "(line,col)" -- in
+#    error-listing lines to a stable (POS) token. The error CODE is preserved,
+#    so the golden still asserts the right error while surviving any edit that
+#    shifts a line or column number.
+sub:~(\.(?:sbl|sno|spt))\(\d+(?:,\d+)?\)( : error \d+)~$1(POS)$2~

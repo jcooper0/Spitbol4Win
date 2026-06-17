@@ -375,22 +375,13 @@ struct xnblk {
     mword xnlen;          /* length of this block */
     union {               /* two uses for rest of block: */
         mword xndta[1];   /* 1. user defined data starts here */
-        struct ef {       /* 2. external function info */
-            mword xnoff;  /*    base offset of function image */
-            mword xnsiz;  /*    size of function in bytes */
-            mword xneip;  /*    transfer EIP */
-            short xncs;   /*    transfer CS */
-            mword xnesp;  /*    transfer ESP, 0 = SPITBOL's stack */
-            short xnss;   /*    transfer SS, 0 = SPITBOL's stack */
-            short xnds;   /*    transfer DS */
-            short xnes;   /*    transfer ES */
-            short xnfs;   /*    transfer FS */
-            short xngs;   /*    transfer GS */
-            short xn1st;  /*    non-zero = first-ever call */
-            short xnsave; /*    non-zero = first call after reload */
-            far void (*xncbp)(
-                void);   /*    callback function prior to exiting */
-            short xnpad; /*    pad to dword boundary */
+        struct ef {       /* 2. external function info (modern DLL model) */
+            void *xnpfn;  /*    loaded function entry address (cast to PFN at call;
+                                also reused as free-list link when on xnfree) */
+            void *xnhand; /*    DLL module handle from LoadLibrary, 0 if none */
+            mword xn1st;  /*    non-zero = first-ever call */
+            mword xnsave; /*    non-zero = first call after reload; -1 once notified */
+            void (*xncbp)(void); /* callback prior to exit, or 0 */
         } ef;
     } xnu;
 };
