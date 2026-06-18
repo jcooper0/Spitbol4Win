@@ -24,6 +24,9 @@
         load('efscale(integer,real)real',       DLL)
         load('efaxpy(real,integer)real',        DLL)
         load('efmul2(real,real)real',           DLL)
+        load('efpi()real',                      DLL)
+        load('efadd3(integer,integer,integer)integer',          DLL)
+        load('efmix4(integer,real,integer,real)real',           DLL)
 
 *  --- N,N : (integer, integer) -> integer --------------------------------
         caughtf =
@@ -54,4 +57,22 @@
         e = efmul2(2.0, 3.0)
         okchk('efmul2(2.0,3.0) call')
         rchk('efmul2(2.0,3.0) -> 6.0', e, 6.0)
+
+*  --- zero arguments: () -> real -----------------------------------------
+        caughtf =
+        p = efpi()
+        okchk('efpi() call')
+        rchk('efpi() -> pi', p, 3.141592653589793)
+
+*  --- three arguments: (int,int,int) -> int  [order-sensitive] -----------
+        caughtf =
+        f = efadd3(1, 2, 3)
+        okchk('efadd3(1,2,3) call')
+        vchk('efadd3(1,2,3) -> 123', f, 123)
+
+*  --- four arguments: (int,real,int,real) -> real  [all 4 registers] -----
+        caughtf =
+        g = efmix4(1, 2.0, 3, 4.0)
+        okchk('efmix4(1,2.0,3,4.0) call')
+        rchk('efmix4(1,2.0,3,4.0) -> 4321.0', g, 4321.0)
 END

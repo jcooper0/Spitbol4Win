@@ -3,12 +3,21 @@
 *  ===========================================================================
 *  ExternalFnErrors.sbl    (SelfCheck)  -- REQUIRES a load-enabled build.
 *
-*  Covers the external-function argument-type errors that fire during
-*  SPITBOL-side conversion of a loaded function's arguments:
-*     039 argument is not a string   065 -- n/a
-*     040 argument is not integer
-*     265 argument is not real
-*     298 argument is not file
+*  Covers the external-function error codes:
+*   - argument conversion (during SPITBOL-side conversion, before the call):
+*     039 argument is not a string   040 argument is not integer
+*     265 argument is not real       298 argument is not file
+*   - LOAD prototype / resolution:
+*     138 null prototype             139 missing left paren
+*     140 null function name         141 missing right paren
+*     142 function not found in the library
+*   - call invocation:
+*     326 too many arguments (more than the 4 register slots callef handles)
+*
+*  Not exercised here (non-deterministic or environment-specific): 143 (I/O
+*  error during load), 327 (call-time out of memory), 328 (load out of
+*  memory), 136/137 (library/prototype not a string -- most values coerce).
+*  UNLOAD's 201 and the post-unload 22 are in UnloadTest.sbl.
 *
 *  PREREQUISITES (else every LOAD fails with 142 and these never fire):
 *    1. Spitbol4Win built with external-function support enabled
@@ -17,10 +26,12 @@
 *       test exe, on PATH, or via an absolute path in the 2nd LOAD argument.
 *  ===========================================================================
 
-        load('efint(integer)integer', "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
-        load('efstr(string)string',   "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
-        load('efreal(real)real',      "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
-        load('effile(file)integer',   "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+        DLL = "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll"
+
+        load('efint(integer)integer', DLL)
+        load('efstr(string)string',   DLL)
+        load('efreal(real)real',      DLL)
+        load('effile(file)integer',   DLL)
 
         caughtf =
         x = efint('abc')
@@ -37,4 +48,32 @@
         caughtf =
         x = effile(5)
         errchk('ExtFn298 file arg is not a file', 298)
+
+*  --- LOAD prototype parse / resolution errors ---------------------------
+        caughtf =
+        load('', DLL)
+        errchk('ExtFn138 null prototype', 138)
+
+        caughtf =
+        load('noparen', DLL)
+        errchk('ExtFn139 missing left paren', 139)
+
+        caughtf =
+        load('(integer)integer', DLL)
+        errchk('ExtFn140 null function name', 140)
+
+        caughtf =
+        load('badfn(integer', DLL)
+        errchk('ExtFn141 missing right paren', 141)
+
+        caughtf =
+        load('efnope(integer)integer', DLL)
+        errchk('ExtFn142 function not in library', 142)
+
+*  --- too many arguments (5 > 4 register slots) -> 326 at call time -------
+*  LOAD itself never limits arity; the ceiling is the call convention.
+        load('ef5(integer,integer,integer,integer,integer)integer', DLL)
+        caughtf =
+        x = ef5(1, 2, 3, 4, 5)
+        errchk('ExtFn326 too many arguments (5)', 326)
 END

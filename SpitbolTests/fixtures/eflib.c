@@ -16,6 +16,9 @@
  *     efaxpy   (real, int )  R,N
  *     efmul2   (real, real)  R,R
  *
+ * Zero-argument fixture:
+ *     efpi     ()            -> real (pi)
+ *
  * NOTE: native C by necessity -- LOAD() resolves C-ABI symbols via
  * GetProcAddress, which a managed C# assembly does not provide. The usual
  * "tooling in C#" preference does not apply to a loadable fixture DLL.
@@ -52,3 +55,18 @@ EXPORT double efscale (long n, double a)   { return a * (double)n; }    /* N,R *
 EXPORT double efaxpy  (double a, long n)   { return a * (double)n; }    /* R,N */
 EXPORT double efmul2  (double a, double b) { return a * b; }            /* R,R */
 EXPORT long   eflenmul(char *s, long n)    { return (long)strlen(s) * n; } /* str,int */
+
+/* ---- zero arguments ---------------------------------------------------- */
+EXPORT double efpi(void) { return 3.14159265358979323846; }            /* () -> real */
+
+/* ---- three and four arguments (order- and type-sensitive) -------------- */
+EXPORT long   efadd3(long a, long b, long c)                            /* N,N,N */
+{ return a * 100 + b * 10 + c; }                                       /* (1,2,3)->123 */
+
+EXPORT double efmix4(long a, double b, long c, double d)                /* N,R,N,R */
+{ return (double)a + b * 10.0 + (double)c * 100.0 + d * 1000.0; }      /* (1,2,3,4)->4321 */
+
+/* ---- five arguments: exceeds the 4 register slots; used to prove a call
+        with too many arguments raises err 326 (callef returns -2). -------- */
+EXPORT long   ef5(long a, long b, long c, long d, long e)
+{ return a + b + c + d + e; }

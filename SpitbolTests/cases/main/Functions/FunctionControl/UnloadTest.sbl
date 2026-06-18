@@ -1,0 +1,48 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  UnloadTest.sbl   (SelfCheck)  -- UNLOAD() lifecycle and error.
+*
+*  UNLOAD(name) undefines the named function (dffnc -> stndf), so a call made
+*  after UNLOAD raises err 22 (undefined function called).  UNLOAD with an
+*  argument that is not a natural variable name raises err 201.
+*
+*  Requires a load-enabled build and eflib.dll at the path below.
+*  ===========================================================================
+
+        DLL = "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll"
+
+        load('efint(integer)integer', DLL)
+
+*  --- the function works while loaded -------------------------------------
+        caughtf =
+        x = efint(41)
+        okchk('efint before unload')
+        vchk('efint(41) before unload -> 42', x, 42)
+
+*  --- UNLOAD succeeds (returns null) --------------------------------------
+        caughtf =
+        r = unload('efint')
+        okchk('unload(efint) call')
+
+*  --- after UNLOAD the function is undefined: a call raises err 22 --------
+        caughtf =
+        y = efint(41)
+        errchk('efint after unload -> undefined (22)', 22)
+
+*  --- a function may be re-loaded after being unloaded --------------------
+        caughtf =
+        load('efint(integer)integer', DLL)
+        okchk('reload(efint) after unload')
+        caughtf =
+        z = efint(41)
+        okchk('efint after reload')
+        vchk('efint(41) after reload -> 42', z, 42)
+
+*  --- UNLOAD with a non-variable argument -> err 201 ----------------------
+*  An integer or string converts to a name via gtstg, so it would NOT error;
+*  a pattern has no name representation, so gtnvr fails -> err 201.
+        caughtf =
+        unload(len(1))
+        errchk('unload(pattern) bad arg -> 201', 201)
+END
