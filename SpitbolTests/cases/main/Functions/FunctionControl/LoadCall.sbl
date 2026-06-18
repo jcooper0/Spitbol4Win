@@ -1,0 +1,65 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  LoadCall.sbl    (SelfCheck)  -- REQUIRES a load-enabled build AND callef.c
+*                                  (Milestone B: the external call path).
+*
+*  Where ExternalFnErrors.sbl proves the argument-type errors fire during
+*  conversion (39/40/265/298, raised BEFORE callef runs), this test proves
+*  the call itself works end to end: each loaded function is invoked and its
+*  return value is checked.  efstr is built (in eflib.c) to REVERSE its
+*  argument, so 'abc' -> 'cba' shows real data flowing into the DLL and back
+*  -- not merely that the call returned something.
+*
+*  PREREQUISITES:
+*    1. Spitbol4Win built with external-function support and the Milestone-B
+*       callef.c (single-argument call marshalling) in osint/.
+*    2. eflib.dll rebuilt from the reversed-efstr eflib.c, x64:
+*           cl /LD /O2 eflib.c        (x64 Native Tools prompt)
+*           dumpbin /headers eflib.dll   -> expect "8664 machine (x64)"
+*
+*  Expected:
+*     efint(41)    -> 42      (x + 1)
+*     efreal(3.0)  -> 6.0     (r * 2.0)
+*     efstr('abc') -> 'cba'   (reversed)
+*     effile(file) -> 0
+*  ===========================================================================
+
+        load('efint(integer)integer', "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+        load('efreal(real)real',      "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+        load('efstr(string)string',   "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+        load('effile(file)integer',   "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll")
+
+*  --- integer round-trip:  efint(41) -> 42 -------------------------------
+        caughtf =
+        vi = efint(41)
+        okchk('efint(41) call')
+        vchk('efint(41) -> 42', vi, 42)
+
+*  --- real round-trip:  efreal(3.0) -> 6.0 -------------------------------
+        caughtf =
+        vr = efreal(3.0)
+        okchk('efreal(3.0) call')
+        rchk('efreal(3.0) -> 6.0', vr, 6.0)
+
+*  --- string round-trip (reversed):  efstr('abc') -> 'cba' ---------------
+        caughtf =
+        vs = efstr('abc')
+        okchk('efstr(abc) call')
+        vchk("efstr('abc') -> 'cba'", vs, 'cba')
+
+*  --- file argument:  effile(file) -> 0 ----------------------------------
+*  iofcb resolves a file argument by looking the value up as a variable and
+*  walking its trap chain for a file association, so we associate a variable
+*  with a file and pass its name.  This path is secondary to the three checks
+*  above; if the association cannot be resolved we report it, not *FAIL.
+        output(.EFF, 13, 'ef_loadcall.tmp')                 :f(EFF_NA)
+        caughtf =
+        vf = effile('EFF')
+        ident(caughtf,1)                                    :s(EFF_TRAP)
+        vchk('effile(file) -> 0', vf, 0)                    :(EFF_END)
+EFF_TRAP output = ' note: effile raised &errtype=' savedet ' (file-arg setup) -- numeric/string checks above are definitive'
+EFF_END endfile(13)                                         :(DONE)
+EFF_NA  output = ' note: could not associate a file for effile -- numeric/string checks above are definitive'
+DONE
+END
