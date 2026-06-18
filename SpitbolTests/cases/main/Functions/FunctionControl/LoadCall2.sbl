@@ -1,0 +1,57 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  LoadCall2.sbl   (SelfCheck)  -- two-argument external calls.
+*
+*  Proves callef places arguments into the right Win64 registers for every
+*  combination of integer/real/string operands.  N = integer-register operand
+*  (integer OR string), R = XMM operand (real):
+*     efaddii (int,  int )  N,N   ->  40 + 2        = 42
+*     eflenmul(str,  int )  N,N   ->  len('abc')*5  = 15   (string placed as N)
+*     efscale (int,  real)  N,R   ->  1.5 * 3       = 4.5
+*     efaxpy  (real, int )  R,N   ->  2.5 * 4       = 10.0
+*     efmul2  (real, real)  R,R   ->  2.0 * 3.0     = 6.0
+*
+*  Requires the 2-arg-capable callef.c and eflib.dll rebuilt from the eflib.c
+*  that defines these five functions (x64):
+*       cl /LD /O2 eflib.c        (x64 Native Tools prompt)
+*  ===========================================================================
+
+        DLL = "C:\Users\jcooper\source\repos\Spitbol4Win\SpitbolTests\fixtures\eflib.dll"
+
+        load('efaddii(integer,integer)integer', DLL)
+        load('eflenmul(string,integer)integer', DLL)
+        load('efscale(integer,real)real',       DLL)
+        load('efaxpy(real,integer)real',        DLL)
+        load('efmul2(real,real)real',           DLL)
+
+*  --- N,N : (integer, integer) -> integer --------------------------------
+        caughtf =
+        a = efaddii(40, 2)
+        okchk('efaddii(40,2) call')
+        vchk('efaddii(40,2) -> 42', a, 42)
+
+*  --- N,N : (string, integer) -> integer  [string placed as N] -----------
+        caughtf =
+        b = eflenmul('abc', 5)
+        okchk('eflenmul(abc,5) call')
+        vchk('eflenmul(abc,5) -> 15', b, 15)
+
+*  --- N,R : (integer, real) -> real --------------------------------------
+        caughtf =
+        c = efscale(3, 1.5)
+        okchk('efscale(3,1.5) call')
+        rchk('efscale(3,1.5) -> 4.5', c, 4.5)
+
+*  --- R,N : (real, integer) -> real --------------------------------------
+        caughtf =
+        d = efaxpy(2.5, 4)
+        okchk('efaxpy(2.5,4) call')
+        rchk('efaxpy(2.5,4) -> 10.0', d, 10.0)
+
+*  --- R,R : (real, real) -> real -----------------------------------------
+        caughtf =
+        e = efmul2(2.0, 3.0)
+        okchk('efmul2(2.0,3.0) call')
+        rchk('efmul2(2.0,3.0) -> 6.0', e, 6.0)
+END

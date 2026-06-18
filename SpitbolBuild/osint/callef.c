@@ -33,19 +33,23 @@ Copyright 2012-2017 David Shields
 /   leak one block per call -- and set its type word and value ourselves.
 /
 /   ---------------------------------------------------------------------------
-/   MILESTONE B (this file): single-argument calls.
+/   ARITY / SIGNATURES SUPPORTED
 /   ---------------------------------------------------------------------------
-/   Zero- and one-argument functions are handled exactly, covering the common
-/   case (and all four eflib fixtures).  A single argument is placed correctly
-/   by the C compiler from the cast prototype (integer/pointer -> RCX,
-/   double -> XMM0), and the result comes back in RAX or XMM0, so no assembly
-/   trampoline is needed at this arity.
+/   Zero, one, and two arguments in any integer/real/string combination (a
+/   file argument is accepted in any non-real position too).  This covers the
+/   common case without an assembly trampoline.
 /
-/   Functions of two or more arguments need positional placement across the
-/   integer (RCX/RDX/R8/R9) and XMM (XMM0-3) register files for mixed
-/   int/float signatures, which cannot be expressed portably in C; that is the
-/   next increment and currently reports "improper argument" (-2) rather than
-/   risk a malformed call.
+/   The key fact about the Win64 calling convention: each of the first four
+/   arguments is placed by POSITION into either the integer register
+/   (RCX/RDX/R8/R9) or the XMM register (XMM0-3) for that position, chosen by
+/   type -- integers and pointers use the integer register, doubles use XMM.
+/   Integers and pointers (so: integer, string, file) are therefore placed
+/   IDENTICALLY; only "real vs not" changes placement.  That collapses a
+/   two-argument call to four shapes (NN, NR, RN, RR), each expressible as an
+/   ordinary C function-pointer cast that the compiler lowers to the correct
+/   register placement.  This generalizes to three and four arguments the same
+/   way (2^n shapes); only functions with more than four arguments -- which
+/   spill onto the stack -- would require the ml64 trampoline.
 /   ---------------------------------------------------------------------------
 */
 
@@ -69,6 +73,33 @@ struct xn_efview {
 /* Round a byte count up to a whole number of words. */
 #define EF_WORDS_UP(n) \
     ((word)(((n) + (word)sizeof(word) - 1) & ~(word)(sizeof(word) - 1)))
+
+/* Maximum register-passed arguments handled here (Win64: 4). */
+#define EF_MAXARG 2
+
+/*
+/   Invoke pfn for a given C return type RT, storing the result in dst.  The
+/   shape selector encodes arity and the real-vs-not placement pattern:
+/       0            : ()
+/       1 / 2        : (N) / (R)
+/       3 / 4 / 5 / 6: (N,N) / (N,R) / (R,N) / (R,R)
+/   where N is an integer-register value (passed as void*: integer, string,
+/   or file) and R is a double passed in XMM.  pv[]/dv[] hold the marshalled
+/   operands; the compiler places each one correctly from the cast prototype.
+*/
+#define EF_CALL(RT, dst)                                                      \
+    do {                                                                      \
+        switch (shape) {                                                      \
+        case 0: dst = ((RT (*)(void))pfn)();                       break;     \
+        case 1: dst = ((RT (*)(void *))pfn)(pv[0]);                break;     \
+        case 2: dst = ((RT (*)(double))pfn)(dv[0]);                break;     \
+        case 3: dst = ((RT (*)(void *, void *))pfn)(pv[0], pv[1]); break;     \
+        case 4: dst = ((RT (*)(void *, double))pfn)(pv[0], dv[1]); break;     \
+        case 5: dst = ((RT (*)(double, void *))pfn)(dv[0], pv[1]); break;     \
+        case 6: dst = ((RT (*)(double, double))pfn)(dv[0], dv[1]); break;     \
+        default: dst = 0;                                          break;     \
+        }                                                                     \
+    } while (0)
 
 /*
 /   Allocate nbytes in the dynamic region and return the block.  Mirrors the
@@ -96,57 +127,67 @@ callef(struct efblk *efb, union block **sp, word nargs)
     word  rtype = efb->efrsl;
     void *blk;
 
-    /* argument, sorted into one of three call categories */
-    long   ai = 0;          /* integer category */
-    double ad = 0.0;        /* real category */
-    void  *ap = 0;          /* pointer category (string / file / unconverted) */
-    int    acat = 0;        /* 0 none, 1 int, 2 real, 3 ptr */
-    char  *cstr = 0;        /* NUL-terminated copy of a string argument */
+    void  *pv[EF_MAXARG];       /* integer-register operands (int/str/file) */
+    double dv[EF_MAXARG];       /* XMM operands (real) */
+    char  *cb[EF_MAXARG];       /* NUL-terminated copies of string args */
+    int    isreal[EF_MAXARG];
+    int    shape;
+    word   i;
 
-    if (nargs > 1)
-        return (union block *)-2;   /* multi-arg not yet supported -> 326 */
+    if (nargs > EF_MAXARG)
+        return (union block *)-2;   /* >2 args not handled here -> 326 */
 
-    if (nargs == 1) {
-        word atype = efb->eftar[0];
-        switch (atype) {
-        case 2:                                 /* integer */
-            ai = (long)((struct icblk *)sp[0])->val;
-            acat = 1;
-            break;
-        case 3:                                 /* real */
-            ad = ((struct rcblk *)sp[0])->rcval;
-            acat = 2;
-            break;
-        case 1: {                               /* string -> char* (NUL-term) */
-            struct scblk *s = (struct scblk *)sp[0];
-            word i, n = s->len;
-            cstr = (char *)malloc((size_t)n + 1);
-            if (!cstr)
+    for (i = 0; i < EF_MAXARG; i++) {
+        pv[i] = 0; dv[i] = 0.0; cb[i] = 0; isreal[i] = 0;
+    }
+
+    /*
+    /   The stack order is the REVERSE of the prototype order: b_efc walks the
+    /   stack upward while walking eftar downward, and zysex points sp at the
+    /   lowest slot, so prototype argument i (eftar[i]) is found at
+    /   sp[nargs-1-i].  (For a single argument the two coincide.)  We index
+    /   pv[]/dv[] by prototype position so EF_CALL passes them in C order.
+    */
+    for (i = 0; i < nargs; i++) {
+        word t = efb->eftar[i];
+        union block *ab = sp[nargs - 1 - i];
+        if (t == 3) {                           /* real -> XMM */
+            dv[i] = ((struct rcblk *)ab)->rcval;
+            isreal[i] = 1;
+        } else if (t == 2) {                    /* integer -> int register */
+            pv[i] = (void *)(word)((struct icblk *)ab)->val;
+        } else if (t == 1) {                    /* string -> char* (NUL-term) */
+            struct scblk *s = (struct scblk *)ab;
+            word k, n = s->len;
+            cb[i] = (char *)malloc((size_t)n + 1);
+            if (!cb[i]) {
+                word j;
+                for (j = 0; j < i; j++) if (cb[j]) free(cb[j]);
                 return (union block *)-1;       /* out of memory -> 327 */
-            for (i = 0; i < n; i++)
-                cstr[i] = s->str[i];
-            cstr[n] = '\0';
-            ap = (void *)cstr;
-            acat = 3;
-            break;
-        }
-        case 4:                                 /* file -> FCBLK pointer */
-        default:                                /* unconverted -> block ptr */
-            ap = (void *)sp[0];
-            acat = 3;
-            break;
+            }
+            for (k = 0; k < n; k++)
+                cb[i][k] = s->str[k];
+            cb[i][n] = '\0';
+            pv[i] = (void *)cb[i];
+        } else {                                /* file / unconverted -> ptr */
+            pv[i] = (void *)ab;
         }
     }
+
+    if (nargs == 0)
+        shape = 0;
+    else if (nargs == 1)
+        shape = 1 + isreal[0];                  /* 1=N, 2=R */
+    else
+        shape = 3 + (isreal[0] * 2 + isreal[1]);/* 3=NN 4=NR 5=RN 6=RR */
 
     switch (rtype) {
 
     case 2: {                                   /* integer result */
         long r;
-        if      (acat == 1) r = ((long (*)(long))pfn)(ai);
-        else if (acat == 2) r = ((long (*)(double))pfn)(ad);
-        else if (acat == 3) r = ((long (*)(void *))pfn)(ap);
-        else                r = ((long (*)(void))pfn)();
-        if (cstr) free(cstr);
+        EF_CALL(long, r);
+        if (cb[0]) free(cb[0]);
+        if (cb[1]) free(cb[1]);
         blk = ef_alloc(2 * sizeof(word));
         if (!blk) return (union block *)-1;
         ((word *)blk)[0] = TYPE_ICL;
@@ -156,11 +197,9 @@ callef(struct efblk *efb, union block **sp, word nargs)
 
     case 3: {                                   /* real result */
         double r;
-        if      (acat == 1) r = ((double (*)(long))pfn)(ai);
-        else if (acat == 2) r = ((double (*)(double))pfn)(ad);
-        else if (acat == 3) r = ((double (*)(void *))pfn)(ap);
-        else                r = ((double (*)(void))pfn)();
-        if (cstr) free(cstr);
+        EF_CALL(double, r);
+        if (cb[0]) free(cb[0]);
+        if (cb[1]) free(cb[1]);
         blk = ef_alloc(2 * sizeof(word));
         if (!blk) return (union block *)-1;
         ((word *)blk)[0] = TYPE_RCL;
@@ -171,28 +210,31 @@ callef(struct efblk *efb, union block **sp, word nargs)
     case 1: {                                   /* string result */
         char *r;
         struct scblk *out;
-        word i, n, total;
-        if      (acat == 1) r = ((char *(*)(long))pfn)(ai);
-        else if (acat == 2) r = ((char *(*)(double))pfn)(ad);
-        else if (acat == 3) r = ((char *(*)(void *))pfn)(ap);
-        else                r = ((char *(*)(void))pfn)();
+        word n, total;
+        EF_CALL(char *, r);
         n = 0;
         if (r) while (r[n]) n++;                /* strlen of the C result */
         total = (word)(2 * sizeof(word)) + EF_WORDS_UP(n);
-        out = (struct scblk *)ef_alloc(total);
-        if (!out) { if (cstr) free(cstr); return (union block *)-1; }
+        out = (struct scblk *)ef_alloc(total);  /* box BEFORE freeing cb[] */
+        if (!out) {
+            if (cb[0]) free(cb[0]);
+            if (cb[1]) free(cb[1]);
+            return (union block *)-1;
+        }
         ((word *)out)[0] = TYPE_SCL;
         out->len = n;
         for (i = 0; i < n; i++)
             out->str[i] = r[i];
         while (i < EF_WORDS_UP(n))              /* zero-pad final word */
             out->str[i++] = '\0';
-        if (cstr) free(cstr);
+        if (cb[0]) free(cb[0]);                 /* r may alias cb[0]; copied */
+        if (cb[1]) free(cb[1]);
         return (union block *)out;
     }
 
     default:                                    /* unsupported result type */
-        if (cstr) free(cstr);
+        if (cb[0]) free(cb[0]);
+        if (cb[1]) free(cb[1]);
         return (union block *)-2;               /* improper -> 326 */
     }
 }
