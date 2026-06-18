@@ -1,0 +1,25 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  ProtectedPattern.sbl   (SelfCheck)
+*
+*  Error 042 -- "attempt to change value of protected variable".
+*
+*  The built-in pattern-valued natural variables (ARB, REM, BAL, FAIL, FENCE,
+*  ABORT, SUCCEED) are created with a protected store access (b_vre), so any
+*  attempt to assign to one raises err 42 at the point of the store.  This is
+*  distinct from err 209, which guards protected KEYWORDS (&alphabet, etc.).
+*  ===========================================================================
+
+        caughtf =
+        ARB = 5
+        errchk('Protected042 assign to ARB', 42)
+
+        caughtf =
+        REM = 'x'
+        errchk('Protected042 assign to REM', 42)
+
+        caughtf =
+        FENCE = 1
+        errchk('Protected042 assign to FENCE', 42)
+END
