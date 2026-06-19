@@ -8,9 +8,9 @@
 
 1       start	output = 1	:5
              	          	 !
-gotofield234.sbl(3,19) : error 234 -- syntax error: goto field incorrect
+gotofield234.sbl(POS) : error 234 -- syntax error: goto field incorrect
 
 
 1       start	output = 1	:5
              	          	 !
-gotofield234.sbl(3,19) : error 234 -- syntax error: goto field incorrect
+gotofield234.sbl(POS) : error 234 -- syntax error: goto field incorrect

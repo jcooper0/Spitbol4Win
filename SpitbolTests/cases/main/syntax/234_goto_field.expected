@@ -1,0 +1,16 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1          :X;end
+234_goto_field.sbl(POS) : error 234 -- syntax error: goto field incorrect
+
+
+1          :X;end
+234_goto_field.sbl(POS) : error 234 -- syntax error: goto field incorrect

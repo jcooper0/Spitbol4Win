@@ -1,0 +1,16 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1       end   'test'
+215_text_after_end.sbl(POS) : error 215 -- syntax error: undefined or erroneous entry label
+
+
+1       end   'test'
+215_text_after_end.sbl(POS) : error 215 -- syntax error: undefined or erroneous entry label

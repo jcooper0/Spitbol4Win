@@ -8,9 +8,9 @@
 
 1       start	output = 1,2
              	          !
-comma223.sbl(3,17) : error 223 -- syntax error: invalid use of comma
+comma223.sbl(POS) : error 223 -- syntax error: invalid use of comma
 
 
 1       start	output = 1,2
              	          !
-comma223.sbl(3,17) : error 223 -- syntax error: invalid use of comma
+comma223.sbl(POS) : error 223 -- syntax error: invalid use of comma

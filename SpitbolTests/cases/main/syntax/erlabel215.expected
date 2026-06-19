@@ -8,9 +8,9 @@
 
 2       end	nosuchlabel
            	!
-erlabel215.sbl(4,5) : error 215 -- syntax error: undefined or erroneous entry label
+erlabel215.sbl(POS) : error 215 -- syntax error: undefined or erroneous entry label
 
 
 2       end	nosuchlabel
            	!
-erlabel215.sbl(4,5) : error 215 -- syntax error: undefined or erroneous entry label
+erlabel215.sbl(POS) : error 215 -- syntax error: undefined or erroneous entry label

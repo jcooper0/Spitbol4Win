@@ -8,9 +8,9 @@
 
 1       +	output = 1
 
-badcont214.sbl(3) : error 214 -- bad label or misplaced continuation line
+badcont214.sbl(POS) : error 214 -- bad label or misplaced continuation line
 
 
 1       +	output = 1
 
-badcont214.sbl(3) : error 214 -- bad label or misplaced continuation line
+badcont214.sbl(POS) : error 214 -- bad label or misplaced continuation line

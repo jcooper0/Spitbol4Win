@@ -1,0 +1,16 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1       test1  output = test2 :
+219_empty_goto.sbl(POS) : error 219 -- syntax error: empty goto field
+
+
+1       test1  output = test2 :
+219_empty_goto.sbl(POS) : error 219 -- syntax error: empty goto field

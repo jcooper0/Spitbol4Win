@@ -1,0 +1,18 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+2       test a = b
+
+217_duplicate_label.sbl(POS) : error 217 -- syntax error: duplicate label
+
+
+2       test a = b
+
+217_duplicate_label.sbl(POS) : error 217 -- syntax error: duplicate label

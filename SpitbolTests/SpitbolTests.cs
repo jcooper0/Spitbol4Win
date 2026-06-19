@@ -102,6 +102,16 @@ public class SpitbolTests
             return; // baseline (re)captured from a trusted build
         }
 
+        // A golden case with no baseline yet (e.g. a freshly added filtered case):
+        // fail with actionable guidance instead of throwing on the missing file.
+        if (!File.Exists(c.ExpectedFile))
+        {
+            Assert.True(false,
+                $"'{c.Name}' has no captured baseline yet ({Path.GetFileName(c.ExpectedFile)}). " +
+                "Capture it from a trusted build: set SPITBOL_UPDATE_GOLDEN=1 and re-run.\n" +
+                "--- output that would be captured ---\n" + actual);
+        }
+
         var expected = OutputNormalizer.Normalize(File.ReadAllText(c.ExpectedFile!), filters);
 
         Assert.True(expected == actual,

@@ -1,0 +1,16 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1           :S(end)S(end)
+218_extra_goto.sbl(POS) : error 218 -- syntax error: duplicated goto field
+
+
+1           :S(end)S(end)
+218_extra_goto.sbl(POS) : error 218 -- syntax error: duplicated goto field

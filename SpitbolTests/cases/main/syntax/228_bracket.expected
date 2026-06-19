@@ -1,0 +1,18 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1           :S<end;end
+228_bracket.sbl(POS) : error 228 -- syntax error: right bracket missing from goto
+
+
+1           :S<end;end
+228_bracket.sbl(POS) : error 228 -- syntax error: right bracket missing from goto
+
+No END statement found in source file(s).

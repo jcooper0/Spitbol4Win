@@ -8,9 +8,9 @@
 
 1       start	output = 1	:
              	          	!
-emptygoto219.sbl(3,18) : error 219 -- syntax error: empty goto field
+emptygoto219.sbl(POS) : error 219 -- syntax error: empty goto field
 
 
 1       start	output = 1	:
              	          	!
-emptygoto219.sbl(3,18) : error 219 -- syntax error: empty goto field
+emptygoto219.sbl(POS) : error 219 -- syntax error: empty goto field

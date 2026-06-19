@@ -1,0 +1,16 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1        ID*;end
+233_operator.sbl(POS) : error 233 -- syntax error: invalid use of operator
+
+
+1        ID*;end
+233_operator.sbl(POS) : error 233 -- syntax error: invalid use of operator

@@ -1,0 +1,16 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1          A[[]];end
+222_bracket.sbl(POS) : error 222 -- syntax error: invalid use of left bracket
+
+
+1          A[[]];end
+222_bracket.sbl(POS) : error 222 -- syntax error: invalid use of left bracket

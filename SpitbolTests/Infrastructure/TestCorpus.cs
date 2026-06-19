@@ -2,7 +2,7 @@ namespace SpitbolTests;
 
 public enum CaseMode
 {
-    /// <summary>A sibling "&lt;name&gt;.expected" exists: diff output against it.</summary>
+    /// <summary>A "&lt;name&gt;.expected" baseline is expected: diff output against it.</summary>
     Golden,
     /// <summary>No golden: program self-checks via chks(); pass iff exit 0 and no "*FAIL".</summary>
     SelfCheck,
@@ -11,7 +11,8 @@ public enum CaseMode
 public sealed record TestCase(
     string Name,            // corpus-relative, no extension, '/'-separated
     string SourceFile,      // absolute path to the .sbl/.sno
-    string? ExpectedFile,   // absolute path to .expected, or null
+    string? ExpectedFile,   // absolute path to .expected (the TARGET path for golden cases,
+                            // present or not yet captured); null for self-check cases
     string? StdinFile,      // absolute path to .in, or null
     string? FilterFile,     // absolute path to .filter, or null
     CaseMode Mode);
@@ -63,10 +64,28 @@ public static class TestCorpus
             .FirstOrDefault(File.Exists)
             ?? throw new FileNotFoundException($"No source file for case '{name}' under {root}");
 
-        var expected = First(basePath + ".expected");
-        var stdin    = First(basePath + ".in");
-        var filter   = First(basePath + ".filter");
-        var mode     = expected is null ? CaseMode.SelfCheck : CaseMode.Golden;
+        var stdin = First(basePath + ".in");
+
+        // Per-case "<name>.filter" wins; otherwise fall back to a per-directory
+        // "_default.filter" so an entire folder (e.g. the syntax/ error batch)
+        // can share one filter without a copy beside every case.
+        var dir = Path.GetDirectoryName(basePath)!;
+        var filter = First(basePath + ".filter")
+                     ?? First(Path.Combine(dir, "_default.filter"));
+
+        // A case is Golden if it has a baseline OR a filter (per-case or folder).
+        // Filters are consumed only by golden comparison, so their presence marks
+        // intent-to-golden. This lets a filtered folder capture the first time via
+        // SPITBOL_UPDATE_GOLDEN without hand-created placeholder .expected files.
+        var expectedPath = basePath + ".expected";
+        var mode = (File.Exists(expectedPath) || filter is not null)
+            ? CaseMode.Golden
+            : CaseMode.SelfCheck;
+
+        // Golden cases always carry the target .expected path (present or not yet
+        // captured) so UPDATE_GOLDEN can write a first-time baseline; self-check
+        // cases carry null.
+        var expected = mode == CaseMode.Golden ? expectedPath : null;
 
         return new TestCase(name, source, expected, stdin, filter, mode);
 

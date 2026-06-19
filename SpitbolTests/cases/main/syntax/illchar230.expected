@@ -8,9 +8,9 @@
 
 1       start	output = \x01bad
              	         !
-illchar230.sbl(3,16) : error 230 -- syntax error: illegal character
+illchar230.sbl(POS) : error 230 -- syntax error: illegal character
 
 
 1       start	output = \x01bad
              	         !
-illchar230.sbl(3,16) : error 230 -- syntax error: illegal character
+illchar230.sbl(POS) : error 230 -- syntax error: illegal character

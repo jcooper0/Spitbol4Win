@@ -1,0 +1,18 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1       	"test;end
+232_string.sbl(POS) : error 232 -- syntax error: unmatched string quote
+
+
+1       	"test;end
+232_string.sbl(POS) : error 232 -- syntax error: unmatched string quote
+
+No END statement found in source file(s).

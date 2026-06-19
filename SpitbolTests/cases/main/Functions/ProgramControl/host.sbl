@@ -1,0 +1,33 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  host.sbl   --   built-in function  HOST(N)
+*    HOST(0) returns the command-line string supplied via the -u option,
+*    e.g.  spitbol -u "file1,file2" program  makes HOST(0) yield
+*    'file1,file2'.  When -u is NOT given, HOST(0) returns the null string.
+*
+*    The SelfCheck harness invokes spitbol WITHOUT -u, so the contract under
+*    test here is the no-option path: HOST(0) is callable, returns a
+*    STRING-typed value, and that value is the null string.
+*    (datatype is compared to a string literal so casing -- this build
+*    reports 'string' lower case -- does not matter.)
+*
+*    The -u-populated path needs a custom invocation; if you want it covered,
+*    an IoFixtures-style harness passing -u and asserting the echoed string
+*    would do it (say the word and I'll write that C# fixture).
+*  ===========================================================================
+
+*  --- 001: host(0) is callable without error -------------------------------
+H001    caughtf =
+        h = host(0)
+        okchk('host(0) no error')
+
+*  --- 002: host(0) yields a STRING-typed value -----------------------------
+H002    caughtf =
+        vchk('host(0) datatype is string', datatype(host(0)), datatype('x'))
+
+*  --- 003: with no -u option, host(0) is the null string -------------------
+H003    caughtf =
+        vchk('host(0) null when -u absent', host(0), '')
+
+END

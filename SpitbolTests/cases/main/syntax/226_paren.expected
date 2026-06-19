@@ -1,0 +1,18 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1       	B A(;end
+226_paren.sbl(POS) : error 226 -- syntax error: missing right paren
+
+
+1       	B A(;end
+226_paren.sbl(POS) : error 226 -- syntax error: missing right paren
+
+No END statement found in source file(s).

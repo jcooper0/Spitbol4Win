@@ -1,0 +1,50 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  binary_match.sbl   --   binary  ?   (explicit pattern-match operator)
+*    SUBJECT ? PATTERN performs a pattern match, exactly like the implicit
+*    'SUBJECT PATTERN' form in a bare statement: it succeeds or fails
+*    accordingly and honours value assignment ( . and $ ) inside the pattern.
+*    Tests drive success/failure through the goto field and confirm binding,
+*    so they do NOT depend on the operator's *return value* (matched
+*    substring vs subject), which is left unasserted on purpose.
+*
+*    NOTE: the filename avoids '?' because it is illegal in Windows paths;
+*          rename to match local Operators/Binary convention as needed.
+*  ===========================================================================
+
+*  --- 001: a matching pattern succeeds -------------------------------------
+Q001    caughtf =
+        r = 'fail'
+        ('hello' ? 'ell')              :f(Q001X)
+        r = 'ok'
+Q001X   vchk('binary ? match succeeds', r, 'ok')
+
+*  --- 002: a non-matching pattern fails ------------------------------------
+Q002    caughtf =
+        r = 'fail'
+        ('hello' ? 'xyz')              :f(Q002X)
+        r = 'matched'
+Q002X   vchk('binary ? non-match fails', r, 'fail')
+
+*  --- 003: conditional value assignment (.) inside the match ---------------
+Q003    caughtf =
+        v =
+        ('hello' ? (len(3) . v))       :f(Q003X)
+Q003X   vchk('binary ? binds via .', v, 'hel')
+
+*  --- 004: immediate value assignment ($) inside the match -----------------
+Q004    caughtf =
+        w =
+        ('abcdef' ? ('cd' $ w))        :f(Q004X)
+Q004X   vchk('binary ? binds via $', w, 'cd')
+
+*  --- 005: the subject expression is evaluated -----------------------------
+Q005    caughtf =
+        s = 'foobar'
+        r = 'fail'
+        (s ? 'bar')                    :f(Q005X)
+        r = 'ok'
+Q005X   vchk('binary ? evaluates subject variable', r, 'ok')
+
+END

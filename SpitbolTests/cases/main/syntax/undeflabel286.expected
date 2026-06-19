@@ -1,7 +1,7 @@
 
 
 
-undeflabel286.sbl(3) : error 286 -- function call to undefined entry label
+undeflabel286.sbl(POS) : error 286 -- function call to undefined entry label
 
 
 
@@ -17,7 +17,7 @@ memory used (bytes)  11440
 memory left (bytes)  1037128
 
 
-undeflabel286.sbl(3) : error 286 -- function call to undefined entry label
+undeflabel286.sbl(POS) : error 286 -- function call to undefined entry label
 
 
 in file              undeflabel286.sbl

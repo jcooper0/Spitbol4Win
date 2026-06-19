@@ -1,0 +1,16 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+1          C = A , B;end
+223_comma.sbl(POS) : error 223 -- syntax error: invalid use of comma
+
+
+1          C = A , B;end
+223_comma.sbl(POS) : error 223 -- syntax error: invalid use of comma

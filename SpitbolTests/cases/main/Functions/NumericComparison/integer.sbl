@@ -1,0 +1,61 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  integer.sbl   --   built-in predicate  INTEGER(X)
+*    comparison.sbl covers eq/ne/gt/lt/ge/le but not integer().
+*    INTEGER is a predicate: it returns the null string and SUCCEEDS when X
+*    is an integer (or a string of digits with optional sign), and FAILS
+*    otherwise.  It does not raise a trappable error on a bad value, so these
+*    are success/failure assertions (not errchk cases).  The idiom seeds r
+*    with a sentinel; a SUCCESS overwrites it, a FAILURE leaves it untouched.
+*  ===========================================================================
+
+*  --- 001: integer of a positive integer succeeds --------------------------
+I001    caughtf =
+        r =
+        r = integer(5) 'PASS'
+        vchk('integer(5) succeeds', r, 'PASS')
+
+*  --- 002: integer of zero succeeds ----------------------------------------
+I002    caughtf =
+        r =
+        r = integer(0) 'PASS'
+        vchk('integer(0) succeeds', r, 'PASS')
+
+*  --- 003: integer of a negative integer succeeds --------------------------
+I003    caughtf =
+        r =
+        r = integer(-17) 'PASS'
+        vchk('integer(-17) succeeds', r, 'PASS')
+
+*  --- 004: integer of a digit string succeeds ------------------------------
+I004    caughtf =
+        r =
+        r = integer('123') 'PASS'
+        vchk("integer('123') succeeds", r, 'PASS')
+
+*  --- 005: integer of a signed digit string succeeds -----------------------
+I005    caughtf =
+        r =
+        r = integer('-42') 'PASS'
+        vchk("integer('-42') succeeds", r, 'PASS')
+
+*  --- 006: integer of a real FAILS -----------------------------------------
+I006    caughtf =
+        r = 'STILL'
+        r = integer(3.14) 'CHANGED'
+        vchk('integer(3.14) fails', r, 'STILL')
+
+*  --- 007: integer of a non-numeric string FAILS ---------------------------
+I007    caughtf =
+        r = 'STILL'
+        r = integer('abc') 'CHANGED'
+        vchk("integer('abc') fails", r, 'STILL')
+
+*  --- 008: integer of a real-looking string FAILS --------------------------
+I008    caughtf =
+        r = 'STILL'
+        r = integer('12.5') 'CHANGED'
+        vchk("integer('12.5') fails", r, 'STILL')
+
+END

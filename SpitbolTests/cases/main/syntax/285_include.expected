@@ -1,0 +1,18 @@
+
+
+
+macro spitbol version 4.0f
+x86-64  (DATE)
+
+
+
+                                                                                                                page 1
+
+        -include 'no_such_file_zzqx.inc'
+285_include.sbl(POS) : error 285 -- include file cannot be opened
+
+
+        -include 'no_such_file_zzqx.inc'
+285_include.sbl(POS) : error 285 -- include file cannot be opened
+
+No END statement found in source file(s).

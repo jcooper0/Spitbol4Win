@@ -8,9 +8,9 @@
 
 1       start	output = 1]
              	          !
-rbracket225.sbl(2,17) : error 225 -- syntax error: unbalanced right bracket
+rbracket225.sbl(POS) : error 225 -- syntax error: unbalanced right bracket
 
 
 1       start	output = 1]
              	          !
-rbracket225.sbl(2,17) : error 225 -- syntax error: unbalanced right bracket
+rbracket225.sbl(POS) : error 225 -- syntax error: unbalanced right bracket

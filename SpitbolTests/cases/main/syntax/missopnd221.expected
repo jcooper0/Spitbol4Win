@@ -8,9 +8,9 @@
 
 1       start	output = 1 +
              	           !
-missopnd221.sbl(3,18) : error 221 -- syntax error: missing operand
+missopnd221.sbl(POS) : error 221 -- syntax error: missing operand
 
 
 1       start	output = 1 +
              	           !
-missopnd221.sbl(3,18) : error 221 -- syntax error: missing operand
+missopnd221.sbl(POS) : error 221 -- syntax error: missing operand

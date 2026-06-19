@@ -1,0 +1,28 @@
+
+
+
+286_undef_entry.sbl(POS) : error 286 -- function call to undefined entry label
+
+
+
+
+
+in file              286_undef_entry.sbl
+in line              2
+in statement         2
+stmts executed       2
+execution time msec  0
+regenerations        0
+memory used (bytes)  11440
+memory left (bytes)  1037128
+
+
+286_undef_entry.sbl(POS) : error 286 -- function call to undefined entry label
+
+
+in file              286_undef_entry.sbl
+in line              2
+in statement         2
+stmts executed       2
+execution time msec  0
+regenerations        0

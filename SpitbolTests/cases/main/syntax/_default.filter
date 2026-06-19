@@ -1,0 +1,22 @@
+# Shared filter for the syntax / compile-error golden batch.
+#
+# Observed Spitbol.exe output:
+#   - a stdout banner line:  x86-64  Fri Jun 19 16:40:18 2026   (volatile clock)
+#   - compile errors: 3-line block (listing / caret / "name.sbl(line,col) : error N -- msg")
+#   - runtime errors (e.g. 286): source-echo line + "name.sbl(line) : error N -- msg"
+
+# 1) Neutralize the banner timestamp (asctime: Www Mmm dd HH:MM:SS YYYY), keep arch.
+sub:~\w{3} \w{3}\s+\d{1,2} \d\d:\d\d:\d\d \d{4}~(DATE)~
+
+# 2) Reduce an absolute/relative path to the basename in the error line (no-op if bare).
+sub:~\S*[\\/]([^\\/]+\.sbl\()~$1~
+
+# 3) Collapse a compile-error (line,col):  name.sbl(1,6) -> name.sbl(POS)
+sub:~(\.sbl)\(\d+,\d+\)~$1(POS)~
+
+# 4) Collapse a runtime single-number (line):  name.sbl(2) -> name.sbl(POS)
+#    (Cannot match the (line,col) form: the comma blocks it.)
+sub:~(\.sbl)\(\d+\)~$1(POS)~
+
+# 5) Drop the caret pointer line (whitespace + a single '!').
+drop:^\s*!\s*$

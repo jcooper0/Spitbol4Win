@@ -1,16 +1,13 @@
 # SPITBOL error-code coverage
 
 - Codes defined by sbl.min : 329
-- Codes elicited by tests  : 263
-- Codes NOT elicited       : 66
+- Codes elicited by tests  : 274
+- Codes NOT elicited       : 55
 
 ## Unelicited codes
 
 - 7: compilation error encountered during execution  [compile-time]
 - 19: exponentiation right operand is negative  [auto-promotes to real; never fires]
-- 39: external function argument is not a string
-- 40: external function argument is not integer
-- 42: attempt to change value of protected variable
 - 95: eject caused non-recoverable output error  [fault-injection]
 - 99: endfile file does not permit endfile  [fault-injection]
 - 100: endfile caused non-recoverable output error  [fault-injection]
@@ -27,12 +24,8 @@
 - 204: memory overflow  [fault-injection]
 - 206: output caused file overflow  [fault-injection]
 - 213: syntax error: statement is too complicated.  [compile-time]
-- 215: syntax error: undefined or erroneous entry label  [compile-time]
 - 216: syntax error: missing end line  [compile-time]
-- 219: syntax error: empty goto field  [compile-time]
-- 233: syntax error: invalid use of operator  [compile-time]
 - 245: translation/execution time expired
-- 247: invalid control statement  [compile-time]
 - 249: expression evaluated by name returned value
 - 250: insufficient memory to complete dump  [fault-injection]
 - 252: error on printing to interactive channel  [fault-injection]
@@ -40,7 +33,6 @@
 - 254: erroneous argument for host  [HOST platform-dependent]
 - 255: error during execution of host  [HOST platform-dependent]
 - 260: conversion array size exceeds maximum permitted
-- 265: external function argument is not real  [needs external DLL]
 - 267: exponentiation right operand is real not integer  [real exponent accepted; never fires]
 - 268: inconsistent value assigned to keyword profile
 - 269: buffer first argument is not integer  [BUFFER not callable]
@@ -48,7 +40,6 @@
 - 271: buffer initial value too big for allocation  [BUFFER not callable]
 - 272: buffer first argument is not positive  [BUFFER not callable]
 - 273: buffer size exceeds value of maxlngth keyword  [BUFFER not callable]
-- 274: value assigned to keyword fullscan is zero
 - 275: append first argument is not a buffer  [APPEND not callable]
 - 276: append second argument is not a string  [APPEND not callable]
 - 277: insert third argument not integer  [INSERT not callable]
@@ -59,14 +50,12 @@
 - 284: excessively nested include files  [compile-time (INCLUDE nesting)]
 - 288: exit second argument is not a string
 - 297: set caused non-recoverable i/o error  [fault-injection]
-- 298: external function argument is not file  [needs external DLL]
 - 310: tan produced real overflow or argument is out of range  [tan returns finite; never fires]
 - 319: backspace caused non-recoverable error
 - 320: user interrupt  [user interrupt (SIGINT)]
 - 321: goto scontinue with no preceding error
 - 322: cos argument is out of range  [cos reduces via libc; never fires]
 - 323: sin argument is out of range  [sin reduces via libc; never fires]
-- 326: calling external function - bad argument type  [needs external DLL]
 - 327: calling external function - not found  [needs external DLL]
 - 328: load function - insufficient memory  [needs external DLL]
 - 329: requested maxlngth too large
@@ -111,7 +100,10 @@
 - 36: goto abort with no preceding error
 - 37: goto continue with no preceding error
 - 38: goto undefined label
+- 39: external function argument is not a string
+- 40: external function argument is not integer
 - 41: field function argument is wrong datatype
+- 42: attempt to change value of protected variable
 - 43: any evaluated argument is not a string
 - 44: break evaluated argument is not a string
 - 45: breakx evaluated argument is not a string
@@ -268,8 +260,10 @@
 - 211: value assigned to keyword errtext not a string
 - 212: syntax error: value used where name is required
 - 214: bad label or misplaced continuation line
+- 215: syntax error: undefined or erroneous entry label
 - 217: syntax error: duplicate label
 - 218: syntax error: duplicated goto field
+- 219: syntax error: empty goto field
 - 220: syntax error: missing operator
 - 221: syntax error: missing operand
 - 222: syntax error: invalid use of left bracket
@@ -283,6 +277,7 @@
 - 230: syntax error: illegal character
 - 231: syntax error: invalid numeric item
 - 232: syntax error: unmatched string quote
+- 233: syntax error: invalid use of operator
 - 234: syntax error: goto field incorrect
 - 235: subscripted operand is not table or array
 - 236: array referenced with wrong number of subscripts
@@ -295,6 +290,7 @@
 - 243: function result in nreturn is not name
 - 244: statement count exceeds value of stlimit keyword
 - 246: stack overflow
+- 247: invalid control statement
 - 248: attempted redefinition of system function
 - 251: keyword operand is not name of defined keyword
 - 256: sort/rsort 1st arg not suitable array or table
@@ -305,7 +301,9 @@
 - 262: division caused real overflow
 - 263: multiplication caused real overflow
 - 264: subtraction caused real overflow
+- 265: external function argument is not real
 - 266: exponentiation caused real overflow
+- 274: value assigned to keyword fullscan is zero
 - 281: char argument not integer
 - 282: char argument not in range
 - 285: include file cannot be opened
@@ -319,6 +317,7 @@
 - 294: inappropriate third argument to set
 - 295: set file does not exist
 - 296: set file does not permit setting file pointer
+- 298: external function argument is not file
 - 301: atan argument not numeric
 - 302: chop argument not numeric
 - 303: cos argument not numeric
@@ -337,5 +336,6 @@
 - 317: backspace file does not exist
 - 318: backspace file does not permit backspace
 - 324: set second argument not numeric
+- 326: calling external function - bad argument type
 - 330: date argument is not integer
 

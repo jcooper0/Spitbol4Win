@@ -1,0 +1,37 @@
+-INCLUDE 'assert.inc'
+
+*  ===========================================================================
+*  stoptr.sbl   --   built-in function  STOPTR(NAME, TYPE)
+*    STOPTR cancels a trace association created by TRACE(NAME, TYPE).
+*    It returns the null string and succeeds whether or not a matching
+*    trace association currently exists.  TYPE is kept to 'VALUE' throughout
+*    (the variable-trace type) to stay clear of CALL/RETURN, which apply to
+*    function names.
+*  ===========================================================================
+
+*  --- 001: stoptr of an active VALUE trace returns null, no error -----------
+S001    caughtf =
+        x =
+        trace(.x, 'VALUE')
+        r = 'CHANGED'
+        r = stoptr(.x, 'VALUE')
+        okchk('stoptr active VALUE trace no error')
+        vchk('stoptr returns null string', r, '')
+
+*  --- 002: stoptr when no trace is set still succeeds, returns null ---------
+S002    caughtf =
+        y =
+        r = 'CHANGED'
+        r = stoptr(.y, 'VALUE')
+        okchk('stoptr (none set) no error')
+        vchk('stoptr (none set) returns null', r, '')
+
+*  --- 003: re-arm then stop twice; second stop on a cleared assoc is fine ---
+S003    caughtf =
+        z =
+        trace(.z, 'VALUE')
+        stoptr(.z, 'VALUE')
+        stoptr(.z, 'VALUE')
+        okchk('stoptr repeated VALUE no error')
+
+END

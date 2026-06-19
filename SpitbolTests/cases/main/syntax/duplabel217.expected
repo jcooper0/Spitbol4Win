@@ -8,9 +8,9 @@
 
 2       dup	output = 2
 
-duplabel217.sbl(3) : error 217 -- syntax error: duplicate label
+duplabel217.sbl(POS) : error 217 -- syntax error: duplicate label
 
 
 2       dup	output = 2
 
-duplabel217.sbl(3) : error 217 -- syntax error: duplicate label
+duplabel217.sbl(POS) : error 217 -- syntax error: duplicate label

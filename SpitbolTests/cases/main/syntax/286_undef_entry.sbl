@@ -1,0 +1,3 @@
+        define('uf()','no_such_label')
+        uf()
+end
