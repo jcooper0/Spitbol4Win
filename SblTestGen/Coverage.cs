@@ -9,8 +9,14 @@ namespace SblTestGen;
 
 /// <summary>
 /// `coverage` subcommand: cross-references the error codes DEFINED by the
-/// interpreter source (sbl.min) against the codes ASSERTED by the test
-/// corpus, and reports which are elicited, which are not, and why.
+/// interpreter source (sbl.min) against the codes ASSERTED by the test corpus,
+/// and classifies every code into one of five buckets:
+///   tested        - a corpus case elicits it
+///   untested-gap  - defined and reachable, but no test yet (actionable)
+///   unreachable   - defined, but no code path can fire it on this build
+///   not-testable  - reachable only under conditions a harness can't create
+///                   (OS/device fault injection, SIGINT, OOM, external DLL, ...)
+///   reserved      - number not defined in sbl.min (a numbering gap)
 ///
 /// Usage:
 ///     SblTestGen coverage &lt;sbl.min&gt; &lt;casesRoot&gt; [reportMd]
@@ -28,6 +34,8 @@ namespace SblTestGen;
 /// </summary>
 public static class Coverage
 {
+    public enum CodeClass { Tested, UntestedGap, Unreachable, NotTestable, Reserved }
+
     public static void Run(string sblMin, string casesRoot, string? mdPath)
     {
         if (!File.Exists(sblMin))
@@ -124,7 +132,7 @@ public static class Coverage
             {
                 if (line.TrimStart().StartsWith('*')) continue; // comment line
                 foreach (Match m in ErrChk.Matches(line)) Add(int.Parse(m.Groups[1].Value), rel);
-                foreach (Match m in ACode.Matches(line))  Add(int.Parse(m.Groups[1].Value), rel);
+                foreach (Match m in ACode.Matches(line)) Add(int.Parse(m.Groups[1].Value), rel);
                 foreach (Match m in Chk.Matches(line))
                 {
                     var grp = m.Groups[1].Success ? m.Groups[1].Value : m.Groups[2].Value;
@@ -169,88 +177,144 @@ public static class Coverage
         if (buf.Length > 0) yield return buf.ToString();
     }
 
+    // ----------------------------------------------------------- classification
+
+    private sealed record ClassNote(CodeClass Class, string Reason);
+
+    /// <summary>Durable record of WHY specific DEFINED codes are not elicited,
+    /// established by probing the reference interpreter. Codes elicited by the
+    /// corpus are 'tested' regardless of any entry here; codes absent from
+    /// sbl.min are 'reserved'; defined+reachable codes not listed here and not
+    /// elicited surface as 'untested-gap'. Update as findings change.</summary>
+    private static readonly Dictionary<int, ClassNote> Curated = new()
+    {
+        // --- unreachable: no code path fires these on this build (probed) ---
+        [19] = new(CodeClass.Unreachable, "auto-promotes to real; never fires"),
+        [190] = new(CodeClass.Unreachable, "numeric first arg accepted; never fires"),
+        [197] = new(CodeClass.Unreachable, "never fires on this build"),
+        [198] = new(CodeClass.Unreachable, "numeric first arg accepted; never fires"),
+        [267] = new(CodeClass.Unreachable, "real exponent accepted; never fires"),
+        [283] = new(CodeClass.Unreachable, "long strings accepted; never fires"),
+        [310] = new(CodeClass.Unreachable, "tan returns finite; never fires"),
+        [322] = new(CodeClass.Unreachable, "cos reduces via libc; never fires"),
+        [323] = new(CodeClass.Unreachable, "sin reduces via libc; never fires"),
+        // handlers exist in sbl.min but the functions are not registered callable
+        [269] = new(CodeClass.Unreachable, "BUFFER not callable"),
+        [270] = new(CodeClass.Unreachable, "BUFFER not callable"),
+        [271] = new(CodeClass.Unreachable, "BUFFER not callable"),
+        [272] = new(CodeClass.Unreachable, "BUFFER not callable"),
+        [273] = new(CodeClass.Unreachable, "BUFFER not callable"),
+        [275] = new(CodeClass.Unreachable, "APPEND not callable"),
+        [276] = new(CodeClass.Unreachable, "APPEND not callable"),
+        [277] = new(CodeClass.Unreachable, "INSERT not callable"),
+        [278] = new(CodeClass.Unreachable, "INSERT not callable"),
+        [279] = new(CodeClass.Unreachable, "INSERT not callable"),
+        [280] = new(CodeClass.Unreachable, "INSERT not callable"),
+
+        // --- not-testable: reachable only under conditions a harness can't make ---
+        // OS / device fault injection
+        [95] = new(CodeClass.NotTestable, "fault-injection"),
+        [99] = new(CodeClass.NotTestable, "fault-injection"),
+        [100] = new(CodeClass.NotTestable, "fault-injection"),
+        [161] = new(CodeClass.NotTestable, "fault-injection (open failure maps to statement failure)"),
+        [176] = new(CodeClass.NotTestable, "fault-injection"),
+        [202] = new(CodeClass.NotTestable, "fault-injection"),
+        [204] = new(CodeClass.NotTestable, "fault-injection (out of memory)"),
+        [206] = new(CodeClass.NotTestable, "fault-injection"),
+        [207] = new(CodeClass.NotTestable, "fault-injection (device variant; 207 also elicited by IoFixtures)"),
+        [250] = new(CodeClass.NotTestable, "fault-injection (dump OOM)"),
+        [252] = new(CodeClass.NotTestable, "fault-injection"),
+        [297] = new(CodeClass.NotTestable, "fault-injection"),
+        [320] = new(CodeClass.NotTestable, "user interrupt (SIGINT)"),
+        // platform-dependent
+        [254] = new(CodeClass.NotTestable, "HOST platform-dependent"),
+        [255] = new(CodeClass.NotTestable, "HOST platform-dependent"),
+        // require a real external library to load/call (elicited only with fixtures present)
+        [143] = new(CodeClass.NotTestable, "needs external DLL (load input error during load)"),
+        [265] = new(CodeClass.NotTestable, "needs external DLL"),
+        [298] = new(CodeClass.NotTestable, "needs external DLL"),
+        [326] = new(CodeClass.NotTestable, "needs external DLL"),
+        [327] = new(CodeClass.NotTestable, "needs external DLL"),
+        [328] = new(CodeClass.NotTestable, "needs external DLL"),
+        // intentionally excluded
+        [216] = new(CodeClass.NotTestable, "eNd valid under case-folding; missing-END abort is unnumbered"),
+    };
+
+    private static CodeClass Classify(
+        int code, IReadOnlyDictionary<int, string> defined, IReadOnlySet<int> covered, out string reason)
+    {
+        reason = "";
+        if (!defined.ContainsKey(code)) return CodeClass.Reserved;
+        if (covered.Contains(code)) return CodeClass.Tested;
+        if (Curated.TryGetValue(code, out var note)) { reason = note.Reason; return note.Class; }
+        return CodeClass.UntestedGap;
+    }
+
+    private static string Label(CodeClass c) => c switch
+    {
+        CodeClass.Tested => "tested",
+        CodeClass.UntestedGap => "untested-gap",
+        CodeClass.Unreachable => "unreachable",
+        CodeClass.NotTestable => "not-testable",
+        CodeClass.Reserved => "reserved",
+        _ => "?",
+    };
+
     // -------------------------------------------------------------- report
 
     private static string BuildReport(
         SortedDictionary<int, string> defined,
         SortedDictionary<int, SortedSet<string>> asserted)
     {
+        var covered = asserted.Keys.Where(defined.ContainsKey).ToHashSet();
+        var orphans = asserted.Keys.Where(c => !defined.ContainsKey(c)).OrderBy(x => x).ToList();
+        int max = defined.Keys.Max();
+
+        var rows = new List<(int code, CodeClass cls, string reason, string msg)>();
+        var counts = new Dictionary<CodeClass, int>();
+        for (int c = 1; c <= max; c++)
+        {
+            var cls = Classify(c, defined, covered, out var reason);
+            // numbers neither defined nor a real reserved gap don't occur here
+            // (sbl.min is dense 1..max apart from the reserved gaps), but if a
+            // larger gap ever appears, it is still reported as 'reserved'.
+            var msg = defined.TryGetValue(c, out var m) ? m : "(undefined / reserved)";
+            rows.Add((c, cls, reason, msg));
+            counts[cls] = counts.GetValueOrDefault(cls) + 1;
+        }
+
+        var gaps = rows.Where(r => r.cls == CodeClass.UntestedGap).Select(r => r.code).ToList();
+
         var sb = new StringBuilder();
-        var coveredSet = asserted.Keys.Where(defined.ContainsKey).ToHashSet();
-        var uncovered = defined.Keys.Where(c => !coveredSet.Contains(c)).ToList();
-
-        // Assertions for codes the build does NOT define -> stale/misnumbered tests.
-        var orphans = asserted.Keys.Where(c => !defined.ContainsKey(c)).ToList();
-
-        sb.AppendLine("# SPITBOL error-code coverage");
+        sb.AppendLine("# SPITBOL error-code coverage & classification");
         sb.AppendLine();
         sb.AppendLine($"- Codes defined by sbl.min : {defined.Count}");
-        sb.AppendLine($"- Codes elicited by tests  : {coveredSet.Count}");
-        sb.AppendLine($"- Codes NOT elicited       : {uncovered.Count}");
+        sb.AppendLine($"- tested                   : {counts.GetValueOrDefault(CodeClass.Tested)}");
+        sb.AppendLine($"- untested-gap             : {counts.GetValueOrDefault(CodeClass.UntestedGap)}");
+        sb.AppendLine($"- unreachable              : {counts.GetValueOrDefault(CodeClass.Unreachable)}");
+        sb.AppendLine($"- not-testable             : {counts.GetValueOrDefault(CodeClass.NotTestable)}");
+        sb.AppendLine($"- reserved (numbering gaps): {counts.GetValueOrDefault(CodeClass.Reserved)}");
         if (orphans.Count > 0)
-            sb.AppendLine($"- Assertions on UNDEFINED codes (review) : {string.Join(", ", orphans)}");
+            sb.AppendLine($"- assertions on UNDEFINED codes (review) : {string.Join(", ", orphans)}");
         sb.AppendLine();
 
-        sb.AppendLine("## Unelicited codes");
+        sb.AppendLine("## Untested gaps (actionable: add a test or classify)");
         sb.AppendLine();
-        foreach (var c in uncovered)
-        {
-            var note = ReasonHint.TryGetValue(c, out var r) ? $"  [{r}]" : "";
-            sb.AppendLine($"- {c}: {defined[c]}{note}");
-        }
+        if (gaps.Count == 0)
+            sb.AppendLine("_None - every defined, reachable code is tested._");
+        else
+            foreach (var c in gaps)
+                sb.AppendLine($"- {c}: {defined[c]}");
         sb.AppendLine();
 
-        sb.AppendLine("## Elicited codes");
+        sb.AppendLine("## Full classification");
         sb.AppendLine();
-        foreach (var c in coveredSet.OrderBy(x => x))
-            sb.AppendLine($"- {c}: {defined[c]}");
+        sb.AppendLine("| Code | Class | Note | Message |");
+        sb.AppendLine("|-----:|-------|------|---------|");
+        foreach (var (code, cls, reason, msg) in rows)
+            sb.AppendLine($"| {code:D3} | {Label(cls)} | {reason} | {msg} |");
         sb.AppendLine();
 
         return sb.ToString();
     }
-
-    /// <summary>Durable record of WHY specific codes cannot be elicited on this
-    /// build, established by probing the reference interpreter. Annotates the
-    /// unelicited list so the report distinguishes "untested" from
-    /// "untestable". Update as findings change.</summary>
-    private static readonly Dictionary<int, string> ReasonHint = new()
-    {
-        // genuinely undefined in build (no err/erb)
-        [299] = "undefined in build", [300] = "undefined in build", [325] = "undefined in build",
-        // hardware / OS fault injection required
-        [95]  = "fault-injection", [99]  = "fault-injection", [100] = "fault-injection",
-        [161] = "fault-injection (open failure maps to statement failure)",
-        [176] = "fault-injection", [202] = "fault-injection", [204] = "fault-injection",
-        [206] = "fault-injection", [207] = "fault-injection (device variant)",
-        [250] = "fault-injection", [252] = "fault-injection", [297] = "fault-injection",
-        [320] = "user interrupt (SIGINT)",
-        // platform-dependent
-        [254] = "HOST platform-dependent", [255] = "HOST platform-dependent",
-        // need a real external library to load/call
-        [143] = "needs external DLL", [265] = "needs external DLL", [298] = "needs external DLL",
-        [326] = "needs external DLL", [327] = "needs external DLL", [328] = "needs external DLL",
-        // handlers exist but functions not registered as callable on this build
-        [269] = "BUFFER not callable", [270] = "BUFFER not callable", [271] = "BUFFER not callable",
-        [272] = "BUFFER not callable", [273] = "BUFFER not callable",
-        [275] = "APPEND not callable", [276] = "APPEND not callable",
-        [277] = "INSERT not callable", [278] = "INSERT not callable", [279] = "INSERT not callable",
-        [280] = "INSERT not callable",
-        // do not fire on this build (probed)
-        [19]  = "auto-promotes to real; never fires",
-        [190] = "numeric first arg accepted; never fires",
-        [198] = "numeric first arg accepted; never fires",
-        [197] = "never fires on this build",
-        [310] = "tan returns finite; never fires",
-        [322] = "cos reduces via libc; never fires", [323] = "sin reduces via libc; never fires",
-        [267] = "real exponent accepted; never fires",
-        [283] = "long strings accepted; never fires",
-        // compile-time syntax errors (need a compile-failure harness, not runtime traps)
-        [7] = "compile-time", [212] = "compile-time", [213] = "compile-time", [214] = "compile-time",
-        [215] = "compile-time", [216] = "compile-time", [217] = "compile-time", [218] = "compile-time",
-        [219] = "compile-time", [220] = "compile-time", [221] = "compile-time", [222] = "compile-time",
-        [223] = "compile-time", [224] = "compile-time", [225] = "compile-time", [226] = "compile-time",
-        [227] = "compile-time", [228] = "compile-time", [229] = "compile-time", [230] = "compile-time",
-        [231] = "compile-time", [232] = "compile-time", [233] = "compile-time", [234] = "compile-time",
-        [247] = "compile-time", [284] = "compile-time (INCLUDE nesting)", [285] = "compile-time (INCLUDE open)",
-    };
 }
