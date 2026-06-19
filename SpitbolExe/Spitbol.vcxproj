@@ -3,8 +3,9 @@
   <!-- ============================================================
        Spitbol.vcxproj: native build: compiles osint/*.c, assembles
        the three generated runtime/*_masm.asm, and links spitbol.exe.
-       Pair this (same VS solution) with the C# SpitbolBuild project,
-       which generates the .asm files. x64 only.
+       The C# SpitbolBuild project (beside this one) generates the .asm
+       files; the GenerateRuntimeAsm target below now runs it automatically
+       as part of this build, so there is no separate manual step. x64 only.
 
        Adjust these two paths if your layout differs. They assume this
        project sits in a folder beside SpitbolBuild\.
@@ -98,4 +99,39 @@
   <ImportGroup Label="ExtensionTargets">
     <Import Project="$(VCTargetsPath)\BuildCustomizations\masm.targets" />
   </ImportGroup>
+  <!-- ============================================================
+       Codegen: regenerate runtime\*_masm.asm from sbl.min as part of THIS
+       build, before any source is compiled/assembled. Replaces the manual
+       "cd SpitbolBuild && dotnet run" step.
+
+       - Runs the SpitbolBuild C# tool, passing the SpitbolBuild folder as the
+         working directory (it reads sbl.min/err.asm/int.asm/int.dcl there and
+         writes runtime\*_masm.asm there exactly RuntimeDir).
+       - Inputs/Outputs make it incremental: it only re-runs when one of the
+         four source inputs is newer than the generated .asm, so ordinary
+         native rebuilds are not slowed down.
+       - Hooked to BuildGenerateSources so the .asm exist before the MASM
+         up-to-date check and assembly run.
+
+       Requirements / notes:
+       - The .NET SDK must be on PATH (Visual Studio provides it; a CI agent
+         needs it installed) so `dotnet run` works.
+       - If you edit SpitbolBuild's C# (not sbl.min), the data inputs are
+         unchanged, so this target skips. Do a Rebuild, or touch sbl.min, to
+         force regeneration after a generator change.
+       - For clean solution build ordering you can also add a Project
+         Dependency (Spitbol depends on SpitbolBuild) in the .sln; not required
+         because `dotnet run` builds the tool on demand.
+       ============================================================ -->
+  <PropertyGroup Label="Codegen">
+    <SpitbolBuildDir>$(MSBuildProjectDirectory)\..\SpitbolBuild</SpitbolBuildDir>
+  </PropertyGroup>
+  <Target Name="GenerateRuntimeAsm"
+          BeforeTargets="BuildGenerateSources"
+          Inputs="$(SpitbolBuildDir)\sbl.min;$(SpitbolBuildDir)\err.asm;$(SpitbolBuildDir)\int.asm;$(SpitbolBuildDir)\int.dcl"
+          Outputs="$(RuntimeDir)\sbl_masm.asm;$(RuntimeDir)\err_masm.asm;$(RuntimeDir)\int_masm.asm">
+    <Message Importance="high" Text="SpitbolBuild: regenerating runtime\*_masm.asm from sbl.min ..." />
+    <Exec Command="dotnet run --project &quot;$(SpitbolBuildDir)&quot; -- &quot;$(SpitbolBuildDir)&quot;"
+          WorkingDirectory="$(SpitbolBuildDir)" />
+  </Target>
 </Project>
