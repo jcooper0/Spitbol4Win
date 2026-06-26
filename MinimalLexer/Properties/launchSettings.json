@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "MinimalLexer": {
-      "commandName": "Project",
-      "commandLineArgs": "sbl.min sbl.lex",
-      "workingDirectory": "C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\MinimalLexer"
-    }
-  }
-}

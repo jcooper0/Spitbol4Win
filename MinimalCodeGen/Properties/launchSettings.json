@@ -1,9 +1,0 @@
-{
-  "profiles": {
-    "MinimalCodeGen": {
-      "commandName": "Project",
-      "commandLineArgs": "C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\MinimalLexer\\sbl.lex sbl.asm ",
-      "workingDirectory": "C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\MinimalCodeGen"
-    }
-  }
-}

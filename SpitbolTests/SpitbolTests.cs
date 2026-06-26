@@ -106,7 +106,7 @@ public class SpitbolTests
         // fail with actionable guidance instead of throwing on the missing file.
         if (!File.Exists(c.ExpectedFile))
         {
-            Assert.True(false,
+            Assert.Fail(
                 $"'{c.Name}' has no captured baseline yet ({Path.GetFileName(c.ExpectedFile)}). " +
                 "Capture it from a trusted build: set SPITBOL_UPDATE_GOLDEN=1 and re-run.\n" +
                 "--- output that would be captured ---\n" + actual);

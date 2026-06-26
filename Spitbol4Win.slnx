@@ -8,6 +8,7 @@
   <Project Path="SpitbolExe/Spitbol.vcxproj" Id="8994fcce-ed77-4ff1-b2d2-6de9a6b993fc">
     <BuildDependency Project="SpitbolBuild/SpitbolBuild.csproj" />
   </Project>
+  <Project Path="SpitbolTests/fixtures/SpitbolFixtures.vcxproj" Id="97835613-7dbc-41a4-aa0b-e86da6f92481" />
   <Project Path="SpitbolTests/SpitbolTests.csproj">
     <BuildDependency Project="SpitbolBuild/SpitbolBuild.csproj" />
     <BuildDependency Project="SpitbolExe/Spitbol.vcxproj" />

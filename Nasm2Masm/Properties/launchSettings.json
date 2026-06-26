@@ -1,8 +1,0 @@
-{
-  "profiles": {
-    "Nasm2Masm": {
-      "commandName": "Project",
-      "workingDirectory": "C:\\Users\\jcooper\\source\\repos\\Spitbol4Win\\Nasm2Masm"
-    }
-  }
-}
